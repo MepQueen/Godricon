@@ -1,5 +1,5 @@
 // @ts-check
-const { Client, Discord, Events, GatewayIntentBits, MessageActionRow, MessageButton, MessageEmbed, SlashCommandBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, DiscordAPIError } = require('discord.js');
+const { Client, Events, GatewayIntentBits, MessageActionRow, MessageButton, MessageEmbed, SlashCommandBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, DiscordAPIError } = require('discord.js');
 const { token } = require('./config.json');
 
 global.interval = null;
