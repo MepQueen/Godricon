@@ -1,4 +1,5 @@
-const { Client, Discord, Intents, MessageActionRow, MessageButton, MessageEmbed, DiscordAPIError } = require('discord.js');
+// @ts-check
+const { Client, Discord, Events, GatewayIntentBits, MessageActionRow, MessageButton, MessageEmbed, SlashCommandBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, DiscordAPIError } = require('discord.js');
 const { token } = require('./config.json');
 
 global.interval = null;
@@ -12,7 +13,8 @@ process.on('uncaughtException', function(err) {
 	console.log('Error caught: ' + err)
 });
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, 'GUILD_MEMBERS'] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers] });
+
 client.once('ready', () => { 
 	console.log('Locked and Loaded!');
 	client.user.setActivity('. . .', { type: 'WATCHING' });
@@ -105,14 +107,14 @@ client.on('interactionCreate', async interaction => {
 		embed.setColor('1e792c').addField('\u200B', finalString);
 		await interaction.reply({ embeds: [embed], ephemeral: true });
 
-	
+	} else if (commandName === 'battlemode') {
+		await interaction.reply({ content: 'Nothing yet...'});
 
 	} else if (commandName === 'patchnotes') {
-		await interaction.reply({ content: '**__Recent Patches__**\n\n**2/6/22**\n- More small text edits, as usual.\n- The leaderboard display is more vertical to work better on mobile.\n\n**2/2/22**\n- Rules about shields and rounds are now on the second page of the rules, `/rules2`, and `/arkaetrerules` was renamed to `/rules3`.\n- The chance a shield will break is now dependent on how much damage is dealt to it. Every damage point in the final value of an attack increases the chance by 17%, and a 6-point attack is guaranteed to break a shield.\n- Overtime has been replaced by a four-round system where negative effects increase every 25 turns, with another hourglass icon added to the turn counter for each round.\n- At 100 turns, a battle will end in a tie.\n- Extra turns are now displayed with symbols to the right of players\' stat headers.\n- The rule reminder at the end of battle embeds is gone.\n- The pocketwatch removes any saved up extra turns when used, stops the turn counter while active, and shows a frozen icon after the turn counter instead of a picture above the action text.\n- The hydra will now gradually lower the maximum number of health points while active by 1 health per 2 counted turns, and instead of it blocking both arkaetre slots, you can use the `/arkaetre` command again to reset the health cap and all active arkaetres.\n- The second number in the HP stat is now the health cap instead of your starting health.\n- The challenge timeout length is now an hour.\n- The owl\'s extra turn chance is now 66%.\n\n**2/1/22**\n- `/toggle` exists so I can block off battles when I need to. Commands not related to battling like `/leaderboard` stay up.\n- There\'s no more daily point limit. Go crazy, if that\'s your thing.', ephemeral: true });
+		await interaction.reply({ content: '**__Recent Patches__**\n\n**6/19/23**\n- A text bug in the bow and Magistone confirmation messages was fixed.\n\n**2/11/23**\n- All three free actions finally exist, so those new to battling can still participate.\n\n**2/6/22**\n- More small text edits, as usual.\n- The leaderboard display is more vertical to work better on mobile.\n\n**2/2/22**\n- Rules about shields and rounds are now on the second page of the rules, `/rules2`, and `/arkaetrerules` was renamed to `/rules3`.\n- The chance a shield will break is now dependent on how much damage is dealt to it. Every damage point in the final value of an attack increases the chance by 17%, and an attack that deals at least six damage is guaranteed to break a shield.\n- Overtime has been replaced by a four-round system where negative effects increase every 25 turns, with another hourglass icon added to the turn counter for each round.\n- At 100 turns, a battle will end in a tie.\n- Extra turns are now displayed with symbols to the right of players\' stat headers.\n- The rule reminder at the end of battle embeds is gone.\n- The pocketwatch removes any saved up extra turns when used, stops the turn counter while active, and shows a frozen icon after the turn counter instead of a picture above the action text.\n- The hydra will now gradually lower the maximum number of health points while active by 1 health per 2 counted turns, and instead of it blocking both arkaetre slots, you can use the `/arkaetre` command again to reset the health cap and all active arkaetres.\n- The second number in the HP stat is now the health cap instead of your starting health.\n- The challenge timeout length is now an hour.\n- The owl\'s extra turn chance is now 66%.\n\n**2/1/22**\n- `/toggle` exists so I can block off battles when I need to. Commands not related to battling like `/leaderboard` stay up.\n- There\'s no more daily point limit. Go crazy, if that\'s your thing.', ephemeral: true });
 
 		/// Hydra works based on turns after hydra activated
 		/// Case for both having hydra?
-		/// More free actions - \n- `/noitem` has been replaced by three free actions, `/freeattack`, `/freedefend` and `/freeboost`.
 		/// --- Rounds in rules?
 		/// 'Maximum' shield formation chance?
 
@@ -130,7 +132,7 @@ client.on('interactionCreate', async interaction => {
 		/// Achievements? For currency or upgrades?
 		/// Boss battles?
 		/// Timing or other skill component?
-		/// More items? Spendable?
+		/// More items? Spendable? One use per battle?
 
 		/// EditReply "unknown message" error
 		/// Challenge cancel conditions not editing
@@ -261,7 +263,7 @@ client.on('interactionCreate', async interaction => {
 					} else if (roll2 < 4) {
 						var amount = damage('waiting', 1);
 						if (roll2 === 1) {
-							action = 'You flick <@' + global.waitingPlayerID + '> in the arm for ' + amount + ' damage. I am surprised it did that much.';
+							action = 'You throw the bandages that you carry with you at all times at <@' + global.waitingPlayerID + '>\'s arm for ' + amount + ' damage. I am surprised they did that much.';
 						} else if (roll2 === 2) {
 							action = 'You run at <@' + global.waitingPlayerID + '>, screaming a fierce battle cry, and beat them in rock-paper-scissors for ' + amount + ' damage.';
 						} else {
@@ -299,9 +301,8 @@ client.on('interactionCreate', async interaction => {
 
 
 	} else if (commandName === 'freedefend') {
-		if (/*global.activePlayerID === ''*/ true) {
-			/// await interaction.reply({ content: 'There is no battle in progress.', ephemeral: true });
-			await interaction.reply({ content: 'This item is not available yet.', ephemeral: true });
+		if (global.activePlayerID === '') {
+			await interaction.reply({ content: 'There is no battle in progress.', ephemeral: true });
 		} else if (interaction.user.id === global.activePlayerID && !global.itemProcessing) {
 			global.itemProcessing = true;
 			restartTimeout(interaction);
@@ -319,25 +320,25 @@ client.on('interactionCreate', async interaction => {
 					if (roll < 4) {
 						var amount = health('active', 1);
 						if (roll === 1) {
-							action = '';
+							action = 'Was there a gash there before? Apparently not. Strange. You recover ' + amount + ' health.';
 						} else if (roll === 2) {
-							action = '';
+							action = 'Godricon here. Yes, I narrate all these messages. Anyway, have some health, on the house. You recover ' + amount + ' health.';
 						} else {
-							action = '';
+							action = 'Through your body\'s natural healing processes, you recover a measly ' + amount + ' health.';
 						}
 					} else {
 						var amount = health('active', 2);
 						if (roll === 4) {
-							action = '';
+							action = 'You stumble upon an ornate chest filled with random potions. After a quick taste-test, you recover ' + amount + ' health.';
 						} else if (roll === 5) {
-							action = '';
+							action = 'You whip out the bandages that you carry with you at all times and put them to good use, recovering ' + amount + ' health.';
 						} else {
-							action = '';
+							action = 'A spark of magic flares to life inside you, and with a shudder, you recover ' + amount + ' health.';
 						}
 					}
 					var roll2 = random(1, 100);
 					if (roll2 <= formationChance) {
-						action += '';
+						action += ' You also remember to conjure a bright, brilliant shield that will protect you. Sometimes.';
 						global.activePlayerShieldStatus = 'Up';
 					}
 					wyrmCheck('B');
@@ -360,9 +361,8 @@ client.on('interactionCreate', async interaction => {
 
 
 	} else if (commandName === 'freeboost') {
-		if (/*global.activePlayerID === ''*/ true) {
-			/// await interaction.reply({ content: 'There is no battle in progress.', ephemeral: true });
-			await interaction.reply({ content: 'This item is not available yet.', ephemeral: true });
+		if (global.activePlayerID === '') {
+			await interaction.reply({ content: 'There is no battle in progress.', ephemeral: true });
 		} else if (interaction.user.id === global.activePlayerID && !global.itemProcessing) {
 			global.itemProcessing = true;
 			restartTimeout(interaction);
@@ -376,42 +376,60 @@ client.on('interactionCreate', async interaction => {
 				if (i.customId === 'yes') {
 					var action = '';
 					var roll = random(1, 6);
-					var roll2 = random(1, 2);
+					var roll2 = random(1, 3);
 					if (roll === 1) {
 						if (roll2 === 1) {
-							action = '';
+							action = 'You can do it! I believe in you. My stunning motivational speech increases your Attack twice.';
+							statChange('AT', 'active', true);
+							statChange('AT', 'active', true);
 						} else {
-							action = '';
+							action = 'You make a fist and stare down your opponent. Now you feel ready for action, and your Attack increases.';
+							statChange('AT', 'active', true);
 						}
 					} else if (roll === 2) {
 						if (roll2 === 1) {
-							action = '';
+							action = 'Is that a full set of armor!? Nice find. You put it on and your Defense increases twice.';
+							statChange('DF', 'active', true);
+							statChange('DF', 'active', true);
 						} else {
-							action = '';
+							action = 'They say some people have thick skin, but your skin looks especially thick today. Your Defense increases.';
+							statChange('DF', 'active', true);
 						}
 					} else if (roll === 3) {
 						if (roll2 === 1) {
-							action = '';
+							action = 'Master Vaya Medeina notices your unfortunate plight and grants you unfathomable healing abilities, increasing your Recovery twice.';
+							statChange('RC', 'active', true);
+							statChange('RC', 'active', true);
 						} else {
-							action = '';
+							action = 'You stop by the local arena drugstore and buy some bandages. Better keep those with you at all times. Your Recovery increases.';
+							statChange('RC', 'active', true);
 						}
 					} else if (roll === 4) {
 						if (roll2 === 1) {
-							action = '';
+							action = 'You sneak up on <@' + global.waitingPlayerID + '> and give them a nice, relaxing massage. Too relaxing, in fact. Their Attack decreases twice. Why would they want to attack you?';
+							statChange('AT', 'waiting', false);
+							statChange('AT', 'waiting', false);
 						} else {
-							action = '';
+							action = 'You scream with all your might at <@' + global.waitingPlayerID + '> and their Attack decreases, but their concern increases.';
+							statChange('AT', 'waiting', false);
 						}
 					} else if (roll === 5) {
 						if (roll2 === 1) {
-							action = '';
+							action = 'Master Vaya Kovas stops by and- Oh my. That trickster. Well, things will be much easier for you now. <@' + global.waitingPlayerID + '>\'s Defense decreases twice.';
+							statChange('DF', 'waiting', false);
+							statChange('DF', 'waiting', false);
 						} else {
-							action = '';
+							action = '<@' + global.waitingPlayerID + '> drops their shield, and it rolls away, clattering to a stop just outside the arena. Oh well. Their Defense decreases.';
+							statChange('DF', 'waiting', false);
 						}
 					} else {
 						if (roll2 === 1) {
-							action = '';
+							action = 'A multicolored bird swoops down and steals away some of <@' + global.waitingPlayerID + '>\'s trusty bandages that they keep with them at all times. Not anymore! Their Recovery decreases twice.';
+							statChange('RC', 'waiting', false);
+							statChange('RC', 'waiting', false);
 						} else {
-							action = '';
+							action = 'You flick <@' + global.waitingPlayerID + '> in the forehead. "Ow," they say, miffed. You flick them again. Slowly but surely, their Recovery decreases.';
+							statChange('RC', 'waiting', false);
 						}
 					}
 					wyrmCheck('C');
@@ -497,7 +515,7 @@ client.on('interactionCreate', async interaction => {
 			if (interaction.member.roles.cache.has('892528958460002346') && !global.itemProcessing) {
 				global.itemProcessing = true;
 				const row = new MessageActionRow().addComponents(new MessageButton().setCustomId('yes').setLabel('✔️ Yes').setStyle('SUCCESS'),new MessageButton().setCustomId('no').setLabel('❌ No').setStyle('DANGER'),);
-				await interaction.reply({ content: '<:itemBow:793230409734291506> **Bow**:  2-4 Enemy Damage, 50% chance of 1️ Personal Damage\n\nUse this item?', components: [row] });
+				await interaction.reply({ content: '<:itemBow:793230409734291506> **Bow**:  2-4 Enemy Damage, 50% chance of 1 Personal Damage\n\nUse this item?', components: [row] });
 				const filter = i => (i.customId === 'yes' || i.customId === 'no') && i.user.id === global.activePlayerID;
 				const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 });
 				var buttonClicked = false;
@@ -555,7 +573,7 @@ client.on('interactionCreate', async interaction => {
 			if (interaction.member.roles.cache.has('892574599596871720') && !global.itemProcessing) {
 				global.itemProcessing = true;
 				const row = new MessageActionRow().addComponents(new MessageButton().setCustomId('yes').setLabel('✔️ Yes').setStyle('SUCCESS'),new MessageButton().setCustomId('no').setLabel('❌ No').setStyle('DANGER'),);
-				await interaction.reply({ content: '<:itemRealmPortal:769819664096034846> **Realm Portal**:  0-2 Enemy Damage or 1️ Personal Health, 50% chance of extra turn\n\nUse this item?', components: [row] });
+				await interaction.reply({ content: '<:itemRealmPortal:769819664096034846> **Realm Portal**:  0-2 Enemy Damage or 1 Personal Health, 50% chance of extra turn\n\nUse this item?', components: [row] });
 				const filter = i => (i.customId === 'yes' || i.customId === 'no') && i.user.id === global.activePlayerID;
 				const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 });
 				var buttonClicked = false;

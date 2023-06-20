@@ -5,11 +5,28 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "chrome",
+            "name": "Launch Godricon",
+            "type": "node",
             "request": "launch",
-            "name": "Launch Chrome against localhost",
-            "url": "http://localhost:8080",
-            "webRoot": "${workspaceFolder}"
+            "program": "${workspaceFolder}/index.js"
+        },
+        {
+            "name": "Deploy Commands",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/deploy-commands.js"
+        },
+        {
+            "name": "Attach to Godricon",
+            "type": "node",
+            "request": "attach",
+            "port": 6600,
+            // "smartStep": true,
+            // "sourceMaps": true,
+            // "outFiles": [
+            //     "${workspaceFolder}/**/*.js",
+            //     "!**/node_modules/**"
+            // ]
         }
     ]
 }

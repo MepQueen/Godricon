@@ -30,6 +30,7 @@ const commands = [
 	new SlashCommandBuilder().setName('pocketwatch').setDescription('Use your Pocketwatch (if you have one)!'),
 	new SlashCommandBuilder().setName('arkaetre').setDescription('Use your Arkaetre (if you have one)!'),
 	new SlashCommandBuilder().setName('adminkill').setDescription('Admins only.'),
+	new SlashCommandBuilder().setName('battlemode').setDescription('Choose the battle mode.'),
 ]
 	.map(command => command.toJSON());
 
