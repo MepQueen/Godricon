@@ -1,13 +1,12 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { REST } = require('@discordjs/rest');
-const { Routes } = require('discord-api-types/v9');
+const { SlashCommandBuilder } = require('discord.js');
+const { REST, Routes } = require('discord.js');
 const { clientId, guildId, token } = require('./config.json');
 
 const commands = [
 	new SlashCommandBuilder().setName('ping').setDescription('Ping me!'),
-	new SlashCommandBuilder().setName('rules').setDescription('Read the basic rules!'),
-	new SlashCommandBuilder().setName('rules2').setDescription('Read some more advanced rules!'),
-	new SlashCommandBuilder().setName('rules3').setDescription('Read the arkaetre rules!'),
+	new SlashCommandBuilder().setName('rules-basic').setDescription('Read the basic rules!'),
+	new SlashCommandBuilder().setName('rules-advanced').setDescription('Read some more advanced rules!'),
+	new SlashCommandBuilder().setName('rules-arkaetres').setDescription('Read the abilities of different arkaetres!'),
 	new SlashCommandBuilder().setName('leaderboard').setDescription('Check the battle point leaderboard!'),
 	new SlashCommandBuilder().setName('patchnotes').setDescription('Check the recent patch notes!'),
 	new SlashCommandBuilder().setName('toggle').setDescription('Admins only.'),
@@ -30,9 +29,8 @@ const commands = [
 	new SlashCommandBuilder().setName('pocketwatch').setDescription('Use your Pocketwatch (if you have one)!'),
 	new SlashCommandBuilder().setName('arkaetre').setDescription('Use your Arkaetre (if you have one)!'),
 	new SlashCommandBuilder().setName('adminkill').setDescription('Admins only.'),
-	new SlashCommandBuilder().setName('battlemode').setDescription('Choose the battle mode.'),
-]
-	.map(command => command.toJSON());
+	new SlashCommandBuilder().setName('battlemode').setDescription('Set the active battle mode.'),
+].map(command => command.toJSON());
 
 const rest = new REST({ version: '9' }).setToken(token);
 

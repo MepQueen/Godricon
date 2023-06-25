@@ -21,10 +21,11 @@ client.once('ready', () => {
 });
 
 client.on('interactionCreate', async interaction => {
+	client.user?.setActivity('. . .', { type: ActivityType.Watching });
 	if (!interaction.isCommand() && !interaction.isButton()) return;
-	const { commandName } = interaction;
-	client.user.setActivity('. . .', { type: 'WATCHING' });
-
+	const commandName = interaction.isCommand()?interaction.commandName:undefined;
+	if (!interaction.guild || !interaction.channel || !interaction.member) return;
+	
 
 
 	if (commandName === 'ping') {
@@ -127,7 +128,7 @@ client.on('interactionCreate', async interaction => {
 		/// Edit item selection messages instead of delete so no log spam? ;-;
 		/// Older pages of patch notes
 
-		/// Pick a player class/character with certain perks?
+		/// Pick a player class/character with certain perks? Darklight Order mages + Kireveans (symbol mage), Sand Trap Order of the Hydra mages w/staff, Ng Ey scroll mage, TKR stone mage
 		/// Make arkaetres dependent on effects?
 		/// Achievements? For currency or upgrades?
 		/// Boss battles?
@@ -202,23 +203,25 @@ client.on('interactionCreate', async interaction => {
 			const row = new MessageActionRow().addComponents(new MessageButton().setCustomId('accept').setLabel('⚔️ Accept The Challenge').setStyle('SUCCESS'), new MessageButton().setCustomId('cancel').setLabel('❌ Cancel').setStyle('DANGER'));
 			await interaction.reply({ content: '<@' + global.waitingPlayerID + '> is looking for an opponent! Who will rise to the challenge?', components: [row] });
 			const filter = i => (i.customId === 'accept' || i.customId === 'cancel') && i.user.id !== global.waitingPlayerID;
-			global.collectorSave = interaction.channel.createMessageComponentCollector({ filter, time: 3600000 });
+			global.collectorSave = interaction.channel.createMessageComponentCollector({ filter, time: 840000 });
 			global.collectorSave.on('end', collected => { challengeEnd() });
 		}
-	} else if (interaction.customId === 'accept' && !global.collectorSave.ended && interaction.user.id !== global.waitingPlayerID && global.activePlayerID === '') {
-		console.log('Battle challenge started!');
-		restartTimeout(interaction);
-		global.interactionSave.deleteReply();
-		global.collectorSave.stop();
-		global.buttonClickedSave = true;
-		global.activePlayerID = interaction.member.id;
-		interaction.channel.send('<@' + global.activePlayerID + '> accepted <@' + global.waitingPlayerID + '>\'s battle challenge! Let us have a good, clean fight. Either of you can use `/endbattle` to end the battle or `/rules` to review the rules of battle at any time.\n\nOn your turn, please use an item command such as `/sword` to select a registered item to use. If you do not have any items registered, buy some in `c!shop` and use them in `c!inventory` first, or use a free action such as `/freeattack`.\n\n<@' + global.activePlayerID + '>, you are first!');
-	} else if (interaction.customId === 'cancel' && (interaction.user.id === global.waitingPlayerID || interaction.member.roles.cache.has('809284936669593600'))) {
-		global.interactionSave.deleteReply();
-		global.collectorSave.stop();
-		global.buttonClickedSave = true;
-		resetGameVars();
-		interaction.channel.send('<@' + interaction.user.id + '> cancelled the battle challenge.');
+	} else if (interaction.isButton()) {
+		if (interaction.customId === 'accept' && !global.collectorSave.ended && interaction.user.id !== global.waitingPlayerID && global.activePlayerID === '') {
+			console.log('Battle challenge started!');
+			restartTimeout(interaction);
+			global.interactionSave.deleteReply();
+			global.collectorSave.stop();
+			global.buttonClickedSave = true;
+			global.activePlayerID = interaction.member.id;
+			interaction.channel.send('<@' + global.activePlayerID + '> accepted <@' + global.waitingPlayerID + '>\'s battle challenge! Let us have a good, clean fight. Either of you can use `/endbattle` to end the battle or `/rules` to review the rules of battle at any time.\n\nOn your turn, please use an item command such as `/sword` to select a registered item to use. If you do not have any items registered, buy some in `c!shop` and use them in `c!inventory` first, or use a free action such as `/freeattack`.\n\n<@' + global.activePlayerID + '>, you are first!');
+		} else if (interaction.customId === 'cancel' && (interaction.user.id === global.waitingPlayerID || interaction.member.roles.cache.has('809284936669593600'))) {
+			global.interactionSave.deleteReply();
+			global.collectorSave.stop();
+			global.buttonClickedSave = true;
+			resetGameVars();
+			interaction.channel.send('<@' + interaction.user.id + '> cancelled the battle challenge.');
+		}
 
 
 
