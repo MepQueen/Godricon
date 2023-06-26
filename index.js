@@ -1,5 +1,5 @@
 // @ts-check
-const { Client, Events, GatewayIntentBits, ActivityType, MessageActionRow, MessageButton, MessageEmbed, SlashCommandBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, DiscordAPIError } = require('discord.js');
+const { Client, Events, GatewayIntentBits, ActivityType, ButtonBuilder, ButtonStyle, ActionRowBuilder, EmbedBuilder, SlashCommandBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, DiscordAPIError, GuildMemberRoleManager } = require('discord.js');
 const { token } = require('./config.json');
 
 global.interval = null;
@@ -83,7 +83,7 @@ client.on('interactionCreate', async interaction => {
 			playerScores.push(score);
 		});
 		
-		var embed = new MessageEmbed().setTitle('Battle Leaderboard');
+		var embed = new EmbedBuilder().setTitle('Battle Leaderboard');
 		var finalOrder = [];
 		var stamps = ['🥉', '🥈', '🥇'];
 
@@ -105,14 +105,14 @@ client.on('interactionCreate', async interaction => {
 		}
 
 		var finalString = finalOrder.join('\n\n');
-		embed.setColor('1e792c').addField('\u200B', finalString);
+		embed.setColor(0x1E792C).addFields({ name: '\u200B', value: finalString });
 		await interaction.reply({ embeds: [embed], ephemeral: true });
 
 	} else if (commandName === 'battlemode') {
 		await interaction.reply({ content: 'Nothing yet...'});
 
 	} else if (commandName === 'patchnotes') {
-		await interaction.reply({ content: '**__Recent Patches__**\n\n**6/19/23**\n- A text bug in the bow and Magistone confirmation messages was fixed.\n- Godricon is now running on sweet, sweet, completely redesigned Discord.js version 14. Prepare for bugs.\n- I have conquered my fear of source control. Godricon has made it onto Github.\n\n**2/11/23**\n- All three free actions finally exist, so those new to battling can still participate.\n\n**2/6/22**\n- More small text edits, as usual.\n- The leaderboard display is more vertical to work better on mobile.\n\n**2/2/22**\n- Rules about shields and rounds are now on the second page of the rules, `/rules2`, and `/arkaetrerules` was renamed to `/rules3`.\n- The chance a shield will break is now dependent on how much damage is dealt to it. Every damage point in the final value of an attack increases the chance by 17%, and an attack that deals at least six damage is guaranteed to break a shield.\n- Overtime has been replaced by a four-round system where negative effects increase every 25 turns, with another hourglass icon added to the turn counter for each round.\n- At 100 turns, a battle will end in a tie.\n- Extra turns are now displayed with symbols to the right of players\' stat headers.\n- The rule reminder at the end of battle embeds is gone.\n- The pocketwatch removes any saved up extra turns when used, stops the turn counter while active, and shows a frozen icon after the turn counter instead of a picture above the action text.\n- The hydra will now gradually lower the maximum number of health points while active by 1 health per 2 counted turns, and instead of it blocking both arkaetre slots, you can use the `/arkaetre` command again to reset the health cap and all active arkaetres.\n- The second number in the HP stat is now the health cap instead of your starting health.\n- The challenge timeout length is now an hour.\n- The owl\'s extra turn chance is now 66%.\n\n**2/1/22**\n- `/toggle` exists so I can block off battles when I need to. Commands not related to battling like `/leaderboard` stay up.\n- There\'s no more daily point limit. Go crazy, if that\'s your thing.', ephemeral: true });
+		await interaction.reply({ content: '**__Recent Patches__**\n\n**6/25/23**\n- Apparently critical hits and heals were not actually working. Now they are.\n\n**6/19/23**\n- A text bug in the bow and Magistone confirmation messages was fixed.\n- Godricon is now running on sweet, sweet, completely redesigned Discord.js version 14. Prepare for bugs.\n- I have conquered my fear of source control. Godricon has made it onto Github.\n\n**2/11/23**\n- All three free actions finally exist, so those new to battling can still participate.\n\n**2/6/22**\n- More small text edits, as usual.\n- The leaderboard display is more vertical to work better on mobile.\n\n**2/2/22**\n- Rules about shields and rounds are now on the second page of the rules, `/rules2`, and `/arkaetrerules` was renamed to `/rules3`.\n- The chance a shield will break is now dependent on how much damage is dealt to it. Every damage point in the final value of an attack increases the chance by 17%, and an attack that deals at least six damage is guaranteed to break a shield.\n- Overtime has been replaced by a four-round system where negative effects increase every 25 turns, with another hourglass icon added to the turn counter for each round.\n- At 100 turns, a battle will end in a tie.\n- Extra turns are now displayed with symbols to the right of players\' stat headers.\n- The rule reminder at the end of battle embeds is gone.\n- The pocketwatch removes any saved up extra turns when used, stops the turn counter while active, and shows a frozen icon after the turn counter instead of a picture above the action text.\n- The hydra will now gradually lower the maximum number of health points while active by 1 health per 2 counted turns, and instead of it blocking both arkaetre slots, you can use the `/arkaetre` command again to reset the health cap and all active arkaetres.\n- The second number in the HP stat is now the health cap instead of your starting health.\n- The challenge timeout length is now an hour.\n- The owl\'s extra turn chance is now 66%.\n\n**2/1/22**\n- `/toggle` exists so I can block off battles when I need to. Commands not related to battling like `/leaderboard` stay up.\n- There\'s no more daily point limit. Go crazy, if that\'s your thing.', ephemeral: true });
 
 		/// Hydra works based on turns after hydra activated
 		/// Case for both having hydra?
@@ -157,28 +157,28 @@ client.on('interactionCreate', async interaction => {
 				}
 			}
 		} else {
-			await interaction.reply({ content: 'Only Maja can use this command.', ephemeral: true });
+			await interaction.reply({ content: 'Only an admin can use this command.', ephemeral: true });
 		}
-	} else if (interaction.guild.members.cache.get('892970512177831966').roles.cache.has('938345970062753794') && activePlayerID !== '354752678376636417' && waitingPlayerID !== '354752678376636417' && interaction.user.id !== '354752678376636417') {
+	} else if (interaction.guild.members.cache.get('892970512177831966').roles.cache.has('938345970062753794') && global.activePlayerID !== '354752678376636417' && global.waitingPlayerID !== '354752678376636417' && interaction.user.id !== '354752678376636417') {
 		await interaction.reply('I am down for maintenance. Please try again later! :)');
 	
 
 
 
-	} else if (commandName === 'battle') {
+	} else if (interaction.isCommand() && commandName === 'battle') {
 		if (!(global.activePlayerID === '')) {
 			await interaction.reply({ content: 'A battle is already in progress. If you are a Councilor or currently battling, type `/endbattle` to end the current battle.', ephemeral: true });
-		} else if (interaction.options.getUser('opponent').id === interaction.user.id) {
+		} else if (interaction.options.getUser('opponent')?.id === interaction.user.id) {
 			await interaction.reply({ content: 'You cannot battle yourself, silly mortal. I recommend <#793609738184163358> if you want to talk about it, though.', ephemeral: true });
-		} else if (interaction.options.getUser('opponent').id === '892970512177831966') {
+		} else if (interaction.options.getUser('opponent')?.id === '892970512177831966') {
 			await interaction.reply({ content: 'Excuse me, mortal, you wish to battle me? Fine. Ready?\n\nHa, and I reign victorious once more! You did not see me win? Well, I suppose you should not have blinked.', ephemeral: true });
-		} else if (interaction.options.getUser('opponent').bot === true) {
+		} else if (interaction.options.getUser('opponent')?.bot === true) {
 			await interaction.reply({ content: 'You cannot battle a vaya. We cannot hold swords, you know. Very unfortunate.', ephemeral: true });
 		} else {
 			console.log('Battle started!');
 			restartTimeout(interaction);
 			resetGameVars();
-			global.activePlayerID = interaction.options.getUser('opponent').id;
+			global.activePlayerID = interaction.options.getUser('opponent')?.id;
 			global.waitingPlayerID = interaction.user.id;
 			await interaction.reply('<@' + global.waitingPlayerID + '> started a battle against <@' + global.activePlayerID + '>! Let us have a good, clean fight. Either of you can use `/endbattle` to end the battle or `/rules` to review the rules of battle at any time.\n\nOn your turn, please use an item command such as `/sword` to select a registered item to use. If you do not have any items registered, buy some in `c!shop` and use them in `c!inventory` first, or use a free action such as `/freeattack`.\n\n<@' + global.activePlayerID + '>, you are first!');
 			global.challengeOverride = true;
@@ -200,7 +200,7 @@ client.on('interactionCreate', async interaction => {
 			global.waitingPlayerID = interaction.user.id;
 			global.buttonClickedSave = false;
 			global.interactionSave = interaction;
-			const row = new MessageActionRow().addComponents(new MessageButton().setCustomId('accept').setLabel('⚔️ Accept The Challenge').setStyle('SUCCESS'), new MessageButton().setCustomId('cancel').setLabel('❌ Cancel').setStyle('DANGER'));
+			const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('accept').setLabel('⚔️ Accept The Challenge').setStyle(ButtonStyle.Success), new ButtonBuilder().setCustomId('cancel').setLabel('❌ Cancel').setStyle(ButtonStyle.Danger));
 			await interaction.reply({ content: '<@' + global.waitingPlayerID + '> is looking for an opponent! Who will rise to the challenge?', components: [row] });
 			const filter = i => (i.customId === 'accept' || i.customId === 'cancel') && i.user.id !== global.waitingPlayerID;
 			global.collectorSave = interaction.channel.createMessageComponentCollector({ filter, time: 840000 });
@@ -213,9 +213,9 @@ client.on('interactionCreate', async interaction => {
 			global.interactionSave.deleteReply();
 			global.collectorSave.stop();
 			global.buttonClickedSave = true;
-			global.activePlayerID = interaction.member.id;
+			global.activePlayerID = interaction.member.user.id;
 			interaction.channel.send('<@' + global.activePlayerID + '> accepted <@' + global.waitingPlayerID + '>\'s battle challenge! Let us have a good, clean fight. Either of you can use `/endbattle` to end the battle or `/rules` to review the rules of battle at any time.\n\nOn your turn, please use an item command such as `/sword` to select a registered item to use. If you do not have any items registered, buy some in `c!shop` and use them in `c!inventory` first, or use a free action such as `/freeattack`.\n\n<@' + global.activePlayerID + '>, you are first!');
-		} else if (interaction.customId === 'cancel' && (interaction.user.id === global.waitingPlayerID || interaction.member.roles.cache.has('809284936669593600'))) {
+		} else if (interaction.customId === 'cancel' && (interaction.user.id === global.waitingPlayerID || (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('809284936669593600')))) {
 			global.interactionSave.deleteReply();
 			global.collectorSave.stop();
 			global.buttonClickedSave = true;
@@ -228,7 +228,7 @@ client.on('interactionCreate', async interaction => {
 	} else if (commandName === 'endbattle') {
 		if (global.activePlayerID === '') {
 			await interaction.reply({ content: 'There is no battle in progress.', ephemeral: true });
-		} else if (interaction.user.id === global.activePlayerID || interaction.user.id === global.waitingPlayerID || interaction.member.roles.cache.has('809284936669593600')) {
+		} else if (interaction.user.id === global.activePlayerID || interaction.user.id === global.waitingPlayerID || (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('809284936669593600'))) {
 			if (global.itemProcessing) {
 				await interaction.reply({ content: 'Please cancel the current item prompt or wait for it to time out before ending the battle.', ephemeral: true });
 			} else {
@@ -249,7 +249,7 @@ client.on('interactionCreate', async interaction => {
 		} else if (interaction.user.id === global.activePlayerID && !global.itemProcessing) {
 			global.itemProcessing = true;
 			restartTimeout(interaction);
-			const row = new MessageActionRow().addComponents(new MessageButton().setCustomId('yes').setLabel('✔️ Yes').setStyle('SUCCESS'),new MessageButton().setCustomId('no').setLabel('❌ No').setStyle('DANGER'),);
+			const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('yes').setLabel('✔️ Yes').setStyle(ButtonStyle.Success),new ButtonBuilder().setCustomId('no').setLabel('❌ No').setStyle(ButtonStyle.Danger));
 			await interaction.reply({ content: '🤜 **Attack**:  1-2 Enemy Damage, 5% chance of instakill\n\nUse this free action?', components: [row] });
 			const filter = i => (i.customId === 'yes' || i.customId === 'no') && i.user.id === global.activePlayerID;
 			const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 });
@@ -287,7 +287,7 @@ client.on('interactionCreate', async interaction => {
 					wyrmCheck('A');
 					endTurn(interaction, 'attack', action);
 				} else if (i.customId === 'no') {
-					interaction.channel.send({ content: 'Please select another item.', ephemeral: true });
+					interaction.channel.send('Please select another item.');
 					global.itemProcessing = false;
 				}
 				interaction.deleteReply();
@@ -310,7 +310,7 @@ client.on('interactionCreate', async interaction => {
 			global.itemProcessing = true;
 			restartTimeout(interaction);
 			var formationChance = global.round === 4 ? 20 : 40;
-			const row = new MessageActionRow().addComponents(new MessageButton().setCustomId('yes').setLabel('✔️ Yes').setStyle('SUCCESS'),new MessageButton().setCustomId('no').setLabel('❌ No').setStyle('DANGER'),);
+			const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('yes').setLabel('✔️ Yes').setStyle(ButtonStyle.Success),new ButtonBuilder().setCustomId('no').setLabel('❌ No').setStyle(ButtonStyle.Danger));
 			await interaction.reply({ content: '✋ **Defend**:  1-2 Personal Health, ' + formationChance + '% chance of shield\n\nUse this free action?', components: [row] });
 			const filter = i => (i.customId === 'yes' || i.customId === 'no') && i.user.id === global.activePlayerID;
 			const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 });
@@ -347,7 +347,7 @@ client.on('interactionCreate', async interaction => {
 					wyrmCheck('B');
 					endTurn(interaction, 'defend', action);
 				} else if (i.customId === 'no') {
-					interaction.channel.send({ content: 'Please select another item.', ephemeral: true });
+					interaction.channel.send('Please select another item.');
 					global.itemProcessing = false;
 				}
 				interaction.deleteReply();
@@ -369,7 +369,7 @@ client.on('interactionCreate', async interaction => {
 		} else if (interaction.user.id === global.activePlayerID && !global.itemProcessing) {
 			global.itemProcessing = true;
 			restartTimeout(interaction);
-			const row = new MessageActionRow().addComponents(new MessageButton().setCustomId('yes').setLabel('✔️ Yes').setStyle('SUCCESS'),new MessageButton().setCustomId('no').setLabel('❌ No').setStyle('DANGER'),);
+			const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('yes').setLabel('✔️ Yes').setStyle(ButtonStyle.Success), new ButtonBuilder().setCustomId('no').setLabel('❌ No').setStyle(ButtonStyle.Danger));
 			await interaction.reply({ content: '💪 **Boost**:  ↑ Personal Attack or Defense or Recovery or ↓ Enemy Attack or Defense or Recovery, 33% chance of 2x effect\n\nUse this free action?', components: [row] });
 			const filter = i => (i.customId === 'yes' || i.customId === 'no') && i.user.id === global.activePlayerID;
 			const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 });
@@ -438,7 +438,7 @@ client.on('interactionCreate', async interaction => {
 					wyrmCheck('C');
 					endTurn(interaction, 'boost', action);
 				} else if (i.customId === 'no') {
-					interaction.channel.send({ content: 'Please select another item.', ephemeral: true });
+					interaction.channel.send('Please select another item.');
 					global.itemProcessing = false;
 				}
 				interaction.deleteReply();
@@ -459,9 +459,9 @@ client.on('interactionCreate', async interaction => {
 			await interaction.reply({ content: 'There is no battle in progress.', ephemeral: true });
 		} else if (interaction.user.id === global.activePlayerID) {
 			restartTimeout(interaction);
-			if (interaction.member.roles.cache.has('892611697876033638') && !global.itemProcessing) {
+			if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('892611697876033638') && !global.itemProcessing) {
 				global.itemProcessing = true;
-				const row = new MessageActionRow().addComponents(new MessageButton().setCustomId('yes').setLabel('✔️ Yes').setStyle('SUCCESS'),new MessageButton().setCustomId('no').setLabel('❌ No').setStyle('DANGER'),);
+				const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('yes').setLabel('✔️ Yes').setStyle(ButtonStyle.Success),new ButtonBuilder().setCustomId('no').setLabel('❌ No').setStyle(ButtonStyle.Danger));
 				await interaction.reply({ content: '<:itemSword:793212847584313364> **Sword**:  1-3 Enemy Damage, ↑ Personal Attack\n\nUse this item?', components: [row] });
 				const filter = i => (i.customId === 'yes' || i.customId === 'no') && i.user.id === global.activePlayerID;
 				const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 });
@@ -491,7 +491,7 @@ client.on('interactionCreate', async interaction => {
 						wyrmCheck('D');
 						endTurn(interaction, 'use your Sword', action);
 					} else if (i.customId === 'no') {
-						interaction.channel.send({ content: 'Please select another item.', ephemeral: true });
+						interaction.channel.send('Please select another item.');
 						global.itemProcessing = false;
 					}
 					interaction.deleteReply();
@@ -515,9 +515,9 @@ client.on('interactionCreate', async interaction => {
 			await interaction.reply({ content: 'There is no battle in progress.', ephemeral: true });
 		} else if (interaction.user.id === global.activePlayerID) {
 			restartTimeout(interaction);
-			if (interaction.member.roles.cache.has('892528958460002346') && !global.itemProcessing) {
+			if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('892528958460002346') && !global.itemProcessing) {
 				global.itemProcessing = true;
-				const row = new MessageActionRow().addComponents(new MessageButton().setCustomId('yes').setLabel('✔️ Yes').setStyle('SUCCESS'),new MessageButton().setCustomId('no').setLabel('❌ No').setStyle('DANGER'),);
+				const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('yes').setLabel('✔️ Yes').setStyle(ButtonStyle.Success),new ButtonBuilder().setCustomId('no').setLabel('❌ No').setStyle(ButtonStyle.Danger));
 				await interaction.reply({ content: '<:itemBow:793230409734291506> **Bow**:  2-4 Enemy Damage, 50% chance of 1 Personal Damage\n\nUse this item?', components: [row] });
 				const filter = i => (i.customId === 'yes' || i.customId === 'no') && i.user.id === global.activePlayerID;
 				const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 });
@@ -549,7 +549,7 @@ client.on('interactionCreate', async interaction => {
 						wyrmCheck('E');
 						endTurn(interaction, 'use your Bow', action);
 					} else if (i.customId === 'no') {
-						interaction.channel.send({ content: 'Please select another item.', ephemeral: true });
+						interaction.channel.send('Please select another item.');
 						global.itemProcessing = false;
 					}
 					interaction.deleteReply();
@@ -573,9 +573,9 @@ client.on('interactionCreate', async interaction => {
 			await interaction.reply({ content: 'There is no battle in progress.', ephemeral: true });
 		} else if (interaction.user.id === global.activePlayerID) {
 			restartTimeout(interaction);
-			if (interaction.member.roles.cache.has('892574599596871720') && !global.itemProcessing) {
+			if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('892574599596871720') && !global.itemProcessing) {
 				global.itemProcessing = true;
-				const row = new MessageActionRow().addComponents(new MessageButton().setCustomId('yes').setLabel('✔️ Yes').setStyle('SUCCESS'),new MessageButton().setCustomId('no').setLabel('❌ No').setStyle('DANGER'),);
+				const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('yes').setLabel('✔️ Yes').setStyle(ButtonStyle.Success),new ButtonBuilder().setCustomId('no').setLabel('❌ No').setStyle(ButtonStyle.Danger));
 				await interaction.reply({ content: '<:itemRealmPortal:769819664096034846> **Realm Portal**:  0-2 Enemy Damage or 1 Personal Health, 50% chance of extra turn\n\nUse this item?', components: [row] });
 				const filter = i => (i.customId === 'yes' || i.customId === 'no') && i.user.id === global.activePlayerID;
 				const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 });
@@ -626,7 +626,7 @@ client.on('interactionCreate', async interaction => {
 						wyrmCheck('F');
 						endTurn(interaction, 'use your Realm Portal', action);
 					} else if (i.customId === 'no') {
-						interaction.channel.send({ content: 'Please select another item.', ephemeral: true });
+						interaction.channel.send('Please select another item.');
 						global.itemProcessing = false;
 					}
 					interaction.deleteReply();
@@ -649,9 +649,9 @@ client.on('interactionCreate', async interaction => {
 			await interaction.reply({ content: 'There is no battle in progress.', ephemeral: true });
 		} else if (interaction.user.id === global.activePlayerID) {
 			restartTimeout(interaction);
-			if (interaction.member.roles.cache.has('892572308219244606') && !global.itemProcessing) {
+			if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('892572308219244606') && !global.itemProcessing) {
 				global.itemProcessing = true;
-				const row = new MessageActionRow().addComponents(new MessageButton().setCustomId('yes').setLabel('✔️ Yes').setStyle('SUCCESS'),new MessageButton().setCustomId('no').setLabel('❌ No').setStyle('DANGER'),);
+				const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('yes').setLabel('✔️ Yes').setStyle(ButtonStyle.Success),new ButtonBuilder().setCustomId('no').setLabel('❌ No').setStyle(ButtonStyle.Danger));
 				await interaction.reply({ content: '<:itemMagistone:793215911599407124> **Magistone**:  1 Enemy Damage or 0-4 Personal Health, ↑ Personal Defense or Recovery\n\nUse this item?', components: [row] });
 				const filter = i => (i.customId === 'yes' || i.customId === 'no') && i.user.id === global.activePlayerID;
 				const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 });
@@ -692,7 +692,7 @@ client.on('interactionCreate', async interaction => {
 						wyrmCheck('G');
 						endTurn(interaction, 'use your Magistone', action);
 					} else if (i.customId === 'no') {
-						interaction.channel.send({ content: 'Please select another item.', ephemeral: true });
+						interaction.channel.send('Please select another item.');
 						global.itemProcessing = false;
 					}
 					interaction.deleteReply();
@@ -716,9 +716,9 @@ client.on('interactionCreate', async interaction => {
 			await interaction.reply({ content: 'There is no battle in progress.', ephemeral: true });
 		} else if (interaction.user.id === global.activePlayerID) {
 			restartTimeout(interaction);
-			if (interaction.member.roles.cache.has('892530203581120562') && !global.itemProcessing) {
+			if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('892530203581120562') && !global.itemProcessing) {
 				global.itemProcessing = true;
-				const row = new MessageActionRow().addComponents(new MessageButton().setCustomId('yes').setLabel('✔️ Yes').setStyle('SUCCESS'),new MessageButton().setCustomId('no').setLabel('❌ No').setStyle('DANGER'),);
+				const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('yes').setLabel('✔️ Yes').setStyle(ButtonStyle.Success),new ButtonBuilder().setCustomId('no').setLabel('❌ No').setStyle(ButtonStyle.Danger));
 				await interaction.reply({ content: '<:itemDagger:838670346856431677> **Dagger**:  2 Enemy Damage, ↑ Personal Attack or Defense or Recovery\n\nUse this item?', components: [row] });
 				const filter = i => (i.customId === 'yes' || i.customId === 'no') && i.user.id === global.activePlayerID;
 				const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 });
@@ -752,7 +752,7 @@ client.on('interactionCreate', async interaction => {
 						hummingbirdCheck();
 						endTurn(interaction, 'use your Dagger', action);
 					} else if (i.customId === 'no') {
-						interaction.channel.send({ content: 'Please select another item.', ephemeral: true });
+						interaction.channel.send('Please select another item.');
 						global.itemProcessing = false;
 					}
 					interaction.deleteReply();
@@ -776,9 +776,9 @@ client.on('interactionCreate', async interaction => {
 			await interaction.reply({ content: 'There is no battle in progress.', ephemeral: true });
 		} else if (interaction.user.id === global.activePlayerID) {
 			restartTimeout(interaction);
-			if (interaction.member.roles.cache.has('892530356606091316') && !global.itemProcessing) {
+			if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('892530356606091316') && !global.itemProcessing) {
 				global.itemProcessing = true;
-				const row = new MessageActionRow().addComponents(new MessageButton().setCustomId('yes').setLabel('✔️ Yes').setStyle('SUCCESS'),new MessageButton().setCustomId('no').setLabel('❌ No').setStyle('DANGER'),);
+				const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('yes').setLabel('✔️ Yes').setStyle(ButtonStyle.Success),new ButtonBuilder().setCustomId('no').setLabel('❌ No').setStyle(ButtonStyle.Danger));
 				await interaction.reply({ content: '<:itemFrozenFish:838670349137870858> **Frozen Fish**:  1-4 Enemy Damage or 1-2 Enemy Health, ↓ Enemy Attack or Defense\n\nUse this item?', components: [row] });
 				const filter = i => (i.customId === 'yes' || i.customId === 'no') && i.user.id === global.activePlayerID;
 				const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 });
@@ -820,7 +820,7 @@ client.on('interactionCreate', async interaction => {
 						wyrmCheck('I');
 						endTurn(interaction, 'use your Frozen Fish', action);
 					} else if (i.customId === 'no') {
-						interaction.channel.send({ content: 'Please select another item.', ephemeral: true });
+						interaction.channel.send('Please select another item.');
 						global.itemProcessing = false;
 					}
 					interaction.deleteReply();
@@ -844,9 +844,9 @@ client.on('interactionCreate', async interaction => {
 			await interaction.reply({ content: 'There is no battle in progress.', ephemeral: true });
 		} else if (interaction.user.id === global.activePlayerID) {
 			restartTimeout(interaction);
-			if (interaction.member.roles.cache.has('892530366894723103') && !global.itemProcessing) {
+			if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('892530366894723103') && !global.itemProcessing) {
 				global.itemProcessing = true;
-				const row = new MessageActionRow().addComponents(new MessageButton().setCustomId('yes').setLabel('✔️ Yes').setStyle('SUCCESS'),new MessageButton().setCustomId('no').setLabel('❌ No').setStyle('DANGER'),);
+				const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('yes').setLabel('✔️ Yes').setStyle(ButtonStyle.Success),new ButtonBuilder().setCustomId('no').setLabel('❌ No').setStyle(ButtonStyle.Danger));
 				await interaction.reply({ content: '<:itemLaserRifle:903038791562981397> **Laser Rifle**:  3x 0-2 Enemy Damage, ↓ Enemy Recovery, 50% chance of lost turn\n\nUse this item?', components: [row] });
 				const filter = i => (i.customId === 'yes' || i.customId === 'no') && i.user.id === global.activePlayerID;
 				const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 });
@@ -856,7 +856,7 @@ client.on('interactionCreate', async interaction => {
 					if (i.customId === 'yes') {
 						var action = '';
 						var roll = random(0, 2) + random(0, 2) + random(0, 2);
-						var amount = 0;
+						var amount = '';
 						if (roll > 0) {
 							amount = damage('waiting', roll);
 						}
@@ -896,7 +896,7 @@ client.on('interactionCreate', async interaction => {
 						wyrmCheck('J');
 						endTurn(interaction, 'use your Laser Rifle', action);
 					} else if (i.customId === 'no') {
-						interaction.channel.send({ content: 'Please select another item.', ephemeral: true });
+						interaction.channel.send('Please select another item.');
 						global.itemProcessing = false;
 					}
 					interaction.deleteReply();
@@ -920,9 +920,9 @@ client.on('interactionCreate', async interaction => {
 			await interaction.reply({ content: 'There is no battle in progress.', ephemeral: true });
 		} else if (interaction.user.id === global.activePlayerID) {
 			restartTimeout(interaction);
-			if (interaction.member.roles.cache.has('892530364369764412') && !global.itemProcessing) {
+			if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('892530364369764412') && !global.itemProcessing) {
 				global.itemProcessing = true;
-				const row = new MessageActionRow().addComponents(new MessageButton().setCustomId('yes').setLabel('✔️ Yes').setStyle('SUCCESS'),new MessageButton().setCustomId('no').setLabel('❌ No').setStyle('DANGER'),);
+				const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('yes').setLabel('✔️ Yes').setStyle(ButtonStyle.Success),new ButtonBuilder().setCustomId('no').setLabel('❌ No').setStyle(ButtonStyle.Danger));
 				await interaction.reply({ content: '<:itemStaff:903038551682338836> **Staff**:  66% chance of 5-6 Enemy Damage, ↓ 2 of Personal Attack or Defense or Recovery on hit\n\nUse this item?', components: [row] });
 				const filter = i => (i.customId === 'yes' || i.customId === 'no') && i.user.id === global.activePlayerID;
 				const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 });
@@ -976,7 +976,7 @@ client.on('interactionCreate', async interaction => {
 						wyrmCheck('K');
 						endTurn(interaction, 'use your Staff', action);
 					} else if (i.customId === 'no') {
-						interaction.channel.send({ content: 'Please select another item.', ephemeral: true });
+						interaction.channel.send('Please select another item.');
 						global.itemProcessing = false;
 					}
 					interaction.deleteReply();
@@ -1000,10 +1000,10 @@ client.on('interactionCreate', async interaction => {
 			await interaction.reply({ content: 'There is no battle in progress.', ephemeral: true });
 		} else if (interaction.user.id === global.activePlayerID) {
 			restartTimeout(interaction);
-			if (interaction.member.roles.cache.has('902364365263605810') && global.activePlayerShieldStatus === 'Down' && !global.itemProcessing) {
+			if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('902364365263605810') && global.activePlayerShieldStatus === 'Down' && !global.itemProcessing) {
 				global.itemProcessing = true;
 				var formationChance = 100 - (global.round * 20);
-				const row = new MessageActionRow().addComponents(new MessageButton().setCustomId('yes').setLabel('✔️ Yes').setStyle('SUCCESS'),new MessageButton().setCustomId('no').setLabel('❌ No').setStyle('DANGER'),);
+				const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('yes').setLabel('✔️ Yes').setStyle(ButtonStyle.Success),new ButtonBuilder().setCustomId('no').setLabel('❌ No').setStyle(ButtonStyle.Danger));
 				await interaction.reply({ content: '<:itemShield:903038554127601694> **Shield**:  ' + formationChance + '% chance of shield\n\nUse this item?', components: [row] });
 				/// EDIT IN TATSU!
 				const filter = i => (i.customId === 'yes' || i.customId === 'no') && i.user.id === global.activePlayerID;
@@ -1035,7 +1035,7 @@ client.on('interactionCreate', async interaction => {
 						wyrmCheck('L');
 						endTurn(interaction, 'use your Shield', action);
 					} else if (i.customId === 'no') {
-						interaction.channel.send({ content: 'Please select another item.', ephemeral: true });
+						interaction.channel.send('Please select another item.');
 						global.itemProcessing = false;
 					}
 					interaction.deleteReply();
@@ -1061,9 +1061,9 @@ client.on('interactionCreate', async interaction => {
 			await interaction.reply({ content: 'There is no battle in progress.', ephemeral: true });
 		} else if (interaction.user.id === global.activePlayerID) {
 			restartTimeout(interaction);
-			if (interaction.member.roles.cache.has('892530361370837022') && !global.itemProcessing) {
+			if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('892530361370837022') && !global.itemProcessing) {
 				global.itemProcessing = true;
-				const row = new MessageActionRow().addComponents(new MessageButton().setCustomId('yes').setLabel('✔️ Yes').setStyle('SUCCESS'),new MessageButton().setCustomId('no').setLabel('❌ No').setStyle('DANGER'),);
+				const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('yes').setLabel('✔️ Yes').setStyle(ButtonStyle.Success),new ButtonBuilder().setCustomId('no').setLabel('❌ No').setStyle(ButtonStyle.Danger));
 				await interaction.reply({ content: '<:itemShifterDisc:903038892121407568> **Shifter Disc**:  3 Personal Damage or lose turn, ↑ Personal Attack and Defense and Recovery\n\nUse this item?', components: [row] });
 				const filter = i => (i.customId === 'yes' || i.customId === 'no') && i.user.id === global.activePlayerID;
 				const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 });
@@ -1098,7 +1098,7 @@ client.on('interactionCreate', async interaction => {
 						wyrmCheck('M');
 						endTurn(interaction, 'use your Shifter Disc', action);
 					} else if (i.customId === 'no') {
-						interaction.channel.send({ content: 'Please select another item.', ephemeral: true });
+						interaction.channel.send('Please select another item.');
 						global.itemProcessing = false;
 					}
 					interaction.deleteReply();
@@ -1122,9 +1122,9 @@ client.on('interactionCreate', async interaction => {
 			await interaction.reply({ content: 'There is no battle in progress.', ephemeral: true });
 		} else if (interaction.user.id === global.activePlayerID) {
 			restartTimeout(interaction);
-			if (interaction.member.roles.cache.has('892530369641971783') && !global.itemProcessing) {
+			if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('892530369641971783') && !global.itemProcessing) {
 				global.itemProcessing = true;
-				const row = new MessageActionRow().addComponents(new MessageButton().setCustomId('yes').setLabel('✔️ Yes').setStyle('SUCCESS'),new MessageButton().setCustomId('no').setLabel('❌ No').setStyle('DANGER'),);
+				const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('yes').setLabel('✔️ Yes').setStyle(ButtonStyle.Success),new ButtonBuilder().setCustomId('no').setLabel('❌ No').setStyle(ButtonStyle.Danger));
 				await interaction.reply({ content: '<:itemPocketwatch:903038555633385512> **Pocketwatch**:  2 Personal Health, ↓ Enemy Attack or Defense or Recovery, no extra or lost turns for either player for 3 turns, freeze the turn counter for 3 turns\n\nUse this item?', components: [row] });
 				const filter = i => (i.customId === 'yes' || i.customId === 'no') && i.user.id === global.activePlayerID;
 				const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 });
@@ -1159,7 +1159,7 @@ client.on('interactionCreate', async interaction => {
 						wyrmCheck('N');
 						endTurn(interaction, 'use your Pocketwatch', action);
 					} else if (i.customId === 'no') {
-						interaction.channel.send({ content: 'Please select another item.', ephemeral: true });
+						interaction.channel.send('Please select another item.');
 						global.itemProcessing = false;
 					}
 					interaction.deleteReply();
@@ -1183,9 +1183,9 @@ client.on('interactionCreate', async interaction => {
 			await interaction.reply({ content: 'There is no battle in progress.', ephemeral: true });
 		} else if (interaction.user.id === global.activePlayerID) {
 			restartTimeout(interaction);
-			if (interaction.member.roles.cache.has('902364301522792448') && (global.activePlayerArkaetre === '' || global.activePlayerArkaetre === 'Kludde' || global.activePlayerArkaetre === 'Hydra') && !global.itemProcessing) {
+			if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('902364301522792448') && (global.activePlayerArkaetre === '' || global.activePlayerArkaetre === 'Kludde' || global.activePlayerArkaetre === 'Hydra') && !global.itemProcessing) {
 				global.itemProcessing = true;
-				const row = new MessageActionRow().addComponents(new MessageButton().setCustomId('yes').setLabel('✔️ Yes').setStyle('SUCCESS'),new MessageButton().setCustomId('no').setLabel('❌ No').setStyle('DANGER'),);
+				const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('yes').setLabel('✔️ Yes').setStyle(ButtonStyle.Success),new ButtonBuilder().setCustomId('no').setLabel('❌ No').setStyle(ButtonStyle.Danger));
 				var text = '<:itemArkaetre:903038551095128064> **Arkaetre**:  Gain a permanent random arkaetre ability\n\nUse this item?';
 				if (global.activePlayerArkaetre === 'Kludde') {
 					text = '🐺 **Arkaetre**:  Add a kludde to your pack\n\nUse this item?';
@@ -1289,7 +1289,7 @@ client.on('interactionCreate', async interaction => {
 						}
 						endTurn(interaction, 'use your Arkaetre', action);
 					} else if (i.customId === 'no') {
-						interaction.channel.send({ content: 'Please select another item.', ephemeral: true });
+						interaction.channel.send('Please select another item.');
 						global.itemProcessing = false;
 					}
 					interaction.deleteReply();
@@ -1299,7 +1299,7 @@ client.on('interactionCreate', async interaction => {
 				collector.on('end', collected => { if (!buttonClicked) { timeoutItem(interaction) } });
 			} else if (global.itemProcessing) {
 				await interaction.reply({ content: 'An item prompt is already displayed. Please use the selected item or cancel it and select another item.', ephemeral: true });
-			} else if (interaction.member.roles.cache.has('902364301522792448')) {
+			} else if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('902364301522792448')) {
 				await interaction.reply({ content: 'You cannot override your current arkaetre. Please select another item.', ephemeral: true });
 			} else {
 				await interaction.reply({ content: 'You do not have the **Arkaetre** item registered. Please buy it in `c!shop` and use it in `c!inventory` to register it first, use another registered item, or use a free action such as `/freeattack`.', ephemeral: true });
@@ -1313,11 +1313,11 @@ client.on('interactionCreate', async interaction => {
 	} else if (commandName === 'adminkill') {
 		if (global.activePlayerID === '') {
 			await interaction.reply({ content: 'There is no battle in progress.', ephemeral: true });
-		} else if (activePlayerID === '354752678376636417' || waitingPlayerID === '354752678376636417') {
-			waitingPlayerHP = 0;
+		} else if (global.activePlayerID === '354752678376636417' || global.waitingPlayerID === '354752678376636417') {
+			global.waitingPlayerHP = 0;
 			endTurn(interaction, 'use your admin superiority', 'They dead.');
 		} else {
-			await interaction.reply({ content: 'Only Maja can use this command.', ephemeral: true });
+			await interaction.reply({ content: 'Only an admin can use this command.', ephemeral: true });
 		}
 	}
 
@@ -1741,11 +1741,11 @@ function endTurn(interaction, item, action) {
 		if (global.actionType === 'Attack') {
 			criticalMessage = '\n\n' + tag + ' Hit! You deal 1 more point of damage.';
 			if (global.waitingPlayerShieldStatus === 'Down' || global.waitingPlayerShieldStatus === 'Fell') {
-				waitingPlayerHP--;
+				global.waitingPlayerHP--;
 			}
 		} else if (global.actionType === 'Heal') {
 			criticalMessage = '\n\n' + tag + ' Heal! You gain 1 more point of health.';
-			activePlayerHP++;
+			global.activePlayerHP++;
 		}
 	}
 
@@ -1949,14 +1949,14 @@ function endTurn(interaction, item, action) {
 	var waitingPlayerDFLockIcon = global.waitingPlayerArkaetre === 'Dragon' ? ' 🔒' : '';
 	var waitingPlayerRCLockIcon = global.waitingPlayerArkaetre === 'Cheetah' ? ' 🔒' : '';
 
-	var embed = new MessageEmbed().setTitle('You ' + item + '!').setDescription(action + criticalMessage + roundDamageMessage + pocketwatchMessage + shieldMessage + arkaetreMessage + roundStartingMessage).setFooter(roundTag + 'Turn ' + global.turnNumber + pocketwatchTurnFreezeIcon);
+	var embed = new EmbedBuilder().setTitle('You ' + item + '!').setDescription(action + criticalMessage + roundDamageMessage + pocketwatchMessage + shieldMessage + arkaetreMessage + roundStartingMessage).setFooter({ text: roundTag + 'Turn ' + global.turnNumber + pocketwatchTurnFreezeIcon });
 	if (global.turn) {
-		embed.setColor('55acee').addFields(
+		embed.setColor(0x55ACEE).addFields(
 			{ name: '\u200B', value: '🔸' + global.waitingPlayerArkaetreIcon + '<@' + global.waitingPlayerID + '>' + waitingPlayerShieldIcon + '🔸' + waitingPlayerExtraTurnsTag + '\n' + waitingPlayerHealthIcon + '  HP: ' + global.waitingPlayerHP + '/' + healthCap + '\n⚔️  AT: ' + global.waitingPlayerAT + waitingPlayerATLockIcon + '\n🛡️  DF: ' + global.waitingPlayerDF + waitingPlayerDFLockIcon + '\n💗 RC: ' + global.waitingPlayerRC + waitingPlayerRCLockIcon, inline: true },
 			{ name: '\u200B', value: '🔹' + global.activePlayerArkaetreIcon + '<@' + global.activePlayerID + '>' + activePlayerShieldIcon + '🔹' + activePlayerExtraTurnsTag + '\n' + activePlayerHealthIcon + '  HP: ' + global.activePlayerHP + '/' + healthCap + '\n⚔️  AT: ' + global.activePlayerAT + activePlayerATLockIcon + '\n🛡️  DF: ' + global.activePlayerDF + activePlayerDFLockIcon + '\n💗 RC: ' + global.activePlayerRC + activePlayerRCLockIcon, inline: true }
 		);
 	} else {
-		embed.setColor('f4900c').addFields(
+		embed.setColor(0xF4900C).addFields(
 			{ name: '\u200B', value: '🔸' + global.activePlayerArkaetreIcon + '<@' + global.activePlayerID + '>' + activePlayerShieldIcon + '🔸' + activePlayerExtraTurnsTag + '\n' + activePlayerHealthIcon + '  HP: ' + global.activePlayerHP + '/' + healthCap + '\n⚔️  AT: ' + global.activePlayerAT + activePlayerATLockIcon + '\n🛡️  DF: ' + global.activePlayerDF + activePlayerDFLockIcon + '\n💗 RC: ' + global.activePlayerRC + activePlayerRCLockIcon, inline: true },
 			{ name: '\u200B', value: '🔹' + global.waitingPlayerArkaetreIcon + '<@' + global.waitingPlayerID + '>' + waitingPlayerShieldIcon + '🔹' + waitingPlayerExtraTurnsTag + '\n' + waitingPlayerHealthIcon + '  HP: ' + global.waitingPlayerHP + '/' + healthCap + '\n⚔️  AT: ' + global.waitingPlayerAT + waitingPlayerATLockIcon + '\n🛡️  DF: ' + global.waitingPlayerDF + waitingPlayerDFLockIcon + '\n💗 RC: ' + global.waitingPlayerRC + waitingPlayerRCLockIcon, inline: true }
 		);
@@ -1964,24 +1964,24 @@ function endTurn(interaction, item, action) {
 
 	if (global.turnNumber === 100 || (global.waitingPlayerHP === 0 || global.activePlayerHP === 0)) {
 		if (global.waitingPlayerHP === 0 && global.activePlayerHP === 0) {
-			embed.addField('\u200B', 'It is a tie! No battle points will be awarded. Good game.');
+			embed.addFields({ name: '\u200B', value: 'It is a tie! No battle points will be awarded. Good game.' });
 		} else if (global.waitingPlayerHP === 0) {
-			embed.addField('\u200B', win(interaction, activePlayerID));
+			embed.addFields({ name: '\u200B', value: win(interaction, global.activePlayerID) });
 		} else if (global.activePlayerHP === 0) {
-			embed.addField('\u200B', win(interaction, waitingPlayerID));
+			embed.addFields({ name: '\u200B', value: win(interaction, global.waitingPlayerID) });
 		} else {
-			embed.addField('\u200B', 'The battle has been going on for too long, so it is a tie! No battle points will be awarded. Good game.');
+			embed.addFields({ name: '\u200B', value: 'The battle has been going on for too long, so it is a tie! No battle points will be awarded. Good game.' });
 		}
 		resetTimeout();
 		resetGameVars();
 		console.log('Battle ended!');
 	} else if (global.activePlayerNumExtraTurns > 0) {
 		extraTurnReset();
-		embed.addField('\u200B', '<@' + global.activePlayerID + '>, it is your turn again!');
+		embed.addFields({ name: '\u200B', value: '<@' + global.activePlayerID + '>, it is your turn again!' });
 		global.activePlayerNumExtraTurns--;
 	} else {
 		swapTurns();
-		embed.addField('\u200B', '<@' + global.activePlayerID + '>, it is now your turn!');
+		embed.addFields({ name: '\u200B', value: '<@' + global.activePlayerID + '>, it is now your turn!' });
 	}
 
 	interaction.channel.send({ embeds: [embed] });
