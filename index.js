@@ -2021,6 +2021,7 @@ function endTurn(interaction, item, action) {
 	}
 
 	interaction.channel.send({ embeds: [embed] });
+	console.log('<@' + global.activePlayerID + '> used the \'' + item + '\' action!');
 	global.itemProcessing = false;
 }
 
