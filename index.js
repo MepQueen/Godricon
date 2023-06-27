@@ -1,6 +1,6 @@
 // @ts-check
 const { Client, Events, GatewayIntentBits, ActivityType, ButtonBuilder, ButtonStyle, ActionRowBuilder, EmbedBuilder, SlashCommandBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, DiscordAPIError, GuildMemberRoleManager } = require('discord.js');
-const { token } = require('./config.json');
+const { token } = require('C:/Videos/config.json');
 
 global.interval = null;
 global.timeoutWarningGiven = false;
@@ -33,17 +33,17 @@ client.on('interactionCreate', async interaction => {
 	
 
 	
-	} else if (commandName === 'rules') {
-		await interaction.reply({ content: '**__Overview__**\nYou can start a battle by typing `/battle` and pinging the member that you want to battle.\nYou can send a battle challenge open to anyone by typing `/challenge`.\nYou can end a battle you are in at any time by typing `/endbattle`.\nYour health starts at 15 and cannot go above 20.\nWhen a player\'s health hits 0, the other player wins.\nThe winner earns 1 battle point (BP), up to 999.\nIf both players hit 0 health on the same turn or turn 100 is reached, there is a tie.\n\n**__Using Items and Actions__**\nYou and your opponent will take turns using item commands such as `/sword` or free action commands such as `/freeattack`.\nYou can only use items that you have registered.\nTo register an item, buy it in `c!shop` and use it in `c!inventory`.\nYou only have to register each item once to use it in all battles.\nYou can use the `/freeattack`, `/freedefend` or `/freeboost` actions to battle without an item.\n\n**__Item Effects__**\nThe effects of an item are listed in its description in `c!shop` and `c!inventory`.\nYou will also be shown the effects of an item or action after using its command before deciding whether to use it.\nA range of effects not separated by commas have an equal probability of occuring.\nEffects are applied in the order listed.\nItems and actions that deal Enemy Damage or grant Personal Health have a 10% chance of a critical hit or heal for an extra point of damage or health.\nArkaetre abilities and instakills are not affected by shields, pocketwatches or other arkaetre abilities.\n\nCheck other rules commands for more information!', ephemeral: true });
+	} else if (commandName === 'rules-basic') {
+		await interaction.reply({ content: '**__Overview__**\nYou can start a battle by typing `/battle` and pinging the member that you want to battle.\nYou can send a battle challenge open to anyone by typing `/challenge`. It will time out after 14 minutes.\nYou can end a battle you are in at any time by typing `/endbattle`.\nYour health starts at 15 and cannot go above 20.\nWhen a player\'s health hits 0, the other player wins.\nThe winner earns 1 battle point (BP), up to 999.\nIf both players hit 0 health on the same turn or turn 100 is reached, there is a tie.\n\n**__Using Items and Actions__**\nYou and your opponent will take turns using item commands such as `/sword` or free action commands such as `/freeattack`.\nYou can only use items that you have registered.\nTo register an item, buy it in `c!shop` and use it in `c!inventory`.\nYou only have to register each item once to use it in all battles.\nYou can use the `/freeattack`, `/freedefend` or `/freeboost` actions to battle without an item.\n\n**__Item Effects__**\nThe effects of an item are listed in its description in `c!shop` and `c!inventory`.\nYou will also be shown the effects of an item or action after using its command but before deciding whether to use it.\nA range of effects not separated by commas have an equal probability of occuring.\nEffects are applied in the order listed.\nItems and actions that deal Enemy Damage or grant Personal Health have a 10% chance of a critical hit or heal for an extra point of damage or health.\nArkaetre abilities and instakills are not affected by shields, pocketwatches or other arkaetre abilities.\n\nCheck other rules commands for more information!', ephemeral: true });
 	
 	
 	
-	} else if (commandName === 'rules2') {
-		await interaction.reply({ content: '**__Stats__**\nYou and your opponent have three different stats that affect item and action effects by up to 1 point in either direction.\nThey are Attack (AT) for attack strength, Defense (DF) for attack resistance, and Recovery (RC) for healing.\nEach of them can be Low🔻, Normal or High🔺.\nArkaetre abilities are not affected by stats.\nActions whose original rolls deal no damage or grant no health are not affected by stats or shields.\n\n**__Shields__**\nA shield can be formed by using `/shield` or `/freedefend`.\nWhen a shield is hit by an attack, every damage point increases the chance that the shield will fall by 17%.\n\n**__Rounds__**\nEvery 25 turns, a new round will start.\nThe active player will take damage each turn equal to the round number minus 1.\nThe maximum shield formation chance will decrease by 20% from 80% each round.\n\nCheck other rules commands for more information!', ephemeral: true });
+	} else if (commandName === 'rules-advanced') {
+		await interaction.reply({ content: '**__Stats__**\nYou and your opponent have three different stats that affect item and action effects by up to 1 point in either direction.\nThey are Attack (AT) for attack strength, Defense (DF) for attack resistance, and Recovery (RC) for healing.\nEach of them can be Low🔻, Normal or High🔺.\nArkaetre abilities are not affected by stats.\nActions whose original rolls deal no damage or grant no health are not affected by stats or shields.\n\n**__Shields__**\nA shield can be formed by using `/shield` or `/freedefend`.\nWhen a shield is hit by an attack, every damage point dealt increases the chance that the shield will fall by ~17%.\n\n**__Rounds__**\nEvery 25 turns, a new round will start.\nThe active player will take damage each turn equal to the round number minus 1.\nThe maximum shield formation chance will decrease by 20% from 80% each round.\n\nCheck other rules commands for more information!', ephemeral: true });
 	
 	
 	
-	} else if (commandName === 'rules3') {
+	} else if (commandName === 'rules-arkaetres') {
 		await interaction.reply({ content: '**__Arkaetre Abilities__**\n\n**🐍 Wyrm**\nEvery time you use an item or action that you have not used yet in the current battle, you will gain 1 extra point of health.\n\n**🦁 Flying Lion**\nEvery time you roll the highest possible Enemy Damage for an item or action, you will deal 1 extra point of damage.\n\n**🕊️ Hummingbird**\nEvery time you roll the lowest possible positive Enemy Damage for an item or action, you will gain 1 point of health.\n\n**🦉 Owl**\nEvery time you have no Normal stats at the end of your turn right after your opponent moves, you will have a 66% chance of gaining an extra turn.\n\n**🦅 Griffin**\nYour Attack will always be high, and you and your opponent will both have an extra 5% chance of an instakill every time you use an item or action to deal Enemy Damage.\n\n**🐲 Dragon**\nYour Defense will always be high, and you and your opponent will both have an extra 10% chance of critical hits and heals.\n\n**🐆 Cheetah**\nYour Recovery will always be high, and you and your opponent will both take 1 extra point of damage each turn.\n\n**🦎 Komodo Dragon**\nEvery time your opponent uses an item or action to deal Enemy Damage, you will deal 1 point of damage.\n\n**🐈 Sphinx**\nEvery time your opponent uses an item or action to heal, you will gain 1 point of health.\n\n**🐺 Kludde**\nYou can use the `/arkaetre` command to add more kludde to your pack, 1 at a time. When you gather 7 kludde, you will instakill your opponent.\n\n**🐦 Phoenix**\nThe first time you end any turn with 1-3 points of health, you will go back to full health.\n\n**🔱 Hydra**\nThe maximum number of health points allowed will gradually decrease by 1 health per 2 counted turns. You can use the `/arkaetre` command again to reset the health point cap and both your and your opponent\'s arkaetres.\n\nCheck other rules commands for more information!', ephemeral: true });
 	
 
@@ -121,14 +121,15 @@ client.on('interactionCreate', async interaction => {
 
 
 	} else if (commandName === 'patchnotes') {
-		await interaction.reply({ content: '**__Recent Patches__**\n\n**6/25/23**\n- Apparently critical hits and heals were not actually working. Now they are.\n\n**6/19/23**\n- A text bug in the bow and Magistone confirmation messages was fixed.\n- Godricon is now running on sweet, sweet, completely redesigned Discord.js version 14. Prepare for bugs.\n- I have conquered my fear of source control. Godricon has made it onto Github.\n\n**2/11/23**\n- All three free actions finally exist, so those new to battling can still participate.\n\n**2/6/22**\n- More small text edits, as usual.\n- The leaderboard display is more vertical to work better on mobile.\n\n**2/2/22**\n- Rules about shields and rounds are now on the second page of the rules, `/rules2`, and `/arkaetrerules` was renamed to `/rules3`.\n- The chance a shield will break is now dependent on how much damage is dealt to it. Every damage point in the final value of an attack increases the chance by 17%, and an attack that deals at least six damage is guaranteed to break a shield.\n- Overtime has been replaced by a four-round system where negative effects increase every 25 turns, with another hourglass icon added to the turn counter for each round.\n- At 100 turns, a battle will end in a tie.\n- Extra turns are now displayed with symbols to the right of players\' stat headers.\n- The rule reminder at the end of battle embeds is gone.\n- The pocketwatch removes any saved up extra turns when used, stops the turn counter while active, and shows a frozen icon after the turn counter instead of a picture above the action text.\n- The hydra will now gradually lower the maximum number of health points while active by 1 health per 2 counted turns, and instead of it blocking both arkaetre slots, you can use the `/arkaetre` command again to reset the health cap and all active arkaetres.\n- The second number in the HP stat is now the health cap instead of your starting health.\n- The challenge timeout length is now an hour.\n- The owl\'s extra turn chance is now 66%.\n\n**2/1/22**\n- `/toggle` exists so I can block off battles when I need to. Commands not related to battling like `/leaderboard` stay up.\n- There\'s no more daily point limit. Go crazy, if that\'s your thing.', ephemeral: true });
+		await interaction.reply({ content: '**__Recent Patches__**\n\n**6/25/23**\n- Apparently critical hits and heals were not actually working. Now they are.\n- Challenges finally time out! No more forever unusable buttons.\n\n**6/19/23**\n- A text bug in the bow and Magistone confirmation messages was fixed.\n- Godricon is now running on sweet, sweet, completely redesigned Discord.js version 14. Prepare for bugs.\n- I have conquered my fear of source control. Godricon has made it onto Github.\n\n**2/11/23**\n- All three free actions finally exist, so those new to battling can still participate.\n\n**2/6/22**\n- More small text edits, as usual.\n- The leaderboard display is more vertical to work better on mobile.' /*\n\n**2/2/22**\n- Rules about shields and rounds are now on the second page of the rules, `/rules2`, and `/arkaetrerules` was renamed to `/rules3`.\n- The chance a shield will break is now dependent on how much damage is dealt to it. Every damage point in the final value of an attack increases the chance by 17%, and an attack that deals at least six damage is guaranteed to break a shield.\n- Overtime has been replaced by a four-round system where negative effects increase every 25 turns, with another hourglass icon added to the turn counter for each round.\n- At 100 turns, a battle will end in a tie.\n- Extra turns are now displayed with symbols to the right of players\' stat headers.\n- The rule reminder at the end of battle embeds is gone.\n- The pocketwatch removes any saved up extra turns when used, stops the turn counter while active, and shows a frozen icon after the turn counter instead of a picture above the action text.\n- The hydra will now gradually lower the maximum number of health points while active by 1 health per 2 counted turns, and instead of it blocking both arkaetre slots, you can use the `/arkaetre` command again to reset the health cap and all active arkaetres.\n- The second number in the HP stat is now the health cap instead of your starting health.\n- The challenge timeout length is now an hour.\n- The owl\'s extra turn chance is now 66%.\n\n**2/1/22**\n- `/toggle` exists so I can block off battles when I need to. Commands not related to battling like `/leaderboard` stay up.\n- There\'s no more daily point limit. Go crazy, if that\'s your thing.'*/, ephemeral: true });
+
+		/// Should I be cutting myself out of the leaderboard?
+		/// Griffin instakill too random?
+		/// Hydra alert when max hp decreases
 
 		/// BUGS
 		/// EditReply "unknown message" error
-		/// Challenge cancel conditions not editing - 15 minute limit
-		/// Battle timeout message after challenge accepted when buttons are disabled
 		/// Check item selection message is properly sent - to avoid hidden selection message bug
-        /// Make the toggle actually work - add the check to all battle-related commands
 		/// Edit item selection messages instead of delete so no log spam? ;-;
 
         /// EDGE CASE CHECKS
@@ -137,7 +138,6 @@ client.on('interactionCreate', async interaction => {
         /// Case for pocketwatch used twice in a row - timer reset?
 
         /// RULES EDITS
-		/// --- Rounds in rules?
 		/// Free actions into rules and messages
 		/// Explain arkaetre rules and exceptions
 		/// Explain damage calculation system better in rules, with examples
@@ -145,6 +145,7 @@ client.on('interactionCreate', async interaction => {
 		/// 'item' wording changed to just exclude arkaetres, not free actions - 'item or action'?
 		/// Difference between 'item damage'  and 'arkaetre damage' in text for help with arkaetre rules
 		/// Older pages of patch notes
+		/// Edit Tatsu items to match bot
 
         /// BIG UPDATES
 		/// Pick a player class/character with certain perks? Darklight Order mages + Kireveans (symbol mage), Sand Trap Order of the Hydra mages w/staff, Ng Ey scroll mage, TKR stone mage
@@ -200,7 +201,7 @@ client.on('interactionCreate', async interaction => {
 			resetGameVars();
 			global.activePlayerID = interaction.options.getUser('opponent')?.id;
 			global.waitingPlayerID = interaction.user.id;
-			await interaction.reply('<@' + global.waitingPlayerID + '> started a battle against <@' + global.activePlayerID + '>! Let us have a good, clean fight. Either of you can use `/endbattle` to end the battle or `/rules` to review the rules of battle at any time.\n\nOn your turn, please use an item command such as `/sword` to select a registered item to use. If you do not have any items registered, buy some in `c!shop` and use them in `c!inventory` first, or use a free action such as `/freeattack`.\n\n<@' + global.activePlayerID + '>, you are first!');
+			await interaction.reply('<@' + global.waitingPlayerID + '> started a battle against <@' + global.activePlayerID + '>! Let us have a good, clean fight. Either of you can use `/endbattle` to end the battle or any `/rules` command to review the rules of battle at any time.\n\nOn your turn, please use an item command such as `/sword` to select a registered item to use. If you do not have any items registered, buy some in `c!shop` and use them in `c!inventory` first, or use a free action such as `/freeattack`.\n\n<@' + global.activePlayerID + '>, you are first!');
 			global.challengeOverride = true;
 			global.interactionSave = null;
 			if (global.collectorSave != null) {
@@ -235,7 +236,7 @@ client.on('interactionCreate', async interaction => {
 			global.collectorSave.stop();
 			global.buttonClickedSave = true;
 			global.activePlayerID = interaction.member.user.id;
-			interaction.channel.send('<@' + global.activePlayerID + '> accepted <@' + global.waitingPlayerID + '>\'s battle challenge! Let us have a good, clean fight. Either of you can use `/endbattle` to end the battle or `/rules` to review the rules of battle at any time.\n\nOn your turn, please use an item command such as `/sword` to select a registered item to use. If you do not have any items registered, buy some in `c!shop` and use them in `c!inventory` first, or use a free action such as `/freeattack`.\n\n<@' + global.activePlayerID + '>, you are first!');
+			interaction.channel.send('<@' + global.activePlayerID + '> accepted <@' + global.waitingPlayerID + '>\'s battle challenge! Let us have a good, clean fight. Either of you can use `/endbattle` to end the battle or any `/rules` command to review the rules of battle at any time.\n\nOn your turn, please use an item command such as `/sword` to select a registered item to use. If you do not have any items registered, buy some in `c!shop` and use them in `c!inventory` first, or use a free action such as `/freeattack`.\n\n<@' + global.activePlayerID + '>, you are first!');
 		} else if (interaction.customId === 'cancel' && (interaction.user.id === global.waitingPlayerID || (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('809284936669593600')))) {
 			global.interactionSave.deleteReply();
 			global.collectorSave.stop();
@@ -1038,7 +1039,6 @@ client.on('interactionCreate', async interaction => {
 				const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('yes').setLabel('✔️ Yes').setStyle(ButtonStyle.Success),new ButtonBuilder().setCustomId('no').setLabel('❌ No').setStyle(ButtonStyle.Danger));
 				// @ts-ignore
 				await interaction.reply({ content: '<:itemShield:903038554127601694> **Shield**:  ' + formationChance + '% chance of shield\n\nUse this item?', components: [row] });
-				/// EDIT IN TATSU!
 				const filter = i => (i.customId === 'yes' || i.customId === 'no') && i.user.id === global.activePlayerID;
 				const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 });
 				var buttonClicked = false;
@@ -1763,6 +1763,8 @@ function hummingbirdCheck() {
 
 
 function endTurn(interaction, item, action) {
+	console.log('<@' + global.activePlayerID + '> used the \'' + item + '\' action!');
+
 	var criticalMessage = '';
 	var roll = random(1, 30);
 	var tag  = '💥 Critical'
@@ -1965,14 +1967,14 @@ function endTurn(interaction, item, action) {
 
 	var activePlayerExtraTurnsTag = '';
 	if (global.activePlayerNumExtraTurns > 0) {
-		activePlayerExtraTurnsTag = '       ♻️';
+		activePlayerExtraTurnsTag = ' ♻️';
 		for (var i = 1; i < global.activePlayerNumExtraTurns; i++) {
 			activePlayerExtraTurnsTag += '♻️';
 		}
 	}
 	var waitingPlayerExtraTurnsTag = '';
 	if (global.waitingPlayerNumExtraTurns > 0) {
-		waitingPlayerExtraTurnsTag = '       ♻️';
+		waitingPlayerExtraTurnsTag = ' ♻️';
 		for (var i = 1; i < global.waitingPlayerNumExtraTurns; i++) {
 			waitingPlayerExtraTurnsTag += '♻️';
 		}
@@ -1988,13 +1990,13 @@ function endTurn(interaction, item, action) {
 	var embed = new EmbedBuilder().setTitle('You ' + item + '!').setDescription(action + criticalMessage + roundDamageMessage + pocketwatchMessage + shieldMessage + arkaetreMessage + roundStartingMessage).setFooter({ text: roundTag + 'Turn ' + global.turnNumber + pocketwatchTurnFreezeIcon });
 	if (global.turn) {
 		embed.setColor(0x55ACEE).addFields(
-			{ name: '\u200B', value: '🔸' + global.waitingPlayerArkaetreIcon + '<@' + global.waitingPlayerID + '>' + waitingPlayerShieldIcon + '🔸' + waitingPlayerExtraTurnsTag + '\n' + waitingPlayerHealthIcon + '  HP: ' + global.waitingPlayerHP + '/' + healthCap + '\n⚔️  AT: ' + global.waitingPlayerAT + waitingPlayerATLockIcon + '\n🛡️  DF: ' + global.waitingPlayerDF + waitingPlayerDFLockIcon + '\n💗 RC: ' + global.waitingPlayerRC + waitingPlayerRCLockIcon, inline: true },
-			{ name: '\u200B', value: '🔹' + global.activePlayerArkaetreIcon + '<@' + global.activePlayerID + '>' + activePlayerShieldIcon + '🔹' + activePlayerExtraTurnsTag + '\n' + activePlayerHealthIcon + '  HP: ' + global.activePlayerHP + '/' + healthCap + '\n⚔️  AT: ' + global.activePlayerAT + activePlayerATLockIcon + '\n🛡️  DF: ' + global.activePlayerDF + activePlayerDFLockIcon + '\n💗 RC: ' + global.activePlayerRC + activePlayerRCLockIcon, inline: true }
+			{ name: '\u200B', value: '🔸' + global.waitingPlayerArkaetreIcon + '<@' + global.waitingPlayerID + '>' + waitingPlayerShieldIcon + '🔸' + waitingPlayerExtraTurnsTag + '\n' + waitingPlayerHealthIcon + ' HP: ' + global.waitingPlayerHP + '/' + healthCap + '\n⚔️ AT: ' + global.waitingPlayerAT + waitingPlayerATLockIcon + '\n🛡️ DF: ' + global.waitingPlayerDF + waitingPlayerDFLockIcon + '\n💗 RC: ' + global.waitingPlayerRC + waitingPlayerRCLockIcon, inline: true },
+			{ name: '\u200B', value: '🔹' + global.activePlayerArkaetreIcon + '<@' + global.activePlayerID + '>' + activePlayerShieldIcon + '🔹' + activePlayerExtraTurnsTag + '\n' + activePlayerHealthIcon + ' HP: ' + global.activePlayerHP + '/' + healthCap + '\n⚔️ AT: ' + global.activePlayerAT + activePlayerATLockIcon + '\n🛡️ DF: ' + global.activePlayerDF + activePlayerDFLockIcon + '\n💗 RC: ' + global.activePlayerRC + activePlayerRCLockIcon, inline: true }
 		);
 	} else {
 		embed.setColor(0xF4900C).addFields(
-			{ name: '\u200B', value: '🔸' + global.activePlayerArkaetreIcon + '<@' + global.activePlayerID + '>' + activePlayerShieldIcon + '🔸' + activePlayerExtraTurnsTag + '\n' + activePlayerHealthIcon + '  HP: ' + global.activePlayerHP + '/' + healthCap + '\n⚔️  AT: ' + global.activePlayerAT + activePlayerATLockIcon + '\n🛡️  DF: ' + global.activePlayerDF + activePlayerDFLockIcon + '\n💗 RC: ' + global.activePlayerRC + activePlayerRCLockIcon, inline: true },
-			{ name: '\u200B', value: '🔹' + global.waitingPlayerArkaetreIcon + '<@' + global.waitingPlayerID + '>' + waitingPlayerShieldIcon + '🔹' + waitingPlayerExtraTurnsTag + '\n' + waitingPlayerHealthIcon + '  HP: ' + global.waitingPlayerHP + '/' + healthCap + '\n⚔️  AT: ' + global.waitingPlayerAT + waitingPlayerATLockIcon + '\n🛡️  DF: ' + global.waitingPlayerDF + waitingPlayerDFLockIcon + '\n💗 RC: ' + global.waitingPlayerRC + waitingPlayerRCLockIcon, inline: true }
+			{ name: '\u200B', value: '🔸' + global.activePlayerArkaetreIcon + '<@' + global.activePlayerID + '>' + activePlayerShieldIcon + '🔸' + activePlayerExtraTurnsTag + '\n' + activePlayerHealthIcon + ' HP: ' + global.activePlayerHP + '/' + healthCap + '\n⚔️ AT: ' + global.activePlayerAT + activePlayerATLockIcon + '\n🛡️ DF: ' + global.activePlayerDF + activePlayerDFLockIcon + '\n💗 RC: ' + global.activePlayerRC + activePlayerRCLockIcon, inline: true },
+			{ name: '\u200B', value: '🔹' + global.waitingPlayerArkaetreIcon + '<@' + global.waitingPlayerID + '>' + waitingPlayerShieldIcon + '🔹' + waitingPlayerExtraTurnsTag + '\n' + waitingPlayerHealthIcon + ' HP: ' + global.waitingPlayerHP + '/' + healthCap + '\n⚔️ AT: ' + global.waitingPlayerAT + waitingPlayerATLockIcon + '\n🛡️ DF: ' + global.waitingPlayerDF + waitingPlayerDFLockIcon + '\n💗 RC: ' + global.waitingPlayerRC + waitingPlayerRCLockIcon, inline: true }
 		);
 	}
 
@@ -2021,7 +2023,6 @@ function endTurn(interaction, item, action) {
 	}
 
 	interaction.channel.send({ embeds: [embed] });
-	console.log('<@' + global.activePlayerID + '> used the \'' + item + '\' action!');
 	global.itemProcessing = false;
 }
 
