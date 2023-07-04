@@ -39,12 +39,17 @@ client.on('interactionCreate', async interaction => {
 	
 	
 	} else if (commandName === 'rules-advanced') {
-		await interaction.reply({ content: '**__Stats__**\nYou and your opponent have three different stats that affect item and action effects by up to 1 point in either direction.\nThey are Attack (AT) for attack strength, Defense (DF) for attack resistance, and Recovery (RC) for healing.\nEach of them can be Low🔻, Normal or High🔺.\nArkaetre abilities are not affected by stats.\nActions whose original rolls deal no damage or grant no health are not affected by stats or shields.\n\n**__Shields__**\nA shield can be formed by using `/shield` or `/freedefend`.\nWhen a shield is hit by an attack, every damage point dealt increases the chance that the shield will fall by ~17%.\n\n**__Rounds__**\nEvery 25 turns, a new round will start.\nThe active player will take damage each turn equal to the round number minus 1.\nThe maximum shield formation chance will decrease by 20% from 80% each round.\n\nCheck other rules commands for more information!', ephemeral: true });
-	
+		await interaction.reply({ content: '**__Stats__**\nYou and your opponent have three different stats that affect item and action effects by up to 1 point in either direction.\nThey are Attack (AT) for attack strength, Defense (DF) for attack resistance, and Recovery (RC) for healing.\nEach of them can be Low🔻, Normal or High🔺.\nArkaetre abilities are not affected by stats.\nActions whose original rolls deal no damage or grant no health are not affected by stats or shields.\n\n**__Shields__**\nA shield can be formed by using `/shield` or `/freedefend`.\nWhen a shield is hit by an attack, every damage point dealt increases the chance that the shield will fall by ~17%.\n\n**__Overtime__**\nAfter 20 turns, overtime will start, and all healing rolls will be disabled.\nItems and actions that both heal and serve other functions can still be used for those other functions.\nThe shield formation chance will also decrease to 50%.\n\nCheck other rules commands for more information!', ephemeral: true });
+
+
+
+	/*} else if (commandName === 'rules-actionsanditems') {
+		await interaction.reply({ content: '**__Item Effects__**\n\n', ephemeral: true });*/
+		
 	
 	
 	} else if (commandName === 'rules-arkaetres') {
-		await interaction.reply({ content: '**__Arkaetre Abilities__**\n\n**🐍 Wyrm**\nEvery time you use an item or action that you have not used yet in the current battle, you will gain 1 extra point of health.\n\n**🦁 Flying Lion**\nEvery time you roll the highest possible Enemy Damage for an item or action, you will deal 1 extra point of damage.\n\n**🕊️ Hummingbird**\nEvery time you roll the lowest possible positive Enemy Damage for an item or action, you will gain 1 point of health.\n\n**🦉 Owl**\nEvery time you have no Normal stats at the end of your turn right after your opponent moves, you will have a 66% chance of gaining an extra turn.\n\n**🦅 Griffin**\nYour Attack will always be high, and you and your opponent will both have an extra 5% chance of an instakill every time either of you roll positive Enemy Damage for an item or action.\n\n**🐲 Dragon**\nYour Defense will always be high, and you and your opponent will both have an extra 10% chance of critical hits and heals.\n\n**🐆 Cheetah**\nYour Recovery will always be high, and you and your opponent will both take 1 extra point of damage each turn.\n\n**🦎 Komodo Dragon**\nEvery time your opponent uses an item or action to deal Enemy Damage, you will deal 1 point of Enemy Damage.\n\n**🐈 Sphinx**\nEvery time your opponent uses an item or action to gain Personal Health, you will gain 1 point of Personal Health.\n\n**🐺 Kludde**\nYou can use the `/arkaetre` command to add more kludde to your pack, 1 at a time. When you gather 7 kludde, you will instakill your opponent.\n\n**🐦 Phoenix**\nThe first time you end any turn with 1-3 points of health, you will go back to full health.\n\n**🔱 Hydra**\nThe maximum number of health points allowed will gradually decrease by 1 health per 2 counted turns. You can use the `/arkaetre` command again to reset the health point cap and both your and your opponent\'s arkaetres.\n\nCheck other rules commands for more information!', ephemeral: true });
+		await interaction.reply({ content: '**__Arkaetre Abilities__**\n\n**🐍 Wyrm**\nEvery time you use an item or action that you have not used yet in the current battle, you will gain 1 additional point of health.\n\n**🦁 Flying Lion**\nEvery time you roll the highest possible Enemy Damage for an item or action, you will deal 1 additional point of damage.\n\n**🕊️ Hummingbird**\nEvery time you roll the lowest possible positive Enemy Damage for an item or action, you will gain 1 point of health.\n\n**🦉 Owl**\nEvery time you have no Normal stats at the end of your turn right after your opponent moves, you will have a 66% chance of gaining an extra turn.\n\n**🦅 Griffin**\nYour Attack will always be high, and you and your opponent will both have an additional 5% chance of an instakill every time either of you roll positive Enemy Damage for an item or action.\n\n**🐲 Dragon**\nYour Defense will always be high, and you and your opponent will both have an additional 10% chance of critical hits and heals.\n\n**🐆 Cheetah**\nYour Recovery will always be high, and you and your opponent will both take 1 extra point of damage each turn.\n\n**🦎 Komodo Dragon**\nEvery time your opponent uses an item or action to deal Enemy Damage, you will deal 1 point of Enemy Damage.\n\n**🐈 Sphinx**\nEvery time your opponent uses an item or action to gain Personal Health, you will gain 1 point of Personal Health.\n\n**🐺 Kludde**\nYou can use the `/arkaetre` command to add more kludde to your pack, 1 at a time. When you gather 7 kludde, you will instakill your opponent.\n\n**🐦 Phoenix**\nThe first time you end any turn with 1-3 points of health, you will go back to full health.\n\n**🔱 Hydra**\nEvery counted turn will have an additional 66% chance of decreasing the health cap by 1. You will also be immune to overtime effects.\n\nCheck other rules commands for more information!', ephemeral: true });
 	
 
 
@@ -114,21 +119,46 @@ client.on('interactionCreate', async interaction => {
 
 
 	} else if (commandName === 'patchnotes') {
-		var currentPage = 1;
-		const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('previous').setLabel('🢀 Previous Page').setStyle(ButtonStyle.Secondary));
-		/// @ts-ignore
-		await interaction.reply({ content: '**__Recent Patches__**\n\n**6/29/23**\n- Some text edits, especially ones more inclusive to free actions.\n- The names for the rules commands have changed *again*. They\'re now a pleasant combination of easy to search for and easy to tell apart.\n- The griffin and `/freeattack` instakills can no longer occur simultaneously.\n- The patch notes have pages now! Feel free to go back in time.\n- Challenges time out after only 14 minutes, because any longer and the bot won\'t know how to edit the message when it times out.\n- I\'m on the battle point leaderboard after a long time of not being. Why? I dunno, I felt like it. All my points are genuine, I promise.\n\n**6/25/23**\n- Apparently critical hits and heals weren\'t actually working. Now they are.\n- Challenges finally time out! No more forever unusable buttons.\n\n**6/19/23**\n- A text bug in the bow and Magistone confirmation messages was fixed.\n- Godricon is now running on sweet, sweet, completely redesigned Discord.js version 14. Prepare for bugs.\n- I have conquered my fear of source control. Godricon has made it onto Github.\n\n**2/11/23**\n- All three free actions finally exist, so those new to battling can still participate.\n\n**2/6/22**\n- More small text edits, as usual.\n- The leaderboard display is more vertical to work better on mobile.', components: [row], ephemeral: true });
+		var currentPage = 0;
+		var patchNotesText = ['**__Recent Patches__**\n\n**7/3/23**\n- Overtime is back! After 20 turns, healing rolls will be disabled and the shield formation chance will drop to 50%. Healing items can still be used for their other functions.\n- `/freedefend` now has a 50% chance of a shield. But it\'ll be updated again soon...\n- The new overtime announcement won\'t be printed if a player just lost.\n- Some text edits.\n- The hydra has been updated. It no longer allows you to reset all active arkaetres. There is now a 66% chance of the health cap decreasing each turn the hydra is active, and having the hydra makes you immune to overtime effects. If two hydras are active, the chance of the health cap decreasing is 100%.\n\n**6/29/23**\n- Some text edits, especially ones more inclusive to free actions.\n- The names for the rules commands have changed *again*. They\'re now a pleasant combination of easy to search for and easy to tell apart.\n- The griffin and `/freeattack` instakills can no longer occur simultaneously.\n- The patch notes have pages now! Feel free to go back in time.\n- Challenges time out after only 14 minutes, because any longer and the bot won\'t know how to edit the message when it times out.\n- I\'m on the battle point leaderboard after a long time of not being. Why? I dunno, I felt like it. All my points are genuine, I promise.\n\n**6/25/23**\n- Apparently critical hits and heals weren\'t actually working. Now they are.\n- Challenges finally time out! No more forever unusable buttons.\n\n**6/19/23**\n- A text bug in the bow and Magistone confirmation messages was fixed.\n- Godricon is now running on sweet, sweet, completely redesigned Discord.js version 14. Prepare for bugs.\n- I have conquered my fear of source control. Godricon has made it onto GitHub.\n\n**2/11/23**\n- All three free actions finally exist, so those new to battling can still participate.\n\n**2/6/22**\n- More small text edits, as usual.\n- The leaderboard display is more vertical to work better on mobile.',
+		
+		'**2/2/22**\n- Rules about shields and rounds are now on the second page of the rules, `/rules2`, and `/arkaetrerules` was renamed to `/rules3`.\n- The chance a shield will break is now dependent on how much damage is dealt to it. Every damage point in the final value of an attack increases the chance by 17%, and an attack that deals at least six damage is guaranteed to break a shield.\n- Overtime has been replaced by a four-round system where negative effects increase every 25 turns, with another hourglass icon added to the turn counter for each round.\n- At 100 turns, a battle will end in a tie.\n- Extra turns are now displayed with symbols to the right of players\' stat headers.\n- The rule reminder at the end of battle embeds is gone.\n- The pocketwatch removes any saved up extra turns when used, stops the turn counter while active, and shows a frozen icon after the turn counter instead of a picture above the action text.\n- The hydra will now gradually lower the maximum number of health points while active by 1 health per 2 counted turns, and instead of it blocking both arkaetre slots, you can use the `/arkaetre` command again to reset the health cap and all active arkaetres.\n- The second number in the HP stat is now the health cap instead of your starting health.\n- The challenge timeout length is now an hour.\n- The owl\'s extra turn chance is now 66%.\n\n**2/1/22**\n- `/toggle` exists so I can block off battles when I need to. Commands not related to battling like `/leaderboard` stay up.\n- There\'s no more daily point limit. Go crazy, if that\'s your thing.'];
 
-		const filter = i => (i.customId === 'previous');
+		var lastPage = patchNotesText.length-1;
+		const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('previous').setLabel('🢀 Previous').setStyle(ButtonStyle.Secondary), new ButtonBuilder().setCustomId('next').setLabel('Next 🢂').setStyle(ButtonStyle.Secondary).setDisabled(true));
+		/// @ts-ignore
+		await interaction.reply({ content: patchNotesText[currentPage], components: [row], ephemeral: true });
+		const filter = i => (i.customId === 'previous' || i.customId === 'next');
 		const collector = interaction.channel.createMessageComponentCollector({ filter, time: 840000 });
+
 		collector.on('collect', async i => {
-			if (i.customId === 'previous') {
-				if (currentPage === 1) {
-					currentPage = 2;
-					interaction.editReply('**2/2/22**\n- Rules about shields and rounds are now on the second page of the rules, `/rules2`, and `/arkaetrerules` was renamed to `/rules3`.\n- The chance a shield will break is now dependent on how much damage is dealt to it. Every damage point in the final value of an attack increases the chance by 17%, and an attack that deals at least six damage is guaranteed to break a shield.\n- Overtime has been replaced by a four-round system where negative effects increase every 25 turns, with another hourglass icon added to the turn counter for each round.\n- At 100 turns, a battle will end in a tie.\n- Extra turns are now displayed with symbols to the right of players\' stat headers.\n- The rule reminder at the end of battle embeds is gone.\n- The pocketwatch removes any saved up extra turns when used, stops the turn counter while active, and shows a frozen icon after the turn counter instead of a picture above the action text.\n- The hydra will now gradually lower the maximum number of health points while active by 1 health per 2 counted turns, and instead of it blocking both arkaetre slots, you can use the `/arkaetre` command again to reset the health cap and all active arkaetres.\n- The second number in the HP stat is now the health cap instead of your starting health.\n- The challenge timeout length is now an hour.\n- The owl\'s extra turn chance is now 66%.\n\n**2/1/22**\n- `/toggle` exists so I can block off battles when I need to. Commands not related to battling like `/leaderboard` stay up.\n- There\'s no more daily point limit. Go crazy, if that\'s your thing.');
-				} else if (currentPage = 2) {
-					currentPage = 3;
-					interaction.editReply('~(^^)~');
+			if (row.components[0] instanceof ButtonBuilder && row.components[1] instanceof ButtonBuilder) {
+				if (i.customId === 'previous') {
+					if (currentPage < lastPage) {
+						currentPage++;
+						if (currentPage === lastPage) {
+							row.components[1].setDisabled(false);
+							row.components[0].setDisabled(true);
+						} else {
+							row.components[1].setDisabled(false);
+							row.components[0].setDisabled(false);
+						}
+						/// @ts-ignore
+						interaction.editReply({ content: patchNotesText[currentPage], components: [row], ephemeral: true });
+					}
+				} else if (i.customId === 'next') {
+					if (currentPage > 0) {
+						currentPage--;
+						if (currentPage === 0) {
+							row.components[1].setDisabled(true);
+							row.components[0].setDisabled(false);
+						} else {
+							row.components[1].setDisabled(false);
+							row.components[0].setDisabled(false);
+						}
+						/// @ts-ignore
+						interaction.editReply({ content: patchNotesText[currentPage], components: [row], ephemeral: true });
+					}
 				}
 			}
 		});
@@ -138,24 +168,21 @@ client.on('interactionCreate', async interaction => {
 		/// EditReply "unknown message" error
 		/// Check item selection message is properly sent - to avoid hidden selection message bug
 		/// Edit item selection messages instead of delete so no log spam? ;-;
-		/// Patch notes 'interaction failed', no next button and no grayed-out buttons at ends
+		/// Patch notes 'interaction failed'
+		/// Mobile ephemerals and buttons don't load properly
 
         /// EDGE CASE CHECKS / SMALL THINGS
-		/// Rounds shorter?
-		/// Hydra works based on turns after hydra activated + no remove feature
-		/// Hydra alert when max hp decreases
-		/// OR - hydra does something else? Overtime immunity?
-		/// Case for both having hydra?
+		/// Insult, stick
 
-        /// RULES EDITS
-		/// Explain damage calculation system better in rules, with examples... or detailed mode with rolls displayed?
-		/// Rules page for all items and actions
-
-        /// CURRENT UPDATES
+		/// Item rebalancing: bow decreases enemy recovery, laser rifle decreases random enemy stat, frozen fish deals 3-5 enemy damage or heals 2 enemy health, free defend is free heal (text about sleeping) and gives you defensive stance (33% chance of all effects blocked next turn, including arkaetres and instakill)
+		/// Add scroll (copy opponent's move, increase turn counter by... 3? 5?), make arkaetre free, change wording to include arkaetre as a free action (and an action, not an item), refund people with arkaetres
 		/// Battle modes (free actions always allowed?) - just free, first six, last six, all twelve, backpack (set of four? five?)
 		/// Arkaetre mode - random/picked/none
+		/// Rules page for all items and actions
+		/// All embeds for neatness?
 
 		/// FUTURE UPDATES
+		/// Detailed mode showing rolls and calculations
 		/// Pick a player class/character with certain perks? Darklight Order mages + Kireveans (symbol mage), Sand Trap Order of the Hydra mages w/staff, Ng Ey scroll mage, TKR stone mage
 		/// Achievements? For currency? Also currency for winning battles? Upgrades so more use for currency?
 		/// Boss battles?
@@ -163,6 +190,8 @@ client.on('interactionCreate', async interaction => {
 		/// More items rotating through shop? One use per battle items?
 		/// Typescript and refactoring
 		/// Shorten text for readability?
+		/// More stat steps with 50% chance of 1-point effect in-between?
+		/// Run on VM restart?
 
         /// FINAL CHECKS
         /// Edit rules
@@ -344,10 +373,9 @@ client.on('interactionCreate', async interaction => {
 		} else if (interaction.user.id === global.activePlayerID && !global.itemOrActionProcessing) {
 			global.itemOrActionProcessing = true;
 			restartTimeout(interaction);
-			var formationChance = global.round === 4 ? 20 : 40;
 			const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('yes').setLabel('✔️ Yes').setStyle(ButtonStyle.Success),new ButtonBuilder().setCustomId('no').setLabel('❌ No').setStyle(ButtonStyle.Danger));
 			// @ts-ignore
-			await interaction.reply({ content: '✋ **Defend**:  1-2 Personal Health, ' + formationChance + '% chance of shield\n\nUse this free action?', components: [row] });
+			await interaction.reply({ content: '✋ **Defend**:  1-2 Personal Health, 50% chance of shield\n\nUse this free action?', components: [row] });
 			const filter = i => (i.customId === 'yes' || i.customId === 'no') && i.user.id === global.activePlayerID;
 			const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 });
 			var buttonClicked = false;
@@ -356,7 +384,9 @@ client.on('interactionCreate', async interaction => {
 				if (i.customId === 'yes') {
 					var itemOrActionText = '';
 					var roll = random(1, 6);
-					if (roll < 4) {
+					if (global.overtime && global.activePlayerArkaetre != 'Hydra') {
+						itemOrActionText = 'You are far too worn-out to heal yourself.';
+					} else if (roll < 4) {
 						var amount = health('active', 1);
 						if (roll === 1) {
 							itemOrActionText = 'Was there a gash there before? Apparently not. Strange. You recover ' + amount + ' health.';
@@ -375,9 +405,9 @@ client.on('interactionCreate', async interaction => {
 							itemOrActionText = 'A spark of magic flares to life inside you, and with a shudder, you recover ' + amount + ' health.';
 						}
 					}
-					var roll2 = random(1, 100);
-					if (roll2 <= formationChance) {
-						itemOrActionText += ' You also remember to conjure a bright, brilliant shield that will protect you. Sometimes.';
+					var roll2 = random(1, 2);
+					if (roll2 === 1) {
+						itemOrActionText += ' You remember to conjure a bright, brilliant shield that will protect you. Sometimes.';
 						global.activePlayerShieldStatus = 'Up';
 					}
 					wyrmCheck('B');
@@ -703,10 +733,15 @@ client.on('interactionCreate', async interaction => {
 						var itemOrActionText = '';
 						var roll = random(0, 5);
 						var amount = '';
-						if (roll > 0 && roll < 5) {
+						if (roll > 0 && roll < 5 && (!global.overtime || global.activePlayerArkaetre === 'Hydra')) {
 							amount = health('active', roll);
 						}
-						if (roll === 0) {
+						if (global.overtime && global.activePlayerArkaetre != 'Hydra') {
+							amount = damage('waiting', 1);
+							itemOrActionText = 'You are far too worn-out to heal yourself. You instead decide to be creative and throw your Magistone at <@' + global.waitingPlayerID + '>, and it smacks them in the side with a quiet thump, dealing ' + amount + ' damage.';
+							flyingLionCheck();
+							hummingbirdCheck();
+						} else if (roll === 0) {
 							itemOrActionText = 'It appears that your stone does not want to listen to your mental commands. What did you do to it, exactly? You recover no health.';
 						} else if (roll === 1) {
 							itemOrActionText = 'The stone pulses with brilliant light and heals a papercut you did not realize you had. You recover ' + amount + ' health.';
@@ -1047,7 +1082,7 @@ client.on('interactionCreate', async interaction => {
 			restartTimeout(interaction);
 			if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('902364365263605810') && global.activePlayerShieldStatus === 'Down' && !global.itemOrActionProcessing) {
 				global.itemOrActionProcessing = true;
-				var formationChance = 100 - (global.round * 20);
+				var formationChance = global.overtime ? 80 : 50;
 				const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('yes').setLabel('✔️ Yes').setStyle(ButtonStyle.Success),new ButtonBuilder().setCustomId('no').setLabel('❌ No').setStyle(ButtonStyle.Danger));
 				// @ts-ignore
 				await interaction.reply({ content: '<:itemShield:903038554127601694> **Shield**:  ' + formationChance + '% chance of shield\n\nUse this item?', components: [row] });
@@ -1181,8 +1216,13 @@ client.on('interactionCreate', async interaction => {
 					if (i.customId === 'yes') {
 						var itemOrActionText = '';
 						var roll = random(1, 3);
-						var amount = health('active', 2);
-						if (roll === 1) {
+						var amount = '';
+						if (!global.overtime || global.activePlayerArkaetre === 'Hydra') {
+							amount = health('active', 2);
+						}
+						if (global.overtime && global.activePlayerArkaetre != 'Hydra') {
+							itemOrActionText = 'You are far too worn-out to heal yourself, but you weakly hold up the pocketwatch anyway. The turn order is locked into place and the turn counter is frozen for 3 turns.';
+						} else if (roll === 1) {
 							itemOrActionText = 'You step away from battle to recover ' + amount + ' health and glance at your pocketwatch, keeping careful time with your foot. The turn order is locked into place and the turn counter is frozen for 3 turns.';
 						} else if (roll === 2) {
 							itemOrActionText = 'You swing your pocketwatch back and forth, hypnotizing your opponent into a rhythm and giving yourself a break to recover ' + amount + ' health. The turn order is locked into place and the turn counter is frozen for 3 turns.';
@@ -1230,14 +1270,12 @@ client.on('interactionCreate', async interaction => {
 			await interaction.reply({ content: 'There is no battle in progress.', ephemeral: true });
 		} else if (interaction.user.id === global.activePlayerID) {
 			restartTimeout(interaction);
-			if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('902364301522792448') && (global.activePlayerArkaetre === '' || global.activePlayerArkaetre === 'Kludde' || global.activePlayerArkaetre === 'Hydra') && !global.itemOrActionProcessing) {
+			if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('902364301522792448') && (global.activePlayerArkaetre === '' || global.activePlayerArkaetre === 'Kludde') && !global.itemOrActionProcessing) {
 				global.itemOrActionProcessing = true;
 				const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('yes').setLabel('✔️ Yes').setStyle(ButtonStyle.Success),new ButtonBuilder().setCustomId('no').setLabel('❌ No').setStyle(ButtonStyle.Danger));
 				var text = '<:itemArkaetre:903038551095128064> **Arkaetre**:  Gain a permanent random arkaetre ability\n\nUse this item?';
 				if (global.activePlayerArkaetre === 'Kludde') {
 					text = '🐺 **Arkaetre**:  Add a kludde to your pack\n\nUse this item?';
-				} else if (global.activePlayerArkaetre === 'Hydra') {
-					text = '🔱 **Arkaetre**:  Reset all active arkaetres\n\nUse this item?';
 				}
 				// @ts-ignore
 				await interaction.reply({ content: text, components: [row] });
@@ -1264,29 +1302,14 @@ client.on('interactionCreate', async interaction => {
 								global.activePlayerArkaetreIcon = '🐺7️⃣ ';
 							}
 							itemOrActionText = 'Your kludde arkaetre howls and a new kludde hears the call, joining your pack.';
-						} else if (global.activePlayerArkaetre === 'Hydra') {
-							global.activePlayerArkaetre = '';
-							global.activePlayerArkaetreIcon = '';
-							if (global.waitingPlayerArkaetre === 'Griffin') {
-								global.waitingPlayerAT = 'Normal';
-							} else if (global.waitingPlayerArkaetre === 'Dragon') {
-								global.waitingPlayerDF = 'Normal';
-							} else if (global.waitingPlayerArkaetre === 'Cheetah') {
-								global.waitingPlayerRC = 'Normal';
-							}
-							global.waitingPlayerKluddeCount = 0;
-							global.waitingPlayerPhoenixUsed = false;
-							global.waitingPlayerArkaetre = '';
-							global.waitingPlayerArkaetreIcon = '';
-							itemOrActionText = 'Your hydra arkaetre helps you to use powerful time magic, erasing all traces of active arkaetres in the battle.';
 						} else {
 							var roll = random(1, 12);
 							if (roll === 1) {
-								itemOrActionText = 'You called your wyrm arkaetre! Every time you use an item or action that you have not used yet in this battle, you will gain 1 extra point of health.';
+								itemOrActionText = 'You called your wyrm arkaetre! Every time you use an item or action that you have not used yet in this battle, you will gain 1 additional point of health.';
 								global.activePlayerArkaetre = 'Wyrm';
 								global.activePlayerArkaetreIcon = '🐍 ';
 							} else if (roll === 2) {
-								itemOrActionText = 'You called your flying lion arkaetre! Every time you roll the highest possible Enemy Damage for an item or action, you will deal 1 extra point of damage.';
+								itemOrActionText = 'You called your flying lion arkaetre! Every time you roll the highest possible Enemy Damage for an item or action, you will deal 1 additional point of damage.';
 								global.activePlayerArkaetre = 'Flying Lion';
 								global.activePlayerArkaetreIcon = '🦁 ';
 							} else if (roll === 3) {
@@ -1298,12 +1321,12 @@ client.on('interactionCreate', async interaction => {
 								global.activePlayerArkaetre = 'Owl';
 								global.activePlayerArkaetreIcon = '🦉 ';
 							} else if (roll === 5) {
-								itemOrActionText = 'You called your griffin arkaetre! Your Attack will always be high, and you and your opponent will both have an extra 5% chance of an instakill every time either of you roll positive Enemy Damage for an item or action.';
+								itemOrActionText = 'You called your griffin arkaetre! Your Attack will always be high, and you and your opponent will both have an additional 5% chance of an instakill every time either of you roll positive Enemy Damage for an item or action.';
 								global.activePlayerArkaetre = 'Griffin';
 								global.activePlayerArkaetreIcon = '🦅 ';
 								global.activePlayerAT = 'High🔺';
 							} else if (roll === 6) {
-								itemOrActionText = 'You called your dragon arkaetre! Your Defense will always be high, and you and your opponent will both have an extra 10% chance of critical hits and heals.';
+								itemOrActionText = 'You called your dragon arkaetre! Your Defense will always be high, and you and your opponent will both have an additional 10% chance of critical hits and heals.';
 								global.activePlayerArkaetre = 'Dragon';
 								global.activePlayerArkaetreIcon = '🐲 ';
 								global.activePlayerDF = 'High🔺';
@@ -1330,7 +1353,7 @@ client.on('interactionCreate', async interaction => {
 								global.activePlayerArkaetre = 'Phoenix';
 								global.activePlayerArkaetreIcon = '🐦 ';
 							} else if (roll === 12) {
-								itemOrActionText = 'You called your hydra arkaetre! The maximum number of health points allowed will gradually decrease by 1 health per 2 counted turns. Use the `/arkaetre` command again to reset the health point cap and both your and your opponent\'s arkaetres.';
+								itemOrActionText = 'You called your hydra arkaetre! Every counted turn will have an additional 66% chance of decreasing the health cap by 1 point. You will also be immune to overtime effects.';
 								global.activePlayerArkaetre = 'Hydra';
 								global.activePlayerArkaetreIcon = '🔱 ';
 							}
@@ -1471,7 +1494,7 @@ function resetGameVars() {
 
 	global.turn = true;
 	global.turnNumber = 1;
-	global.round = 1;
+	global.overtime = false;
 	global.actionType = '';
 	global.pocketwatchCounter = 0;
 	global.pocketwatchActivated = false;
@@ -1480,6 +1503,7 @@ function resetGameVars() {
 	global.hummingbirdActivated = false;
 	global.freeAttackInstakillHappened = false;
 	global.turnJustSwitched = false;
+	global.maxHealth = 20;
 }
 
 
@@ -1802,19 +1826,17 @@ function endTurn(interaction, item, itemOrActionText) {
 		}
 	}
 
-	var roundDamageMessage = '';
-	if (global.round === 2) {
-		roundDamageMessage = '\n\n⌛ It is Round 2! You take 1 point of damage.';
-	} else if (global.round === 3) {
-		roundDamageMessage = '\n\n⌛ It is Round 3! You take 2 points of damage.';
-	} else if (global.round === 4) {
-		roundDamageMessage = '\n\n⌛ It is Round 4! You take 3 points of damage.';
-	}
-	global.activePlayerHP -= global.round - 1;
-
 	var pocketwatchMessage = '';
 	if (global.pocketwatchActivated) {
 		pocketwatchMessage = '\n\n<:itemPocketwatch:903038555633385512> The pocketwatch ticks adamantly and prevents any turns from being gained or lost.';
+	}
+	var pocketwatchTurnFreezeIcon = '';
+	if (global.pocketwatchCounter > 0) {
+		pocketwatchTurnFreezeIcon = ' ❄️';
+		global.pocketwatchCounter--;
+		if (global.pocketwatchCounter === 0) {
+			pocketwatchTurnFreezeIcon = ' 💧';
+		}
 	}
 
 	var shieldMessage = '';
@@ -1907,49 +1929,36 @@ function endTurn(interaction, item, itemOrActionText) {
 		global.waitingPlayerArkaetreIcon = '🪶 ';
 		global.waitingPlayerPhoenixUsed = true;
 	}
-
-	var roundTag = '';
-	for (var i = 0; i < global.round; i++) {
-		roundTag += '⌛';
-	}
-	roundTag += ' ';
-	var roundStartingMessage = '';
-	if (global.turnNumber === 25 && global.round === 1) {
-		global.round = 2;
-		roundStartingMessage = '\n\n⌛ Round 2 is starting! Each turn, the active player will take 1 point of damage, and the maximum shield formation chance has decreased to 60%.';
-	} else if (global.turnNumber === 50 && global.round === 2) {
-		global.round = 3;
-		roundStartingMessage = '\n\n⌛ Round 3 is starting! Each turn, the active player will take 2 points of damage, and the maximum shield formation chance has decreased to 40%.';
-	} else if (global.turnNumber === 75 && global.round === 3) {
-		global.round = 4;
-		roundStartingMessage = '\n\n⌛ Round 4 is starting! Each turn, the active player will take 3 points of damage, and the maximum shield formation chance has decreased to 20%.';
-	}
-
-	var pocketwatchTurnFreezeIcon = '';
-	if (global.pocketwatchCounter > 0) {
-		pocketwatchTurnFreezeIcon = ' ❄️';
-		global.pocketwatchCounter--;
-		if (global.pocketwatchCounter === 0) {
-			pocketwatchTurnFreezeIcon = ' 💧';
+	if (global.activePlayerArkaetre === 'Hydra' || global.waitingPlayerArkaetre === 'Hydra') {
+		var roll = random(1, 3);
+		if (global.activePlayerArkaetre === 'Hydra' && global.waitingPlayerArkaetre === 'Hydra') {
+			roll = 1;
+		}
+		if (roll < 3) {
+			global.maxHealth--;
+			if (global.activePlayerArkaetre === 'Hydra') {
+				arkaetreMessage += '\n\n🔱 Your hydra arkaetre hisses and surrounds the arena with its formidable heads, decreasing the health cap by 1 point.';
+			} else {
+				arkaetreMessage += '\n\n🔱 <@' + global.waitingPlayerID + '>\'s hydra arkaetre hisses and surrounds the arena with its formidable heads, decreasing the health cap by 1 point.';
+			}
 		}
 	}
 
-	var healthCap = global.activePlayerArkaetre === 'Hydra' || global.waitingPlayerArkaetre === 'Hydra' ? 20 - Math.floor(global.turnNumber / 2) : 20;
-	if (global.activePlayerHP > healthCap) {
-		global.activePlayerHP = healthCap;
+	if (global.activePlayerHP > global.maxHealth) {
+		global.activePlayerHP = global.maxHealth;
 	}
 	if (global.activePlayerHP < 0) {
 		global.activePlayerHP = 0;
 	}
-	if (global.waitingPlayerHP > healthCap) {
-		global.waitingPlayerHP = healthCap;
+	if (global.waitingPlayerHP > global.maxHealth) {
+		global.waitingPlayerHP = global.maxHealth;
 	}
 	if (global.waitingPlayerHP < 0) {
 		global.waitingPlayerHP = 0;
 	}
 
 	var activePlayerHealthIcon = '';
-	if (global.activePlayerHP === healthCap) {
+	if (global.activePlayerHP === global.maxHealth) {
 		activePlayerHealthIcon = '💙';
 	} else if (global.activePlayerHP >= 15) {
 		activePlayerHealthIcon = '💚';
@@ -1961,7 +1970,7 @@ function endTurn(interaction, item, itemOrActionText) {
 		activePlayerHealthIcon = '❤️';
 	}
 	var waitingPlayerHealthIcon = '';
-	if (global.waitingPlayerHP === healthCap) {
+	if (global.waitingPlayerHP === global.maxHealth) {
 		waitingPlayerHealthIcon = '💙';
 	} else if (global.waitingPlayerHP >= 15) {
 		waitingPlayerHealthIcon = '💚';
@@ -1973,14 +1982,19 @@ function endTurn(interaction, item, itemOrActionText) {
 		waitingPlayerHealthIcon = '❤️';
 	}
 
-	var activePlayerShieldIcon = '';
-	if (global.activePlayerShieldStatus === 'Up') {
-		activePlayerShieldIcon = ' <:itemShield:903038554127601694>';
+	var overtimeTag = global.overtime ? '⌛ ' : '';
+	var overtimeMessage = '';
+	if (global.activePlayerHealth != 0 && global.waitingPlayerHealth != 0) {
+		if (global.turnNumber > 14 && global.turnNumber < 20) {
+			overtimeMessage = '\n\n⌛ Overtime will start on turn 20! You are both growing too tired to defend yourselves properly...';
+		} else if (global.turnNumber === 20 && !global.overtime) {
+			global.overtime = true;
+			overtimeMessage = '\n\n⌛ Overtime is starting! You are both too tired to defend yourselves properly. Healing rolls are now disabled, and the shield formation chance has decreased to 50%.';
+		}
 	}
-	var waitingPlayerShieldIcon = '';
-	if (global.waitingPlayerShieldStatus === 'Up') {
-		waitingPlayerShieldIcon = ' <:itemShield:903038554127601694>';
-	}
+
+	var activePlayerShieldIcon = global.activePlayerShieldStatus === 'Up' ? ' <:itemShield:903038554127601694>' : '';
+	var waitingPlayerShieldIcon = global.waitingPlayerShieldStatus === 'Up' ? ' <:itemShield:903038554127601694>' : '';
 
 	var activePlayerExtraTurnsTag = '';
 	if (global.activePlayerNumExtraTurns > 0) {
@@ -2004,16 +2018,16 @@ function endTurn(interaction, item, itemOrActionText) {
 	var waitingPlayerDFLockIcon = global.waitingPlayerArkaetre === 'Dragon' ? ' 🔒' : '';
 	var waitingPlayerRCLockIcon = global.waitingPlayerArkaetre === 'Cheetah' ? ' 🔒' : '';
 
-	var embed = new EmbedBuilder().setTitle('You ' + item + '!').setDescription(itemOrActionText + criticalMessage + roundDamageMessage + pocketwatchMessage + shieldMessage + arkaetreMessage + roundStartingMessage).setFooter({ text: roundTag + 'Turn ' + global.turnNumber + pocketwatchTurnFreezeIcon });
+	var embed = new EmbedBuilder().setTitle('You ' + item + '!').setDescription(itemOrActionText + criticalMessage + pocketwatchMessage + shieldMessage + arkaetreMessage + overtimeMessage).setFooter({ text: overtimeTag + 'Turn ' + global.turnNumber + pocketwatchTurnFreezeIcon });
 	if (global.turn) {
 		embed.setColor(0x55ACEE).addFields(
-			{ name: '\u200B', value: '🔸' + global.waitingPlayerArkaetreIcon + '<@' + global.waitingPlayerID + '>' + waitingPlayerShieldIcon + '🔸' + waitingPlayerExtraTurnsTag + '\n' + waitingPlayerHealthIcon + ' HP: ' + global.waitingPlayerHP + '/' + healthCap + '\n⚔️ AT: ' + global.waitingPlayerAT + waitingPlayerATLockIcon + '\n🛡️ DF: ' + global.waitingPlayerDF + waitingPlayerDFLockIcon + '\n💗 RC: ' + global.waitingPlayerRC + waitingPlayerRCLockIcon, inline: true },
-			{ name: '\u200B', value: '🔹' + global.activePlayerArkaetreIcon + '<@' + global.activePlayerID + '>' + activePlayerShieldIcon + '🔹' + activePlayerExtraTurnsTag + '\n' + activePlayerHealthIcon + ' HP: ' + global.activePlayerHP + '/' + healthCap + '\n⚔️ AT: ' + global.activePlayerAT + activePlayerATLockIcon + '\n🛡️ DF: ' + global.activePlayerDF + activePlayerDFLockIcon + '\n💗 RC: ' + global.activePlayerRC + activePlayerRCLockIcon, inline: true }
+			{ name: '\u200B', value: '🔸' + global.waitingPlayerArkaetreIcon + '<@' + global.waitingPlayerID + '>' + waitingPlayerShieldIcon + '🔸' + waitingPlayerExtraTurnsTag + '\n' + waitingPlayerHealthIcon + ' HP: ' + global.waitingPlayerHP + '/' + global.maxHealth + '\n⚔️ AT: ' + global.waitingPlayerAT + waitingPlayerATLockIcon + '\n🛡️ DF: ' + global.waitingPlayerDF + waitingPlayerDFLockIcon + '\n💗 RC: ' + global.waitingPlayerRC + waitingPlayerRCLockIcon, inline: true },
+			{ name: '\u200B', value: '🔹' + global.activePlayerArkaetreIcon + '<@' + global.activePlayerID + '>' + activePlayerShieldIcon + '🔹' + activePlayerExtraTurnsTag + '\n' + activePlayerHealthIcon + ' HP: ' + global.activePlayerHP + '/' + global.maxHealth + '\n⚔️ AT: ' + global.activePlayerAT + activePlayerATLockIcon + '\n🛡️ DF: ' + global.activePlayerDF + activePlayerDFLockIcon + '\n💗 RC: ' + global.activePlayerRC + activePlayerRCLockIcon, inline: true }
 		);
 	} else {
 		embed.setColor(0xF4900C).addFields(
-			{ name: '\u200B', value: '🔸' + global.activePlayerArkaetreIcon + '<@' + global.activePlayerID + '>' + activePlayerShieldIcon + '🔸' + activePlayerExtraTurnsTag + '\n' + activePlayerHealthIcon + ' HP: ' + global.activePlayerHP + '/' + healthCap + '\n⚔️ AT: ' + global.activePlayerAT + activePlayerATLockIcon + '\n🛡️ DF: ' + global.activePlayerDF + activePlayerDFLockIcon + '\n💗 RC: ' + global.activePlayerRC + activePlayerRCLockIcon, inline: true },
-			{ name: '\u200B', value: '🔹' + global.waitingPlayerArkaetreIcon + '<@' + global.waitingPlayerID + '>' + waitingPlayerShieldIcon + '🔹' + waitingPlayerExtraTurnsTag + '\n' + waitingPlayerHealthIcon + ' HP: ' + global.waitingPlayerHP + '/' + healthCap + '\n⚔️ AT: ' + global.waitingPlayerAT + waitingPlayerATLockIcon + '\n🛡️ DF: ' + global.waitingPlayerDF + waitingPlayerDFLockIcon + '\n💗 RC: ' + global.waitingPlayerRC + waitingPlayerRCLockIcon, inline: true }
+			{ name: '\u200B', value: '🔸' + global.activePlayerArkaetreIcon + '<@' + global.activePlayerID + '>' + activePlayerShieldIcon + '🔸' + activePlayerExtraTurnsTag + '\n' + activePlayerHealthIcon + ' HP: ' + global.activePlayerHP + '/' + global.maxHealth + '\n⚔️ AT: ' + global.activePlayerAT + activePlayerATLockIcon + '\n🛡️ DF: ' + global.activePlayerDF + activePlayerDFLockIcon + '\n💗 RC: ' + global.activePlayerRC + activePlayerRCLockIcon, inline: true },
+			{ name: '\u200B', value: '🔹' + global.waitingPlayerArkaetreIcon + '<@' + global.waitingPlayerID + '>' + waitingPlayerShieldIcon + '🔹' + waitingPlayerExtraTurnsTag + '\n' + waitingPlayerHealthIcon + ' HP: ' + global.waitingPlayerHP + '/' + global.maxHealth + '\n⚔️ AT: ' + global.waitingPlayerAT + waitingPlayerATLockIcon + '\n🛡️ DF: ' + global.waitingPlayerDF + waitingPlayerDFLockIcon + '\n💗 RC: ' + global.waitingPlayerRC + waitingPlayerRCLockIcon, inline: true }
 		);
 	}
 
