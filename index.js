@@ -1,10 +1,34 @@
+/// FUTURE UPDATES
+/// Dark/Light/Gray continuum pick > different turn numbers advantageous + stat advantage
+/// Ping streak
+/// Pick a player class with certain perks? Darklight Order mages + Kireveans (symbol mage), Sand Trap Order of the Hydra mages w/staff, Ng Ey scroll mage, TKR stone mage
+/// Achievements? For currency? Upgrades so more use for currency?
+/// Boss battles?
+/// Skill component?
+/// More items rotating through shop? One use per battle items? One use items?
+/// Typescript and refactoring - ?
+/// Run on VM restart?
+/// Game design notes on phone
+
+/// FINAL CHECKS
+/// Edit rules
+/// Edit patch notes
+/// Edit Tatsu text
+/// Edit Kov text
+
+
+
+
+
 // @ts-check
-const { Client, Events, GatewayIntentBits, ActivityType, ButtonBuilder, ButtonStyle, ActionRowBuilder, EmbedBuilder, SlashCommandBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, DiscordAPIError, GuildMemberRoleManager } = require('discord.js');
+const { Client, Events, GatewayIntentBits, ActivityType, ButtonBuilder, ButtonStyle, ActionRowBuilder, EmbedBuilder, SlashCommandBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, DiscordAPIError, GuildMemberRoleManager, ComponentType } = require('discord.js');
 const { token } = require('C:/Videos/config.json');
 
 global.interval = null;
 global.timeoutWarningGiven = false;
 resetGameVars();
+global.battleMode = '**Default**';
+global.arkaetreMode = '**Random**';
 global.onesPlace = ['922034725714001930' /* Zero */, '922034703748435988', '922034705396801538', '922034707741425695', '922034710799069204', '922034713265319936', '922034715916128328', '922034718046838815', '922034720823464017', '922034723054813195'];
 global.tensPlace = ['923075850415505439' /* Zero */, '922034458939519007', '922034588711268423', '922034620546031616', '922034682076491826', '922034689169055794', '922034691438153738', '922034694403522620', '922034697788325909', '922034700279771136'];
 global.hundredsPlace = ['923072342924591134' /* One */, '923072346946940990', '923072350616969286', '923072353158725674', '923072356207951903', '923072359261433876', '923072362272931880', '923072365154435072', '923072367721340978'];
@@ -32,24 +56,90 @@ client.on('interactionCreate', async interaction => {
 		await interaction.reply({ content: 'Hello, mortal.', ephemeral: true });
 	
 
+
+	} else if (commandName === 'patchnotes') {
+		var currentPage = 0;
+		var patchNotesText = ['**7/INSERT/24**\n- The two bugs that got me to shut down the bot last time turned out to be bad luck and probably incorrect manual role assignment, so no action needed there.\n- Councilors will be delighted to hear that Volturnus is no longer allowed in the arena channel, so we can avoid message deletion log spam.\n- Arkaetres are now free (!!) and considered a free action, not an item, and a new item has taken the twelfth place, the scroll. Using a scroll gives both players a free extra turn every time it becomes their turn (or toggles this effect off again) and increases the turn counter by 5. Remember, overtime starts on turn 20. Everyone who previously bought an Arkaetre now has a scroll for free.\n- Check out `/battlemode` for some new ways to play! Try being limited to just free actions (Free Only), the first cheap six items (Front Six), the more expensive ones (Back Six). There\'s also backpack mode (Backpack), where you use four preset items of your choice! Just use `/setbackpack` first.\n- Similarly, `/arkaetremode` sets the Arkaetre mode, either Random, Picked or None. Pick your Arkaetre by using `/setarkaetre`.\n- You can check all of your presets with `/checkbackpackandarkaetre`.\n- Some small text edits for clarity, as usual.\n- And yeah, I know the patch notes say Interaction Failed when you flip the page. It works, and I have no idea what\'s causing it, so whatever.',
+		
+		'**7/4/23**\n- The Enemy Recovery decrease effect has been moved from the laser rifle to the bow.\n- The laser rifle now decreases a random enemy stat instead.\n- The frozen fish has been boosted! It now has a 75% chance of dealing 3-5 damage and a 25% chance of healing your enemy for 2 points (it used to be a 66% chance of 1-4 damage and a 33% chance of 1-2 health).\n- `/freedefend` is now `/freeheal`, which includes a defensive stance that has a 33% chance of blocking the entire next set of negative effects that target you, including damage, stat effects, lost turns and instakills.', 
+			
+		'**7/3/23**\n- Overtime is back! After 20 turns, healing rolls will be disabled and the shield formation chance will drop to 50%. Healing items can still be used for their other functions.\n- `/freedefend` now has a 50% chance of a shield. But it\'ll be updated again soon...\n- The new overtime announcement won\'t be printed if a player just lost.\n- Some text edits.\n- The hydra has been updated. It no longer allows you to reset all active arkaetres. There is now a 66% chance of the health cap decreasing each turn the hydra is active, and having the hydra makes you immune to overtime effects. If two hydras are active, the chance of the health cap decreasing is 100%.',
+		
+		'**6/29/23**\n- Some text edits, especially ones more inclusive to free actions.\n- The names for the rules commands have changed *again*. They\'re now a pleasant combination of easy to search for and easy to tell apart.\n- The griffin and `/freeattack` instakills can no longer occur simultaneously.\n- The patch notes have pages now! Feel free to go back in time.\n- Challenges time out after only 14 minutes, because any longer and the bot won\'t know how to edit the message when it times out.\n- I\'m on the battle point leaderboard after a long time of not being. Why? I dunno, I felt like it. All my points are genuine, I promise.',
+		
+		'**6/25/23**\n- Apparently critical hits and heals weren\'t actually working. Now they are.\n- Challenges finally time out! No more forever unusable buttons.\n\n**6/19/23**\n- A text bug in the bow and Magistone confirmation messages was fixed.\n- Godricon is now running on sweet, sweet, completely redesigned Discord.js version 14. Prepare for bugs.\n- I have conquered my fear of source control. Godricon has made it onto GitHub.',
+		
+		'**2/11/23**\n- All three free actions finally exist, so those new to battling can still participate.\n\n**2/6/22**\n- More small text edits, as usual.\n- The leaderboard display is more vertical to work better on mobile.',
+		
+		'**2/2/22**\n- Rules about shields and rounds are now on the second page of the rules, `/rules2`, and `/arkaetrerules` was renamed to `/rules3`.\n- The chance a shield will break is now dependent on how much damage is dealt to it. Every damage point in the final value of an attack increases the chance by 17%, and an attack that deals at least six damage is guaranteed to break a shield.\n- Overtime has been replaced by a four-round system where negative effects increase every 25 turns, with another hourglass icon added to the turn counter for each round.\n- At 100 turns, a battle will end in a tie.\n- Extra turns are now displayed with symbols to the right of players\' stat headers.\n- The rule reminder at the end of battle embeds is gone.\n- The pocketwatch removes any saved up extra turns when used, stops the turn counter while active, and shows a frozen icon after the turn counter instead of a picture above the action text.\n- The hydra will now gradually lower the maximum number of health points while active by 1 health per 2 counted turns, and instead of it blocking both Arkaetre slots, you can use the `/arkaetre` command again to reset the health cap and all active arkaetres.\n- The second number in the HP stat is now the health cap instead of your starting health.\n- The challenge timeout length is now an hour.\n- The owl\'s extra turn chance is now 66%.',
+		
+		'**2/1/22**\n- `/toggle` exists so I can block off battles when I need to. Commands not related to battling like `/leaderboard` stay up.\n- There\'s no more daily point limit. Go crazy, if that\'s your thing.'];
+
+		var lastPage = patchNotesText.length-1;
+		const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('previous').setLabel('🢀 Previous').setStyle(ButtonStyle.Secondary), new ButtonBuilder().setCustomId('next').setLabel('Next 🢂').setStyle(ButtonStyle.Secondary).setDisabled(true));
+		/// @ts-ignore
+		await interaction.reply({ content: patchNotesText[currentPage], components: [row], ephemeral: true });
+		const filter = i => (i.customId === 'previous' || i.customId === 'next');
+		const collector = interaction.channel.createMessageComponentCollector({ filter, time: 840000 });
+
+		collector.on('collect', async i => {
+			if (row.components[0] instanceof ButtonBuilder && row.components[1] instanceof ButtonBuilder) {
+				if (i.customId === 'previous') {
+					if (currentPage < lastPage) {
+						currentPage++;
+						if (currentPage === lastPage) {
+							row.components[1].setDisabled(false);
+							row.components[0].setDisabled(true);
+						} else {
+							row.components[1].setDisabled(false);
+							row.components[0].setDisabled(false);
+						}
+						/// @ts-ignore
+						interaction.editReply({ content: patchNotesText[currentPage], components: [row], ephemeral: true });
+					}
+				} else if (i.customId === 'next') {
+					if (currentPage > 0) {
+						currentPage--;
+						if (currentPage === 0) {
+							row.components[1].setDisabled(true);
+							row.components[0].setDisabled(false);
+						} else {
+							row.components[1].setDisabled(false);
+							row.components[0].setDisabled(false);
+						}
+						/// @ts-ignore
+						interaction.editReply({ content: patchNotesText[currentPage], components: [row], ephemeral: true });
+					}
+				}
+			}
+		});
+		collector.on('end', collected => { interaction.editReply('The request timed out.') });
+	
+
 	
 	} else if (commandName === 'rules-basic') {
-		await interaction.reply({ content: '**__Overview__**\nYou can start a battle by typing `/battle` and pinging the member that you want to battle.\nYou can send a battle challenge open to anyone by typing `/challenge`. It will time out after 14 minutes.\nYou can end a battle you are in at any time by typing `/endbattle`.\nYour health starts at 15 and cannot go above 20.\nWhen a player\'s health hits 0, the other player wins.\nThe winner earns 1 battle point (BP), up to 999.\nIf both players hit 0 health on the same turn or turn 100 is reached, there is a tie.\n\n**__Using Items and Actions__**\nYou and your opponent will take turns using item commands such as `/sword` or free action commands such as `/freeattack`.\nYou can only use items that you have registered.\nTo register an item, buy it in `c!shop` and use it in `c!inventory`.\nYou only have to register each item once to use it in all battles.\nYou can use the `/freeattack`, `/freedefend` or `/freeboost` actions to battle without a registered item.\n\n**__Item and Action Effects__**\nThe effects of an item are listed in its description in `c!shop` and `c!inventory`.\nYou will also be shown the effects of an item or action after using its command but before deciding whether to use it.\nA range of effects not separated by commas have an equal probability of occuring.\nEffects are applied in the order listed.\nItems and actions that, upon rolling, deal Enemy Damage or grant Personal Health, have a 10% chance of a critical hit or heal for an extra point of damage or health.\nArkaetre abilities and instakills are not affected by shields, pocketwatches or other arkaetre abilities.\n\nCheck other rules commands for more information!', ephemeral: true });
+		await interaction.reply({ content: '**__Overview__**\nYou can start a battle by typing `/battle` and pinging the member that you want to battle.\nYou can send a battle challenge open to anyone by typing `/challenge`. It will time out after 14 minutes.\nYou can end a battle you are in at any time by typing `/endbattle`.\nTwo battles cannot occur simultaneously.\nYour health starts at 15 and cannot go above 20.\nWhen a player\'s health hits 0, the other player wins.\nThe winner earns 1 battle point (BP), up to 999.\nIf both players hit 0 health on the same turn or turn 100 is reached, there is a tie.\n\nCheck other rules commands for more information!', ephemeral: true });
+
+
+
+	} else if (commandName === 'rules-usingactionsanditems') {
+		await interaction.reply({ content: '**__Using Items and Actions__**\nYou and your opponent will take turns using item commands such as `/sword` or free action commands such as `/freeattack`.\nYou can only use items that you have registered.\nTo register an item, buy it in `c!shop` and use it in `c!inventory`.\nYou only have to register each item once to use it in all battles.\nYou can use the `/freeattack`, `/freeheal`, `/freeboost` or `/arkaetre` actions to battle without a registered item.\n\n**__Modes__**\nSet the battle mode with `/battlemode`, which restricts which items can be used.\nIn Backpack mode, preset your items before a battle using `/setbackpack`.\nSet the arkaetre mode with `/arkaetremode`, determining if arkaetres can be used.\nIn Picked mode, preset your arkaetre before a battle using `/setarkaetre`.\nCheck your presets by using `/checkbackpackandarkaetre`.\n\n**__Item and Action Effects__**\nThe effects of an item are listed in its description in `c!shop` and `c!inventory`.\nYou will also be shown the effects of an item or action after using its command but before deciding whether to use it.\nA range of effects not separated by commas have an equal probability of occuring.\nEffects are applied in the order listed.\nItems and actions that, upon rolling, deal Enemy Damage or grant Personal Health, have a 10% chance of a critical hit or heal for an extra point of damage or health.\nArkaetre abilities and instakills are not affected by shields, pocketwatches or other Arkaetre abilities.\n\nCheck other rules commands for more information!', ephemeral: true });
 	
 	
 	
 	} else if (commandName === 'rules-advanced') {
-		await interaction.reply({ content: '**__Stats__**\nYou and your opponent have three different stats that affect item and action effects by up to 1 point in either direction.\nThey are Attack (AT) for attack strength, Defense (DF) for attack resistance, and Recovery (RC) for healing.\nEach of them can be Low🔻, Normal or High🔺.\nArkaetre abilities are not affected by stats.\nActions whose original rolls deal no damage or grant no health are not affected by stats or shields.\n\n**__Shields__**\nA shield can be formed by using `/shield` or `/freedefend`.\nWhen a shield is hit by an attack, every damage point dealt increases the chance that the shield will fall by ~17%.\n\n**__Overtime__**\nAfter 20 turns, overtime will start, and all healing rolls will be disabled.\nItems and actions that both heal and serve other functions can still be used for those other functions.\nThe shield formation chance will also decrease to 50%.\n\nCheck other rules commands for more information!', ephemeral: true });
-
-
-
-	/*} else if (commandName === 'rules-actionsanditems') {
-		await interaction.reply({ content: '**__Item Effects__**\n\n', ephemeral: true });*/
-		
+		await interaction.reply({ content: '**__Stats__**\nYou and your opponent have three different stats that affect item and action effects by up to 1 point in either direction.\nThey are Attack (AT) for attack strength, Defense (DF) for attack resistance, and Recovery (RC) for healing.\nEach of them can be Low🔻, Normal or High🔺.\nArkaetre abilities are not affected by stats.\nActions whose original rolls deal no damage or grant no health are not affected by stats or shields.\n\n**__Shields and Defensive Stances__**\nA shield can be formed by using `/shield`.\nA shield will block all damage from attacks for as long as it stays up.\nWhen a shield is hit by an attack, every damage point dealt increases the chance that the shield will fall by ~17%.\nA defensive stance can be taken by using `/freeheal`.\nA defensive stance has a 33% chance of blocking all damage and stat debuffs from a single attack.\n\n**__Overtime__**\nAfter 20 turns, overtime will start, and all healing rolls will be disabled.\nItems and actions that both heal and serve other functions can still be used for only those other functions.\nThe shield formation chance will also decrease to 50%.\n\nCheck other rules commands for more information!', ephemeral: true });
 	
 	
-	} else if (commandName === 'rules-arkaetres') {
-		await interaction.reply({ content: '**__Arkaetre Abilities__**\n\n**🐍 Wyrm**\nEvery time you use an item or action that you have not used yet in the current battle, you will gain 1 additional point of health.\n\n**🦁 Flying Lion**\nEvery time you roll the highest possible Enemy Damage for an item or action, you will deal 1 additional point of damage.\n\n**🕊️ Hummingbird**\nEvery time you roll the lowest possible positive Enemy Damage for an item or action, you will gain 1 point of health.\n\n**🦉 Owl**\nEvery time you have no Normal stats at the end of your turn right after your opponent moves, you will have a 66% chance of gaining an extra turn.\n\n**🦅 Griffin**\nYour Attack will always be high, and you and your opponent will both have an additional 5% chance of an instakill every time either of you roll positive Enemy Damage for an item or action.\n\n**🐲 Dragon**\nYour Defense will always be high, and you and your opponent will both have an additional 10% chance of critical hits and heals.\n\n**🐆 Cheetah**\nYour Recovery will always be high, and you and your opponent will both take 1 extra point of damage each turn.\n\n**🦎 Komodo Dragon**\nEvery time your opponent uses an item or action to deal Enemy Damage, you will deal 1 point of Enemy Damage.\n\n**🐈 Sphinx**\nEvery time your opponent uses an item or action to gain Personal Health, you will gain 1 point of Personal Health.\n\n**🐺 Kludde**\nYou can use the `/arkaetre` command to add more kludde to your pack, 1 at a time. When you gather 7 kludde, you will instakill your opponent.\n\n**🐦 Phoenix**\nThe first time you end any turn with 1-3 points of health, you will go back to full health.\n\n**🔱 Hydra**\nEvery counted turn will have an additional 66% chance of decreasing the health cap by 1. You will also be immune to overtime effects.\n\nCheck other rules commands for more information!', ephemeral: true });
+
+	} else if (commandName === 'rules-arkaetreslist') {
+		await interaction.reply({ content: '**__Arkaetre Abilities__**\n\n**🐍 Wyrm**\nEvery time you use an item or action that you have not used yet in the current battle, you will gain 1 additional point of health.\n\n**🦁 Flying Lion**\nEvery time you roll the highest possible Enemy Damage for an item or action, you will deal 1 additional point of damage.\n\n**🕊️ Hummingbird**\nEvery time you roll the lowest possible positive Enemy Damage for an item or action, you will gain 1 point of health.\n\n**🦉 Owl**\nEvery time you have no Normal stats at the end of your first turn in your turn sequence, you will have a 66% chance of gaining an extra turn.\n\n**🦅 Griffin**\nYour Attack will always be high, and you and your opponent will both have an additional 5% chance of an instakill every time either of you roll positive Enemy Damage for an item or action.\n\n**🐲 Dragon**\nYour Defense will always be high, and you and your opponent will both have an additional 10% chance of critical hits and heals.\n\n**🐆 Cheetah**\nYour Recovery will always be high, and you and your opponent will both take 1 extra point of damage each turn.\n\n**🦎 Komodo Dragon**\nEvery time your opponent uses an item or action to deal Enemy Damage, you will deal 1 point of Enemy Damage.\n\n**🐈 Sphinx**\nEvery time your opponent uses an item or action to gain Personal Health, you will gain 1 point of Personal Health.\n\n**🐺 Kludde**\nYou can use the `/arkaetre` command to add more kludde to your pack, 1 at a time. When you gather 7 kludde, you will instakill your opponent.\n\n**🐦 Phoenix**\nThe first time you end any turn with 1-3 points of health, you will go back to full health.\n\n**🔱 Hydra**\nEvery counted turn will have an additional 66% chance of decreasing the health cap by 1. You will also be immune to overtime effects.\n\nCheck other rules commands for more information!', ephemeral: true });
+	
+
+	
+	} else if (commandName === 'rules-actionsanditemslist') {
+		await interaction.reply({ content: '**__Free Action Effects__**\n\n🤜 **Attack**\n1-2 Enemy Damage, 5% chance of instakill\n\n:heart_hands: **Heal**\n1-2 Personal Health, gain defensive stance\n\n💪 **Boost**\n↑ Personal Attack or Defense or Recovery or ↓ Enemy Attack or Defense or Recovery, 33% chance of 2x effect\n\n<:itemArkaetre:1260808324027383861> **Arkaetre**\nGain an Arkaetre ability (check `/rules-arkaetreslist`)\n\n**__Item Effects__**\n\n<:itemSword:793212847584313364> **Sword**\n1-3 Enemy Damage, ↑ Personal Attack\n\n<:itemBow:793230409734291506> **Bow**\n2-4 Enemy Damage, ↓ Enemy Recovery, 50% chance of 1 Personal Damage\n\n<:itemRealmPortal:769819664096034846> **Realm Portal**\n0-2 Enemy Damage or 1 Personal Health, 50% chance of extra turn\n\n<:itemMagistone:793215911599407124> **Magistone**\n1 Enemy Damage or 0-4 Personal Health, ↑ Personal Defense or Recovery\n\n<:itemDagger:838670346856431677> **Dagger**\n2 Enemy Damage, ↑ Personal Attack or Defense or Recovery\n\n<:itemFrozenFish:838670349137870858> **Frozen Fish**\n3-5 Enemy Damage or 2 Enemy Health, ↓ Enemy Attack or Defense\n\n<:itemLaserRifle:903038791562981397> **Laser Rifle**\n3x 0-2 Enemy Damage, ↓ Enemy Attack or Defense or Recovery, 50% chance of lost turn\n\n<:itemStaff:903038551682338836> **Staff**\n0 or 5-6 Enemy Damage, ↓ 2 of Personal Attack or Defense or Recovery on hit\n\n<:itemShield:903038554127601694> **Shield**\n80% chance of shield\n\n<:itemShifterDisc:903038892121407568> **Shifter Disc**\n3 Personal Damage or lose turn, ↑ Personal Attack and Defense and Recovery\n\n<:itemPocketwatch:903038555633385512> **Pocketwatch**\n2 Personal Health, ↓ Enemy Attack or Defense or Recovery, no extra or lost turns for either player for 3 turns, freeze the turn counter for 3 turns\n\n<:itemScroll:1260789127713128520> **Scroll**\nToggle free extra turn for both players, increase the turn counter by 5', ephemeral: true });
+	
 	
 
 
@@ -114,90 +204,197 @@ client.on('interactionCreate', async interaction => {
 
 
 	} else if (commandName === 'battlemode') {
-		await interaction.reply({ content: 'Nothing yet...'});
+		if (global.activePlayerID === '') {
+			var extraText = '';
+			if (global.battleMode === '**Default**') {
+				global.battleMode = '**Free Only**';
+				extraText = 'Only free actions, including Arkaetres, are allowed.';
+			} else if (global.battleMode === '**Free Only**') {
+				global.battleMode = '**Front Six**';
+				extraText = 'Only the first six items (the less expensive ones) are allowed.';
+			} else if (global.battleMode === '**Front Six**') {
+				global.battleMode = '**Back Six**';
+				extraText = 'Only the last six items (the more expensive ones, including the scroll) are allowed.';
+			} else if (global.battleMode === '**Back Six**') {
+				global.battleMode = '**Backpack**';
+				extraText = 'Only four preset items are allowed. Set your items by using `/backpack`.';
+			} else if (global.battleMode === '**Backpack**') {
+				global.battleMode = '**Default**';
+				extraText = 'All items and actions are allowed.';
+			}
+			await interaction.reply({ content: 'The battle mode is now ' + global.battleMode + '. ' + extraText + '\n\nRemember, free actions are always allowed.\n\nUse this command again to loop through other modes.'});
+		} else {
+			await interaction.reply({ content: 'A battle is currently in progress! Please wait until it finishes.'});
+		}
+	
 
+	
+	} else if (commandName === 'setbackpack') {
+		const weaponValuesCapitalized = ['Sword', 'Bow', 'Realm Portal', 'Magistone', 'Dagger', 'Frozen Fish', 'Laser Rifle', 'Staff', 'Shield', 'Shifter Disc', 'Pocketwatch', 'Scroll'];
+		const weaponEmojiIDs = ['793212847584313364', '793230409734291506', '769819664096034846', '793215911599407124', '838670346856431677', '838670349137870858', '903038791562981397', '903038551682338836', '903038554127601694', '903038892121407568', '903038555633385512', '1260789127713128520'];
+		const registeredItemRoleIDs = ['892611697876033638', '892528958460002346', '892574599596871720', '892572308219244606', '892530203581120562', '892530356606091316', '892530366894723103', '892530364369764412', '902364365263605810', '892530361370837022', '892530369641971783', '902364301522792448'];
+		const availableItems = [];
+		if (interaction.member.roles instanceof GuildMemberRoleManager) {
+			for (var n = 0; n < 12; n++) {
+				if (interaction.member.roles.cache.has(registeredItemRoleIDs[n])) {
+					availableItems.push(new StringSelectMenuOptionBuilder().setLabel(weaponValuesCapitalized[n]).setValue(weaponValuesCapitalized[n]).setEmoji(weaponEmojiIDs[n]));
+				}
+			}
+		}
+		if (availableItems.length === 0) {
+			interaction.reply({ content: 'You have no items to set. First, buy some in `c!shop` and use them in `c!inventory`.', ephemeral: true });
+			return;
+		}
 
+		var user = interaction.guild.members.cache.get(interaction.user.id);
+		const backpackRoleIDs = ['1261472894370713642', '1261472899966042172', '1261472905234223124', '1261472910053474396', '1261472914633527498', '1261472919691726932', '1261472924251066490', '1261472929095487489', '1261472933981978714', '1261472938893512754', '1261472943809232936', '1261477378035810385'];
+		backpackRoleIDs.forEach( async (backpackRoleID) => {
+			var role = interaction.guild?.roles.cache.get(backpackRoleID);
+			if (role) {
+				await user?.roles.remove(role);
+			}
+		});
+		var role = interaction.guild?.roles.cache.get('1261472889857900637');
+		if (role) {
+			user?.roles.add(role);
+		}
 
-	} else if (commandName === 'patchnotes') {
-		var currentPage = 0;
-		var patchNotesText = ['**__Recent Patches__**\n\n**7/3/23**\n- Overtime is back! After 20 turns, healing rolls will be disabled and the shield formation chance will drop to 50%. Healing items can still be used for their other functions.\n- `/freedefend` now has a 50% chance of a shield. But it\'ll be updated again soon...\n- The new overtime announcement won\'t be printed if a player just lost.\n- Some text edits.\n- The hydra has been updated. It no longer allows you to reset all active arkaetres. There is now a 66% chance of the health cap decreasing each turn the hydra is active, and having the hydra makes you immune to overtime effects. If two hydras are active, the chance of the health cap decreasing is 100%.\n\n**6/29/23**\n- Some text edits, especially ones more inclusive to free actions.\n- The names for the rules commands have changed *again*. They\'re now a pleasant combination of easy to search for and easy to tell apart.\n- The griffin and `/freeattack` instakills can no longer occur simultaneously.\n- The patch notes have pages now! Feel free to go back in time.\n- Challenges time out after only 14 minutes, because any longer and the bot won\'t know how to edit the message when it times out.\n- I\'m on the battle point leaderboard after a long time of not being. Why? I dunno, I felt like it. All my points are genuine, I promise.\n\n**6/25/23**\n- Apparently critical hits and heals weren\'t actually working. Now they are.\n- Challenges finally time out! No more forever unusable buttons.\n\n**6/19/23**\n- A text bug in the bow and Magistone confirmation messages was fixed.\n- Godricon is now running on sweet, sweet, completely redesigned Discord.js version 14. Prepare for bugs.\n- I have conquered my fear of source control. Godricon has made it onto GitHub.\n\n**2/11/23**\n- All three free actions finally exist, so those new to battling can still participate.\n\n**2/6/22**\n- More small text edits, as usual.\n- The leaderboard display is more vertical to work better on mobile.',
-		
-		'**2/2/22**\n- Rules about shields and rounds are now on the second page of the rules, `/rules2`, and `/arkaetrerules` was renamed to `/rules3`.\n- The chance a shield will break is now dependent on how much damage is dealt to it. Every damage point in the final value of an attack increases the chance by 17%, and an attack that deals at least six damage is guaranteed to break a shield.\n- Overtime has been replaced by a four-round system where negative effects increase every 25 turns, with another hourglass icon added to the turn counter for each round.\n- At 100 turns, a battle will end in a tie.\n- Extra turns are now displayed with symbols to the right of players\' stat headers.\n- The rule reminder at the end of battle embeds is gone.\n- The pocketwatch removes any saved up extra turns when used, stops the turn counter while active, and shows a frozen icon after the turn counter instead of a picture above the action text.\n- The hydra will now gradually lower the maximum number of health points while active by 1 health per 2 counted turns, and instead of it blocking both arkaetre slots, you can use the `/arkaetre` command again to reset the health cap and all active arkaetres.\n- The second number in the HP stat is now the health cap instead of your starting health.\n- The challenge timeout length is now an hour.\n- The owl\'s extra turn chance is now 66%.\n\n**2/1/22**\n- `/toggle` exists so I can block off battles when I need to. Commands not related to battling like `/leaderboard` stay up.\n- There\'s no more daily point limit. Go crazy, if that\'s your thing.'];
-
-		var lastPage = patchNotesText.length-1;
-		const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('previous').setLabel('🢀 Previous').setStyle(ButtonStyle.Secondary), new ButtonBuilder().setCustomId('next').setLabel('Next 🢂').setStyle(ButtonStyle.Secondary).setDisabled(true));
+		const row = new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setCustomId('backpack').setPlaceholder('Choose up to four items to be in your backpack!').addOptions(availableItems).setMinValues(1).setMaxValues(4));
 		/// @ts-ignore
-		await interaction.reply({ content: patchNotesText[currentPage], components: [row], ephemeral: true });
-		const filter = i => (i.customId === 'previous' || i.customId === 'next');
-		const collector = interaction.channel.createMessageComponentCollector({ filter, time: 840000 });
+		await interaction.reply({ components: [row], ephemeral: true });
 
+		const chosenItems = [];
+		var inputReceived = false;
+		const collector = interaction.channel.createMessageComponentCollector({ componentType: ComponentType.StringSelect, time: 60000 });
 		collector.on('collect', async i => {
-			if (row.components[0] instanceof ButtonBuilder && row.components[1] instanceof ButtonBuilder) {
-				if (i.customId === 'previous') {
-					if (currentPage < lastPage) {
-						currentPage++;
-						if (currentPage === lastPage) {
-							row.components[1].setDisabled(false);
-							row.components[0].setDisabled(true);
-						} else {
-							row.components[1].setDisabled(false);
-							row.components[0].setDisabled(false);
+			/// @ts-ignore
+			for (var k = 0; k < i.values.length; k++) {
+				for (var j = 0; j < 12; j++) {
+					/// @ts-ignore
+					if (i.values[k] === weaponValuesCapitalized[j]) {
+						var role = interaction.guild?.roles.cache.get(backpackRoleIDs[j]);
+						if (role) {
+							user?.roles.add(role);
 						}
-						/// @ts-ignore
-						interaction.editReply({ content: patchNotesText[currentPage], components: [row], ephemeral: true });
-					}
-				} else if (i.customId === 'next') {
-					if (currentPage > 0) {
-						currentPage--;
-						if (currentPage === 0) {
-							row.components[1].setDisabled(true);
-							row.components[0].setDisabled(false);
-						} else {
-							row.components[1].setDisabled(false);
-							row.components[0].setDisabled(false);
-						}
-						/// @ts-ignore
-						interaction.editReply({ content: patchNotesText[currentPage], components: [row], ephemeral: true });
+						chosenItems.push(weaponValuesCapitalized[j]);
 					}
 				}
 			}
+			inputReceived = true;
+
+			var chosenItemsString = '';
+			chosenItems.forEach((chosenItem) => {
+				chosenItemsString += chosenItem + ', ';
+			});
+			chosenItemsString = chosenItemsString.substring(0, chosenItemsString.length - 2);
+			interaction.editReply({ content: 'Your preset backpack items are now: **' + chosenItemsString + '**.', components: [] });
 		});
-		collector.on('end', collected => { interaction.editReply('The request timed out.') });
+		collector.on('end', collected => { 
+			if (!inputReceived) {
+				interaction.editReply({ content: 'The request timed out.', components: [] });
+			} 
+		});
 
-		/// BUGS
-		/// EditReply "unknown message" error
-		/// Check item selection message is properly sent - to avoid hidden selection message bug
-		/// Edit item selection messages instead of delete so no log spam? ;-;
-		/// Patch notes 'interaction failed'
-		/// Mobile ephemerals and buttons don't load properly
 
-        /// EDGE CASE CHECKS / SMALL THINGS
-		/// Insult, stick
 
-		/// Item rebalancing: bow decreases enemy recovery, laser rifle decreases random enemy stat, frozen fish deals 3-5 enemy damage or heals 2 enemy health, free defend is free heal (text about sleeping) and gives you defensive stance (33% chance of all effects blocked next turn, including arkaetres and instakill)
-		/// Add scroll (copy opponent's move, increase turn counter by... 3? 5?), make arkaetre free, change wording to include arkaetre as a free action (and an action, not an item), refund people with arkaetres
-		/// Battle modes (free actions always allowed?) - just free, first six, last six, all twelve, backpack (set of four? five?)
-		/// Arkaetre mode - random/picked/none
-		/// Rules page for all items and actions
-		/// All embeds for neatness?
+	} else if (commandName === 'arkaetremode') {
+		if (global.activePlayerID === '') {
+			var extraText = '';
+			if (global.arkaetreMode === '**Random**') {
+				global.arkaetreMode = '**Picked**';
+				extraText = 'When `/arkaetre` is used, your Arkaetre will be the one you preset with `/setarkaetre`.';
+			} else if (global.arkaetreMode === '**Picked**') {
+				global.arkaetreMode = '**None**';
+				extraText = 'The `/arkaetre` command is disabled.';
+			} else if (global.arkaetreMode === '**None**') {
+				global.arkaetreMode = '**Random**';
+				extraText = 'When `/arkaetre` is used, your Arkaetre will be selected randomly.';
+			}
+			await interaction.reply({ content: 'The Arkaetre mode is now ' + global.arkaetreMode + '. ' + extraText + '\n\nUse this command again to loop through other modes.'});
+		} else {
+			await interaction.reply({ content: 'A battle is currently in progress! Please wait until it finishes.'});
+		}
+	
 
-		/// FUTURE UPDATES
-		/// Detailed mode showing rolls and calculations
-		/// Pick a player class/character with certain perks? Darklight Order mages + Kireveans (symbol mage), Sand Trap Order of the Hydra mages w/staff, Ng Ey scroll mage, TKR stone mage
-		/// Achievements? For currency? Also currency for winning battles? Upgrades so more use for currency?
-		/// Boss battles?
-		/// Timing or other skill component?
-		/// More items rotating through shop? One use per battle items?
-		/// Typescript and refactoring
-		/// Shorten text for readability?
-		/// More stat steps with 50% chance of 1-point effect in-between?
-		/// Run on VM restart?
 
-        /// FINAL CHECKS
-        /// Edit rules
-        /// Edit patch notes
-		/// Edit Tatsu text
-		/// Edit Kov text
+	} else if (commandName === 'setarkaetre') {
+		const arkaetreValuesCapitalized = ['Wyrm', 'Flying Lion', 'Hummingbird', 'Owl', 'Griffin', 'Dragon', 'Cheetah', 'Komodo Dragon', 'Sphinx', 'Kludde', 'Phoenix', 'Hydra'];
+		const arkaetreEmojis = ['🐍', '🦁', '🕊️', '🦉', '🦅', '🐲', '🐆', '🦎', '🐈', '🐺', '🐦', '🔱'];
+		var arkaetreStringSelects = [];
+		for (var n = 0; n < 12; n++) {
+			arkaetreStringSelects.push(new StringSelectMenuOptionBuilder().setLabel(arkaetreValuesCapitalized[n]).setValue(arkaetreValuesCapitalized[n]).setEmoji(arkaetreEmojis[n]));
+		}
+
+		var user = interaction.guild.members.cache.get(interaction.user.id);
+		const arkaetreRoleIDs = ['1262183272511832137', '1262183277591134239', '1262183283039408242', '1262183287900733558', '1262183292833108051', '1262183298436960287', '1262183301997662320', '1262183305432928287', '1262183310105514054', '1262183321505632307', '1262183325309603912', '1262183336139558962'];
+		arkaetreRoleIDs.forEach( async (arkaetreRoleID) => {
+			var role = interaction.guild?.roles.cache.get(arkaetreRoleID);
+			if (role) {
+				await user?.roles.remove(role);
+			}
+		});
+		var role = interaction.guild?.roles.cache.get('1261472889857900637');
+		if (role) {
+			user?.roles.add(role);
+		}
+
+		const row = new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setCustomId('arkaetreSelect').setPlaceholder('Choose your arkaetre! This can be changed later.').addOptions(arkaetreStringSelects).setMinValues(1).setMaxValues(1));
+		/// @ts-ignore
+		await interaction.reply({ components: [row], ephemeral: true });
+
+		var chosenArkaetre = '';
+		var inputReceived = false;
+		const collector = interaction.channel.createMessageComponentCollector({ componentType: ComponentType.StringSelect, time: 60000 });
+		collector.on('collect', async i => {
+			/// @ts-ignore
+			for (var j = 0; j < 12; j++) {
+				/// @ts-ignore
+				if (i.values[0] === arkaetreValuesCapitalized[j]) {
+					var role = interaction.guild?.roles.cache.get(arkaetreRoleIDs[j]);
+					if (role) {
+						user?.roles.add(role);
+					}
+					chosenArkaetre = arkaetreValuesCapitalized[j];
+				}
+			}
+			inputReceived = true;
+			interaction.editReply({ content: 'Your preset Arkaetre is now: **' + chosenArkaetre + '**.', components: [] });
+		});
+		collector.on('end', collected => { 
+			if (!inputReceived) {
+				interaction.editReply({ content: 'The request timed out.', components: [] });
+			} 
+		});
+
+
+
+	} else if (commandName === 'checkpresets') {
+		var backpackText = '';
+		var arkaetreText = '';
+
+		const backpackRoleIDs = ['1261472894370713642', '1261472899966042172', '1261472905234223124', '1261472910053474396', '1261472914633527498', '1261472919691726932', '1261472924251066490', '1261472929095487489', '1261472933981978714', '1261472938893512754', '1261472943809232936', '1261477378035810385'];
+		const backpackItemNames = ['Sword', 'Bow', 'Realm Portal', 'Magistone', 'Dagger', 'Frozen Fish', 'Laser Rifle', 'Staff', 'Shield', 'Shifter Disc', 'Pocketwatch', 'Scroll'];
+		for (var j = 0; j < 12; j++) {
+			if (interaction.guild?.members.cache.get(interaction.user.id)?.roles.cache.has(backpackRoleIDs[j])) {
+				backpackText += backpackItemNames[j] + ', ';
+			}
+		}
+		backpackText = backpackText.substring(0, backpackText.length - 2);
+
+		const arkaetreRoleIDs = ['1262183272511832137', '1262183277591134239', '1262183283039408242', '1262183287900733558', '1262183292833108051', '1262183298436960287', '1262183301997662320', '1262183305432928287', '1262183310105514054', '1262183321505632307', '1262183325309603912', '1262183336139558962'];
+		const arkaetreNames = ['Wyrm', 'Flying Lion', 'Hummingbird', 'Owl', 'Griffin', 'Dragon', 'Cheetah', 'Komodo Dragon', 'Sphinx', 'Kludde', 'Phoenix', 'Hydra'];
+		for (var k = 0; k < 12; k++) {
+			if (interaction.guild?.members.cache.get(interaction.user.id)?.roles.cache.has(arkaetreRoleIDs[k])) {
+				arkaetreText += arkaetreNames[k];
+			}
+		}
+
+		await interaction.reply({ content: 'Your backpack presets are currently: **' + backpackText + '**.\n\nYour Arkaetre preset is currently: **' + arkaetreText + '**.', ephemeral: true });
+	
+
+
+	} else if (commandName === 'checkmodes') {
+		await interaction.reply({ content: 'The battle mode is currently: ' + global.battleMode + '.\n\nThe Arkaetre mode is currently: ' + global.arkaetreMode + '.', ephemeral: true });
 	
 	
 	
@@ -238,10 +435,9 @@ client.on('interactionCreate', async interaction => {
 		} else {
 			console.log('Battle started!');
 			restartTimeout(interaction);
-			resetGameVars();
 			global.activePlayerID = interaction.options.getUser('opponent')?.id;
 			global.waitingPlayerID = interaction.user.id;
-			await interaction.reply('<@' + global.waitingPlayerID + '> started a battle against <@' + global.activePlayerID + '>! Let us have a good, clean fight. Either of you can use `/endbattle` to end the battle or any `/rules` command to review the rules of battle at any time.\n\nOn your turn, please use an item command such as `/sword` to select a registered item to use. If you do not have any items registered, buy some in `c!shop` and use them in `c!inventory` first, or use a free action such as `/freeattack`.\n\n<@' + global.activePlayerID + '>, you are first!');
+			await interaction.reply('<@' + global.waitingPlayerID + '> started a battle against <@' + global.activePlayerID + '>! Let us have a good, clean fight. Either of you can use `/endbattle` to end the battle or any `/rules` command to review the rules of battle at any time.\n\nBy the way, the battle mode is currently ' + global.battleMode + ', and the Arkaetre mode is ' + global.arkaetreMode + '.\n\nOn your turn, please use an item command such as `/sword` to select a registered item to use. If you do not have any items registered, buy some in `c!shop` and use them in `c!inventory` first, or use a free action such as `/freeattack`.\n\n<@' + global.activePlayerID + '>, you are first!');
 			global.challengeOverride = true;
 			global.interactionSave = null;
 			if (global.collectorSave != null) {
@@ -257,7 +453,6 @@ client.on('interactionCreate', async interaction => {
 		} else if (global.interactionSave != null) {
 			await interaction.reply({ content: 'A battle challenge is already in progress. Please wait.', ephemeral: true });
 		} else {
-			resetGameVars();
 			global.waitingPlayerID = interaction.user.id;
 			global.buttonClickedSave = false;
 			global.interactionSave = interaction;
@@ -276,7 +471,7 @@ client.on('interactionCreate', async interaction => {
 			global.collectorSave.stop();
 			global.buttonClickedSave = true;
 			global.activePlayerID = interaction.member.user.id;
-			interaction.channel.send('<@' + global.activePlayerID + '> accepted <@' + global.waitingPlayerID + '>\'s battle challenge! Let us have a good, clean fight. Either of you can use `/endbattle` to end the battle or any `/rules` command to review the rules of battle at any time.\n\nOn your turn, please use an item command such as `/sword` to select a registered item to use. If you do not have any items registered, buy some in `c!shop` and use them in `c!inventory` first, or use a free action such as `/freeattack`.\n\n<@' + global.activePlayerID + '>, you are first!');
+			interaction.channel.send('<@' + global.activePlayerID + '> accepted <@' + global.waitingPlayerID + '>\'s battle challenge! Let us have a good, clean fight. Either of you can use `/endbattle` to end the battle or any `/rules` command to review the rules of battle at any time.\n\nBy the way, the battle mode is currently ' + global.battleMode + ', and the Arkaetre mode is ' + global.arkaetreMode + '.\n\nOn your turn, please use an item command such as `/sword` to select a registered item to use. If you do not have any items registered, buy some in `c!shop` and use them in `c!inventory` first, or use a free action such as `/freeattack`.\n\n<@' + global.activePlayerID + '>, you are first!');
 		} else if (interaction.customId === 'cancel' && (interaction.user.id === global.waitingPlayerID || (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('809284936669593600')))) {
 			global.interactionSave.deleteReply();
 			global.collectorSave.stop();
@@ -367,7 +562,7 @@ client.on('interactionCreate', async interaction => {
 
 
 
-	} else if (commandName === 'freedefend') {
+	} else if (commandName === 'freeheal') {
 		if (global.activePlayerID === '') {
 			await interaction.reply({ content: 'There is no battle in progress.', ephemeral: true });
 		} else if (interaction.user.id === global.activePlayerID && !global.itemOrActionProcessing) {
@@ -375,7 +570,7 @@ client.on('interactionCreate', async interaction => {
 			restartTimeout(interaction);
 			const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('yes').setLabel('✔️ Yes').setStyle(ButtonStyle.Success),new ButtonBuilder().setCustomId('no').setLabel('❌ No').setStyle(ButtonStyle.Danger));
 			// @ts-ignore
-			await interaction.reply({ content: '✋ **Defend**:  1-2 Personal Health, 50% chance of shield\n\nUse this free action?', components: [row] });
+			await interaction.reply({ content: ':heart_hands: **Heal**:  1-2 Personal Health, gain defensive stance\n\nUse this free action?', components: [row] });
 			const filter = i => (i.customId === 'yes' || i.customId === 'no') && i.user.id === global.activePlayerID;
 			const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 });
 			var buttonClicked = false;
@@ -383,35 +578,36 @@ client.on('interactionCreate', async interaction => {
 			collector.on('collect', async i => {
 				if (i.customId === 'yes') {
 					var itemOrActionText = '';
-					var roll = random(1, 6);
+					var roll = random(1, 8);
 					if (global.overtime && global.activePlayerArkaetre != 'Hydra') {
 						itemOrActionText = 'You are far too worn-out to heal yourself.';
-					} else if (roll < 4) {
+					} else if (roll < 5) {
 						var amount = health('active', 1);
 						if (roll === 1) {
 							itemOrActionText = 'Was there a gash there before? Apparently not. Strange. You recover ' + amount + ' health.';
 						} else if (roll === 2) {
 							itemOrActionText = 'Godricon here. Yes, I narrate all these messages. Anyway, have some health, on the house. You recover ' + amount + ' health.';
-						} else {
+						} else if (roll === 3) {
 							itemOrActionText = 'Through your body\'s natural healing processes, you recover a measly ' + amount + ' health.';
+						} else {
+							itemOrActionText = 'You report a foul and recover ' + amount + ' health while your opponent waits in the penalty box.'
 						}
 					} else {
 						var amount = health('active', 2);
-						if (roll === 4) {
+						if (roll === 5) {
 							itemOrActionText = 'You stumble upon an ornate chest filled with random potions. After a quick taste-test, you recover ' + amount + ' health.';
-						} else if (roll === 5) {
+						} else if (roll === 6) {
 							itemOrActionText = 'You whip out the bandages that you carry with you at all times and put them to good use, recovering ' + amount + ' health.';
-						} else {
+						} else if (roll === 7) {
 							itemOrActionText = 'A spark of magic flares to life inside you, and with a shudder, you recover ' + amount + ' health.';
+						} else {
+							itemOrActionText = 'You tuck yourself in and decide to sleep it off. You recover ' + amount + ' health.'
 						}
 					}
-					var roll2 = random(1, 2);
-					if (roll2 === 1) {
-						itemOrActionText += ' You remember to conjure a bright, brilliant shield that will protect you. Sometimes.';
-						global.activePlayerShieldStatus = 'Up';
-					}
+					itemOrActionText += ' You widen your stance, ready to defend yourself.';
+					global.activePlayerDefensiveStance = 'Active';
 					wyrmCheck('B');
-					endTurn(interaction, 'defend', itemOrActionText);
+					endTurn(interaction, 'heal', itemOrActionText);
 				} else if (i.customId === 'no') {
 					interaction.channel?.send('Please select another item or action.');
 					global.itemOrActionProcessing = false;
@@ -526,7 +722,7 @@ client.on('interactionCreate', async interaction => {
 			await interaction.reply({ content: 'There is no battle in progress.', ephemeral: true });
 		} else if (interaction.user.id === global.activePlayerID) {
 			restartTimeout(interaction);
-			if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('892611697876033638') && !global.itemOrActionProcessing) {
+			if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('892611697876033638') && !global.itemOrActionProcessing && await modeAllows('sword', interaction)) {
 				global.itemOrActionProcessing = true;
 				const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('yes').setLabel('✔️ Yes').setStyle(ButtonStyle.Success),new ButtonBuilder().setCustomId('no').setLabel('❌ No').setStyle(ButtonStyle.Danger));
 				// @ts-ignore
@@ -569,6 +765,8 @@ client.on('interactionCreate', async interaction => {
 				collector.on('end', collected => { if (!buttonClicked) { timeoutItemOrAction(interaction) } });
 			} else if (global.itemOrActionProcessing) {
 				await interaction.reply({ content: 'An item or action prompt is already displayed. Please use the selected item or action, or cancel it and select another item or action.', ephemeral: true });
+			} else if (!(await modeAllows('sword', interaction))) {
+				await interaction.reply({ content: 'You cannot use the **Sword** item in the current battle mode (' + global.battleMode + '). Please select another item or action.', ephemeral: true });
 			} else {
 				await interaction.reply({ content: 'You do not have the **Sword** item registered. Please buy it in `c!shop` and use it in `c!inventory` to register it first, use another registered item, or use a free action such as `/freeattack`.', ephemeral: true });
 			}
@@ -583,11 +781,11 @@ client.on('interactionCreate', async interaction => {
 			await interaction.reply({ content: 'There is no battle in progress.', ephemeral: true });
 		} else if (interaction.user.id === global.activePlayerID) {
 			restartTimeout(interaction);
-			if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('892528958460002346') && !global.itemOrActionProcessing) {
+			if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('892528958460002346') && !global.itemOrActionProcessing && await modeAllows('bow', interaction)) {
 				global.itemOrActionProcessing = true;
 				const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('yes').setLabel('✔️ Yes').setStyle(ButtonStyle.Success),new ButtonBuilder().setCustomId('no').setLabel('❌ No').setStyle(ButtonStyle.Danger));
 				// @ts-ignore
-				await interaction.reply({ content: '<:itemBow:793230409734291506> **Bow**:  2-4 Enemy Damage, 50% chance of 1 Personal Damage\n\nUse this item?', components: [row] });
+				await interaction.reply({ content: '<:itemBow:793230409734291506> **Bow**:  2-4 Enemy Damage, ↓ Enemy Recovery, 50% chance of 1 Personal Damage\n\nUse this item?', components: [row] });
 				const filter = i => (i.customId === 'yes' || i.customId === 'no') && i.user.id === global.activePlayerID;
 				const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 });
 				var buttonClicked = false;
@@ -606,10 +804,17 @@ client.on('interactionCreate', async interaction => {
 							itemOrActionText = 'You bring your hand to your cheek and release the arrow cleanly, piercing <@' + global.waitingPlayerID + '> for ' + amount + ' damage.';
 							flyingLionCheck();
 						}
-						var roll2 = random(1, 4);
-						if (roll2 < 3) {
+						var roll2 = random(1, 2);
+						if (roll2 === 1) {
+							itemOrActionText += ' <@' + global.waitingPlayerID + '> will have a hard time healing from that, decreasing their Recovery.';
+						} else {
+							itemOrActionText += ' <@' + global.waitingPlayerID + '> is bleeding and weak, decreasing their Recovery.';
+						}
+						statChange('RC', 'waiting', false);
+						var roll3 = random(1, 4);
+						if (roll3 < 3) {
 							amount = damage('active', 1);
-							if (roll2 === 1) {
+							if (roll3 === 1) {
 								itemOrActionText += ' The arrow grazes your hand as you release it, and you take ' + amount + ' damage.';
 							} else {
 								itemOrActionText += ' The arrow somehow ricochets and hits you too. You take ' + amount + ' damage and hopefully better aim next time.';
@@ -628,6 +833,8 @@ client.on('interactionCreate', async interaction => {
 				collector.on('end', collected => { if (!buttonClicked) { timeoutItemOrAction(interaction) } });
 			} else if (global.itemOrActionProcessing) {
 				await interaction.reply({ content: 'An item or action prompt is already displayed. Please use the selected item or action, or cancel it and select another item or action.', ephemeral: true });
+			} else if (!(await modeAllows('bow', interaction))) {
+				await interaction.reply({ content: 'You cannot use the **Bow** item in the current battle mode (' + global.battleMode + '). Please select another item or action.', ephemeral: true });
 			} else {
 				await interaction.reply({ content: 'You do not have the **Bow** item registered. Please buy it in `c!shop` and use it in `c!inventory` to register it first, use another registered item, or use a free action such as `/freeattack`.', ephemeral: true });
 			}
@@ -642,7 +849,7 @@ client.on('interactionCreate', async interaction => {
 			await interaction.reply({ content: 'There is no battle in progress.', ephemeral: true });
 		} else if (interaction.user.id === global.activePlayerID) {
 			restartTimeout(interaction);
-			if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('892574599596871720') && !global.itemOrActionProcessing) {
+			if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('892574599596871720') && !global.itemOrActionProcessing && await modeAllows('realmportal', interaction)) {
 				global.itemOrActionProcessing = true;
 				const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('yes').setLabel('✔️ Yes').setStyle(ButtonStyle.Success),new ButtonBuilder().setCustomId('no').setLabel('❌ No').setStyle(ButtonStyle.Danger));
 				// @ts-ignore
@@ -706,6 +913,8 @@ client.on('interactionCreate', async interaction => {
 				collector.on('end', collected => { if (!buttonClicked) { timeoutItemOrAction(interaction) } });
 			} else if (global.itemOrActionProcessing) {
 				await interaction.reply({ content: 'An item or action prompt is already displayed. Please use the selected item or action, or cancel it and select another item or action.', ephemeral: true });
+			} else if (!(await modeAllows('realmportal', interaction))) {
+				await interaction.reply({ content: 'You cannot use the **Realm Portal** item in the current battle mode (' + global.battleMode + '). Please select another item or action.', ephemeral: true });
 			} else {
 				await interaction.reply({ content: 'You do not have the **Realm Portal** item registered. Please buy it in `c!shop` and use it in `c!inventory` to register it first, use another registered item, or use a free action such as `/freeattack`.', ephemeral: true });
 			}
@@ -719,7 +928,7 @@ client.on('interactionCreate', async interaction => {
 			await interaction.reply({ content: 'There is no battle in progress.', ephemeral: true });
 		} else if (interaction.user.id === global.activePlayerID) {
 			restartTimeout(interaction);
-			if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('892572308219244606') && !global.itemOrActionProcessing) {
+			if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('892572308219244606') && !global.itemOrActionProcessing && await modeAllows('magistone', interaction)) {
 				global.itemOrActionProcessing = true;
 				const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('yes').setLabel('✔️ Yes').setStyle(ButtonStyle.Success),new ButtonBuilder().setCustomId('no').setLabel('❌ No').setStyle(ButtonStyle.Danger));
 				// @ts-ignore
@@ -778,6 +987,8 @@ client.on('interactionCreate', async interaction => {
 				collector.on('end', collected => { if (!buttonClicked) { timeoutItemOrAction(interaction) } });
 			} else if (global.itemOrActionProcessing) {
 				await interaction.reply({ content: 'An item or action prompt is already displayed. Please use the selected item or action, or cancel it and select another item or action.', ephemeral: true });
+			} else if (!(await modeAllows('magistone', interaction))) {
+				await interaction.reply({ content: 'You cannot use the **Magistone** item in the current battle mode (' + global.battleMode + '). Please select another item or action.', ephemeral: true });
 			} else {
 				await interaction.reply({ content: 'You do not have the **Magistone** item registered. Please buy it in `c!shop` and use it in `c!inventory` to register it first, use another registered item, or use a free action such as `/freeattack`.', ephemeral: true });
 			}
@@ -792,7 +1003,7 @@ client.on('interactionCreate', async interaction => {
 			await interaction.reply({ content: 'There is no battle in progress.', ephemeral: true });
 		} else if (interaction.user.id === global.activePlayerID) {
 			restartTimeout(interaction);
-			if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('892530203581120562') && !global.itemOrActionProcessing) {
+			if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('892530203581120562') && !global.itemOrActionProcessing && await modeAllows('dagger', interaction)) {
 				global.itemOrActionProcessing = true;
 				const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('yes').setLabel('✔️ Yes').setStyle(ButtonStyle.Success),new ButtonBuilder().setCustomId('no').setLabel('❌ No').setStyle(ButtonStyle.Danger));
 				// @ts-ignore
@@ -839,6 +1050,8 @@ client.on('interactionCreate', async interaction => {
 				collector.on('end', collected => { if (!buttonClicked) { timeoutItemOrAction(interaction) } });
 			} else if (global.itemOrActionProcessing) {
 				await interaction.reply({ content: 'An item or action prompt is already displayed. Please use the selected item or action, or cancel it and select another item or action.', ephemeral: true });
+			} else if (!(await modeAllows('dagger', interaction))) {
+				await interaction.reply({ content: 'You cannot use the **Dagger** item in the current battle mode (' + global.battleMode + '). Please select another item or action.', ephemeral: true });
 			} else {
 				await interaction.reply({ content: 'You do not have the **Dagger** item registered. Please buy it in `c!shop` and use it in `c!inventory` to register it first, use another registered item, or use a free action such as `/freeattack`.', ephemeral: true });
 			}
@@ -853,11 +1066,11 @@ client.on('interactionCreate', async interaction => {
 			await interaction.reply({ content: 'There is no battle in progress.', ephemeral: true });
 		} else if (interaction.user.id === global.activePlayerID) {
 			restartTimeout(interaction);
-			if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('892530356606091316') && !global.itemOrActionProcessing) {
+			if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('892530356606091316') && !global.itemOrActionProcessing && await modeAllows('frozenfish', interaction)) {
 				global.itemOrActionProcessing = true;
 				const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('yes').setLabel('✔️ Yes').setStyle(ButtonStyle.Success),new ButtonBuilder().setCustomId('no').setLabel('❌ No').setStyle(ButtonStyle.Danger));
 				// @ts-ignore
-				await interaction.reply({ content: '<:itemFrozenFish:838670349137870858> **Frozen Fish**:  1-4 Enemy Damage or 1-2 Enemy Health, ↓ Enemy Attack or Defense\n\nUse this item?', components: [row] });
+				await interaction.reply({ content: '<:itemFrozenFish:838670349137870858> **Frozen Fish**:  3-5 Enemy Damage or 2 Enemy Health, ↓ Enemy Attack or Defense\n\nUse this item?', components: [row] });
 				const filter = i => (i.customId === 'yes' || i.customId === 'no') && i.user.id === global.activePlayerID;
 				const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 });
 				var buttonClicked = false;
@@ -865,30 +1078,35 @@ client.on('interactionCreate', async interaction => {
 				collector.on('collect', async i => {
 					if (i.customId === 'yes') {
 						var itemOrActionText = '';
-						var roll = random(1, 6);
+						var roll = random(3, 6);
 						var amount = '';
-						if (roll < 5) {
+						if (roll < 6) {
 							amount = damage('waiting', roll);
 						}
-						if (roll === 1) {
+						if (roll === 3) {
 							itemOrActionText = 'You hurl the fish at <@' + global.waitingPlayerID + '> and it bites their nose, dealing ' + amount + ' damage. Perhaps it was not so frozen after all.';
 							hummingbirdCheck();
-						} else if (roll === 2) {
-							itemOrActionText = 'The flying fish soars out of your hands and slaps <@' + global.waitingPlayerID + '> with its tail to deal ' + amount + ' damage.';
-						} else if (roll === 3) {
-							itemOrActionText = 'You wind up and smack <@' + global.waitingPlayerID + '> in the face with the mostly defrosted fish, dealing ' + amount + ' damage. It probably looked great in slow motion.';
 						} else if (roll === 4) {
+							var roll2 = random(1, 2);
+							if (roll2 === 1) {
+								itemOrActionText = 'You wind up and smack <@' + global.waitingPlayerID + '> in the face with the mostly defrosted fish, dealing ' + amount + ' damage. It probably looked great in slow motion.';
+							} else {
+								itemOrActionText = 'The flying fish soars out of your hands and slaps <@' + global.waitingPlayerID + '> with its tail to deal ' + amount + ' damage.';
+							}
+						} else if (roll === 5) {
 							itemOrActionText = 'It turns out that the fish is a swordfish, and you parry back and forth with <@' + global.waitingPlayerID + '>, eventually landing a hit for ' + amount + ' damage.';
 							flyingLionCheck();
-						} else if (roll === 5) {
-							amount = health('waiting', 1);
-							itemOrActionText = 'You try to attack, but <@' + global.waitingPlayerID + '> takes a big bite out of the fish instead. "Yum," they say as they recover ' + amount + ' health.';
 						} else if (roll === 6) {
 							amount = health('waiting', 2);
-							itemOrActionText = '<@' + global.waitingPlayerID + '> snatches the fish out of your hands, defrosts it, and cooks it with breading and lime, chowing down for ' + amount + ' health.';
+							var roll3 = random(1, 2);
+							if (roll3 === 1) {
+								itemOrActionText = 'You try to attack, but <@' + global.waitingPlayerID + '> takes a big bite out of the fish instead. "Yum," they say as they recover ' + amount + ' health.';
+							} else {
+								itemOrActionText = '<@' + global.waitingPlayerID + '> snatches the fish out of your hands, defrosts it, and cooks it with breading and lime, chowing down for ' + amount + ' health.';
+							}
 						}
-						var roll2 = random(1, 2);
-						if (roll2 === 1) {
+						var roll4 = random(1, 2);
+						if (roll4 === 1) {
 							itemOrActionText += ' <@' + global.waitingPlayerID + '> is not as willing to attack a defenseless fish, as frozen as it might be, decreasing their Attack.';
 							statChange('AT', 'waiting', false);
 						} else {
@@ -908,6 +1126,8 @@ client.on('interactionCreate', async interaction => {
 				collector.on('end', collected => { if (!buttonClicked) { timeoutItemOrAction(interaction) } });
 			} else if (global.itemOrActionProcessing) {
 				await interaction.reply({ content: 'An item or action prompt is already displayed. Please use the selected item or action, or cancel it and select another item or action.', ephemeral: true });
+			} else if (!(await modeAllows('frozenfish', interaction))) {
+				await interaction.reply({ content: 'You cannot use the **Frozen Fish** item in the current battle mode (' + global.battleMode + '). Please select another item or action.', ephemeral: true });
 			} else {
 				await interaction.reply({ content: 'You do not have the **Frozen Fish** item registered. Please buy it in `c!shop` and use it in `c!inventory` to register it first, use another registered item, or use a free action such as `/freeattack`.', ephemeral: true });
 			}
@@ -922,11 +1142,11 @@ client.on('interactionCreate', async interaction => {
 			await interaction.reply({ content: 'There is no battle in progress.', ephemeral: true });
 		} else if (interaction.user.id === global.activePlayerID) {
 			restartTimeout(interaction);
-			if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('892530366894723103') && !global.itemOrActionProcessing) {
+			if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('892530366894723103') && !global.itemOrActionProcessing && await modeAllows('laserrifle', interaction)) {
 				global.itemOrActionProcessing = true;
 				const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('yes').setLabel('✔️ Yes').setStyle(ButtonStyle.Success),new ButtonBuilder().setCustomId('no').setLabel('❌ No').setStyle(ButtonStyle.Danger));
 				// @ts-ignore
-				await interaction.reply({ content: '<:itemLaserRifle:903038791562981397> **Laser Rifle**:  3x 0-2 Enemy Damage, ↓ Enemy Recovery, 50% chance of lost turn\n\nUse this item?', components: [row] });
+				await interaction.reply({ content: '<:itemLaserRifle:903038791562981397> **Laser Rifle**:  3x 0-2 Enemy Damage, ↓ Enemy Attack or Defense or Recovery, 50% chance of lost turn\n\nUse this item?', components: [row] });
 				const filter = i => (i.customId === 'yes' || i.customId === 'no') && i.user.id === global.activePlayerID;
 				const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 });
 				var buttonClicked = false;
@@ -940,7 +1160,7 @@ client.on('interactionCreate', async interaction => {
 							amount = damage('waiting', roll);
 						}
 						if (roll === 0) {
-							itemOrActionText = 'The rifle does not appear to work, or at least that is what you tell yourself as you search for the trigger. You only barely graze your opponent\'s arm and deal no damage.';
+							itemOrActionText = 'The rifle does not appear to work, or at least that is what you tell yourself as you search for the trigger. You only barely graze <@' + global.waitingPlayerID + '>\'s arm and deal no damage.';
 						} else if (roll === 1) {
 							itemOrActionText = 'You shoot an item out of <@' + global.waitingPlayerID + '>\'s hand, and it spins in the air and plunks onto their head for ' + amount + ' damage.';
 							hummingbirdCheck();
@@ -951,18 +1171,22 @@ client.on('interactionCreate', async interaction => {
 						} else if (roll === 4) {
 							itemOrActionText = 'You propel yourself upwards with the recoil from a stream of laser shots and crash down onto <@' + global.waitingPlayerID + '> for ' + amount + ' damage.';
 						} else if (roll === 5) {
-							itemOrActionText = 'You jump for cover and shoot a barrage of laser shots at <@' + global.waitingPlayerID + '> for ' + amount + ' damage, adding your own sound effects.';
+							itemOrActionText = 'You jump for cover and shoot a barrage of laser fire at <@' + global.waitingPlayerID + '> for ' + amount + ' damage, adding your own sound effects.';
 						} else {
 							itemOrActionText = 'The laser rifle surges with magical energy and fires a huge, majestic blast at <@' + global.waitingPlayerID + '> for ' + amount + ' damage and a very high score from the judges.';
 							flyingLionCheck();
 						}
-						var roll2 = random(1, 2);
+						var roll2 = random (1, 3);
 						if (roll2 === 1) {
-							itemOrActionText += ' <@' + global.waitingPlayerID + '> will have a hard time healing from that, decreasing their Recovery.';
+							itemOrActionText += ' <@' + global.waitingPlayerID + '> can barely find a moment to safely attack you between laser blasts, and their Attack decreases.';
+							statChange('AT', 'waiting', false);
+						} else if (roll2 === 2) {
+							itemOrActionText += ' You shoot a sizzling hole straight through <@' + global.waitingPlayerID + '>\'s varying layers of protective equipment, and their Defense decreases.';
+							statChange('DF', 'waiting', false);
 						} else {
-							itemOrActionText += ' <@' + global.waitingPlayerID + '> is bleeding and weak, decreasing their Recovery.';
+							itemOrActionText += ' Also- Oh. That is beyond healing, I think. <@' + global.waitingPlayerID + '>\'s Recovery decreases.';
+							statChange('RC', 'waiting', false);
 						}
-						statChange('RC', 'waiting', false);
 						var roll3 = random(1, 2);
 						if (roll3 === 1) {
 							itemOrActionText += ' The rifle\'s sudden recoil jolts you backwards and you lose a turn.';
@@ -985,6 +1209,8 @@ client.on('interactionCreate', async interaction => {
 				collector.on('end', collected => { if (!buttonClicked) { timeoutItemOrAction(interaction) } });
 			} else if (global.itemOrActionProcessing) {
 				await interaction.reply({ content: 'An item or action prompt is already displayed. Please use the selected item or action, or cancel it and select another item or action.', ephemeral: true });
+			} else if (!(await modeAllows('laserrifle', interaction))) {
+				await interaction.reply({ content: 'You cannot use the **Laser Rifle** item in the current battle mode (' + global.battleMode + '). Please select another item or action.', ephemeral: true });
 			} else {
 				await interaction.reply({ content: 'You do not have the **Laser Rifle** item registered. Please buy it in `c!shop` and use it in `c!inventory` to register it first, use another registered item, or use a free action such as `/freeattack`.', ephemeral: true });
 			}
@@ -999,11 +1225,11 @@ client.on('interactionCreate', async interaction => {
 			await interaction.reply({ content: 'There is no battle in progress.', ephemeral: true });
 		} else if (interaction.user.id === global.activePlayerID) {
 			restartTimeout(interaction);
-			if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('892530364369764412') && !global.itemOrActionProcessing) {
+			if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('892530364369764412') && !global.itemOrActionProcessing && await modeAllows('staff', interaction)) {
 				global.itemOrActionProcessing = true;
 				const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('yes').setLabel('✔️ Yes').setStyle(ButtonStyle.Success),new ButtonBuilder().setCustomId('no').setLabel('❌ No').setStyle(ButtonStyle.Danger));
 				// @ts-ignore
-				await interaction.reply({ content: '<:itemStaff:903038551682338836> **Staff**: 0 or 5-6 Enemy Damage, ↓ 2 of Personal Attack or Defense or Recovery on hit\n\nUse this item?', components: [row] });
+				await interaction.reply({ content: '<:itemStaff:903038551682338836>  **Staff**: 0 or 5-6 Enemy Damage, ↓ 2 of Personal Attack or Defense or Recovery on hit\n\nUse this item?', components: [row] });
 				const filter = i => (i.customId === 'yes' || i.customId === 'no') && i.user.id === global.activePlayerID;
 				const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 });
 				var buttonClicked = false;
@@ -1066,6 +1292,8 @@ client.on('interactionCreate', async interaction => {
 				collector.on('end', collected => { if (!buttonClicked) { timeoutItemOrAction(interaction) } });
 			} else if (global.itemOrActionProcessing) {
 				await interaction.reply({ content: 'An item or action prompt is already displayed. Please use the selected item or action, or cancel it and select another item or action.', ephemeral: true });
+			} else if (!(await modeAllows('staff', interaction))) {
+				await interaction.reply({ content: 'You cannot use the **Staff** item in the current battle mode (' + global.battleMode + '). Please select another item or action.', ephemeral: true });
 			} else {
 				await interaction.reply({ content: 'You do not have the **Staff** item registered. Please buy it in `c!shop` and use it in `c!inventory` to register it first, use another registered item, or use a free action such as `/freeattack`.', ephemeral: true });
 			}
@@ -1080,9 +1308,9 @@ client.on('interactionCreate', async interaction => {
 			await interaction.reply({ content: 'There is no battle in progress.', ephemeral: true });
 		} else if (interaction.user.id === global.activePlayerID) {
 			restartTimeout(interaction);
-			if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('902364365263605810') && global.activePlayerShieldStatus === 'Down' && !global.itemOrActionProcessing) {
+			if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('902364365263605810') && global.activePlayerShieldStatus === 'Down' && !global.itemOrActionProcessing && await modeAllows('shield', interaction)) {
 				global.itemOrActionProcessing = true;
-				var formationChance = global.overtime ? 80 : 50;
+				var formationChance = global.overtime && (global.activePlayerArkaetre != 'Hydra') ? 80 : 50;
 				const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('yes').setLabel('✔️ Yes').setStyle(ButtonStyle.Success),new ButtonBuilder().setCustomId('no').setLabel('❌ No').setStyle(ButtonStyle.Danger));
 				// @ts-ignore
 				await interaction.reply({ content: '<:itemShield:903038554127601694> **Shield**:  ' + formationChance + '% chance of shield\n\nUse this item?', components: [row] });
@@ -1127,6 +1355,8 @@ client.on('interactionCreate', async interaction => {
 				await interaction.reply({ content: 'An item or action prompt is already displayed. Please use the selected item or action, or cancel it and select another item or action.', ephemeral: true });
 			} else if (global.activePlayerShieldStatus === 'Up') {
 				await interaction.reply({ content: 'You already have a shield up. Please select another item or action.', ephemeral: true });
+			} else if (!(await modeAllows('shield', interaction))) {
+				await interaction.reply({ content: 'You cannot use the **Shield** item in the current battle mode (' + global.battleMode + '). Please select another item or action.', ephemeral: true });
 			} else {
 				await interaction.reply({ content: 'You do not have the **Shield** item registered. Please buy it in `c!shop` and use it in `c!inventory` to register it first, use another registered item, or use a free action such as `/freeattack`.', ephemeral: true });
 			}
@@ -1141,7 +1371,7 @@ client.on('interactionCreate', async interaction => {
 			await interaction.reply({ content: 'There is no battle in progress.', ephemeral: true });
 		} else if (interaction.user.id === global.activePlayerID) {
 			restartTimeout(interaction);
-			if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('892530361370837022') && !global.itemOrActionProcessing) {
+			if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('892530361370837022') && !global.itemOrActionProcessing && await modeAllows('shifterdisc', interaction)) {
 				global.itemOrActionProcessing = true;
 				const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('yes').setLabel('✔️ Yes').setStyle(ButtonStyle.Success),new ButtonBuilder().setCustomId('no').setLabel('❌ No').setStyle(ButtonStyle.Danger));
 				// @ts-ignore
@@ -1189,6 +1419,8 @@ client.on('interactionCreate', async interaction => {
 				collector.on('end', collected => { if (!buttonClicked) { timeoutItemOrAction(interaction) } });
 			} else if (global.itemOrActionProcessing) {
 				await interaction.reply({ content: 'An item or action prompt is already displayed. Please use the selected item or action, or cancel it and select another item or action.', ephemeral: true });
+			} else if (!(await modeAllows('shifterdisc', interaction))) {
+				await interaction.reply({ content: 'You cannot use the **Shifter Disc** item in the current battle mode (' + global.battleMode + '). Please select another item or action.', ephemeral: true });
 			} else {
 				await interaction.reply({ content: 'You do not have the **Shifter Disc** item registered. Please buy it in `c!shop` and use it in `c!inventory` to register it first, use another registered item, or use a free action such as `/freeattack`.', ephemeral: true });
 			}
@@ -1203,7 +1435,7 @@ client.on('interactionCreate', async interaction => {
 			await interaction.reply({ content: 'There is no battle in progress.', ephemeral: true });
 		} else if (interaction.user.id === global.activePlayerID) {
 			restartTimeout(interaction);
-			if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('892530369641971783') && !global.itemOrActionProcessing) {
+			if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('892530369641971783') && !global.itemOrActionProcessing && await modeAllows('pocketwatch', interaction)) {
 				global.itemOrActionProcessing = true;
 				const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('yes').setLabel('✔️ Yes').setStyle(ButtonStyle.Success),new ButtonBuilder().setCustomId('no').setLabel('❌ No').setStyle(ButtonStyle.Danger));
 				// @ts-ignore
@@ -1256,8 +1488,81 @@ client.on('interactionCreate', async interaction => {
 				collector.on('end', collected => { if (!buttonClicked) { timeoutItemOrAction(interaction) } });
 			} else if (global.itemOrActionProcessing) {
 				await interaction.reply({ content: 'An item or action prompt is already displayed. Please use the selected item or action, or cancel it and select another item or action.', ephemeral: true });
+			} else if (!(await modeAllows('pocketwatch', interaction))) {
+				await interaction.reply({ content: 'You cannot use the **Pocketwatch** item in the current battle mode (' + global.battleMode + '). Please select another item or action.', ephemeral: true });
 			} else {
 				await interaction.reply({ content: 'You do not have the **Pocketwatch** item registered. Please buy it in `c!shop` and use it in `c!inventory` to register it first, use another registered item, or use a free action such as `/freeattack`.', ephemeral: true });
+			}
+		} else {
+			await interaction.reply({ content: 'Only the active player, <@' + global.activePlayerID + '>, can run item and action commands right now.', ephemeral: true });
+		}
+
+
+
+	} else if (commandName === 'scroll') {
+		if (global.activePlayerID === '') {
+			await interaction.reply({ content: 'There is no battle in progress.', ephemeral: true });
+		} else if (interaction.user.id === global.activePlayerID) {
+			restartTimeout(interaction);
+			if (interaction.member.roles instanceof GuildMemberRoleManager&& interaction.member.roles.cache.has('902364301522792448') && !global.itemOrActionProcessing && await modeAllows('scroll', interaction)) {
+				global.itemOrActionProcessing = true;
+				const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('yes').setLabel('✔️ Yes').setStyle(ButtonStyle.Success),new ButtonBuilder().setCustomId('no').setLabel('❌ No').setStyle(ButtonStyle.Danger));
+				// @ts-ignore
+				await interaction.reply({ content: '<:itemScroll:1260789127713128520> **Scroll**:  Toggle free extra turn for both players, increase the turn counter by 5\n\nUse this item?', components: [row] });
+				const filter = i => (i.customId === 'yes' || i.customId === 'no') && i.user.id === global.activePlayerID;
+				const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 });
+				var buttonClicked = false;
+				
+				collector.on('collect', async i => {
+					if (i.customId === 'yes') {
+						var itemOrActionText = '';
+						if (global.scrollActive === true) {
+							global.scrollActive = false;
+							var roll = random(1, 3);
+							if (roll === 1) {
+								itemOrActionText = 'You tap your Magistone to the scroll\'s golden cap, and you and <@' + global.waitingPlayerID + '> are surrounded by white light. You will both lose your free extra turn at the end of your first turn in your turn sequence.';
+							} else if (roll === 2) {
+								itemOrActionText = 'The scroll\'s golden ink flashes, and <@' + global.waitingPlayerID + '> accidentally also touches the magic that emerges. You will both lose your free extra turn at the end of your first turn in your turn sequence.';
+							} else {
+								itemOrActionText = '<@' + global.waitingPlayerID + '> is reluctant to share but must anyway. You will both lose your free extra turn at the end of your first turn in your turn sequence.';
+							}
+						} else {
+							global.scrollActive = true;
+							var roll = random(1, 3);
+							if (roll === 1) {
+								itemOrActionText = 'You tap your Magistone to the scroll\'s golden cap, and you and <@' + global.waitingPlayerID + '> are surrounded by white light. You will both get a free extra turn at the end of your first turn in your turn sequence.';
+							} else if (roll === 2) {
+								itemOrActionText = 'The scroll\'s golden ink flashes, and <@' + global.waitingPlayerID + '> hurries to also touch the magic that emerges. You will both get a free extra turn at the end of your first turn in your turn sequence.';
+							} else {
+								itemOrActionText = '<@' + global.waitingPlayerID + '> is happy to share. You will both get a free extra turn at the end of your first turn in your turn sequence.';
+							}
+						}
+						var roll2 = random(1, 3);
+						if (roll2 === 1) {
+							itemOrActionText += ' The magic takes a while, so 5 more turns are added to the turn counter.';
+						} else if (roll2 === 2) {
+							itemOrActionText += ' You both huff and sit and wait for the magic to kick in, and 5 more turns are added to the turn counter.';
+						} else {
+							itemOrActionText += ' You get distracted by the scroll\'s beautiful cursive, and in the meantime, 5 more turns are added to the turn counter.';
+						}
+						global.turnNumber += 5;
+						wyrmCheck('O');
+						endTurn(interaction, 'use your Scroll', itemOrActionText);
+					} else if (i.customId === 'no') {
+						interaction.channel?.send('Please select another item or action.');
+						global.itemOrActionProcessing = false;
+					}
+					interaction.deleteReply();
+					collector.stop();
+					buttonClicked = true;
+				});
+				collector.on('end', collected => { if (!buttonClicked) { timeoutItemOrAction(interaction) } });
+			} else if (global.itemOrActionProcessing) {
+				await interaction.reply({ content: 'An item or action prompt is already displayed. Please use the selected item or action, or cancel it and select another item or action.', ephemeral: true });
+			} else if (!(await modeAllows('scroll', interaction))) {
+				await interaction.reply({ content: 'You cannot use the **Scroll** item in the current battle mode (' + global.battleMode + '). Please select another item or action.', ephemeral: true });
+			} else {
+				await interaction.reply({ content: 'You do not have the **Scroll** item registered. Please buy it in `c!shop` and use it in `c!inventory` to register it first, use another registered item, or use a free action such as `/freeattack`.', ephemeral: true });
 			}
 		} else {
 			await interaction.reply({ content: 'Only the active player, <@' + global.activePlayerID + '>, can run item and action commands right now.', ephemeral: true });
@@ -1270,12 +1575,12 @@ client.on('interactionCreate', async interaction => {
 			await interaction.reply({ content: 'There is no battle in progress.', ephemeral: true });
 		} else if (interaction.user.id === global.activePlayerID) {
 			restartTimeout(interaction);
-			if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('902364301522792448') && (global.activePlayerArkaetre === '' || global.activePlayerArkaetre === 'Kludde') && !global.itemOrActionProcessing) {
+			if (interaction.member.roles instanceof GuildMemberRoleManager && (global.activePlayerArkaetre === '' || global.activePlayerArkaetre === 'Kludde') && !global.itemOrActionProcessing && global.arkaetreMode != '**None**') {
 				global.itemOrActionProcessing = true;
 				const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('yes').setLabel('✔️ Yes').setStyle(ButtonStyle.Success),new ButtonBuilder().setCustomId('no').setLabel('❌ No').setStyle(ButtonStyle.Danger));
-				var text = '<:itemArkaetre:903038551095128064> **Arkaetre**:  Gain a permanent random arkaetre ability\n\nUse this item?';
+				var text = '<:itemArkaetre:1260808324027383861> **Arkaetre**:  Gain an Arkaetre ability\n\nUse this free action?';
 				if (global.activePlayerArkaetre === 'Kludde') {
-					text = '🐺 **Arkaetre**:  Add a kludde to your pack\n\nUse this item?';
+					text = '🐺 **Arkaetre**:  Add a kludde to your pack\n\nUse this free action?';
 				}
 				// @ts-ignore
 				await interaction.reply({ content: text, components: [row] });
@@ -1301,59 +1606,70 @@ client.on('interactionCreate', async interaction => {
 							} else if (global.activePlayerKluddeCount === 7) {
 								global.activePlayerArkaetreIcon = '🐺7️⃣ ';
 							}
-							itemOrActionText = 'Your kludde arkaetre howls and a new kludde hears the call, joining your pack.';
+							itemOrActionText = 'Your kludde Arkaetre howls and a new kludde hears the call, joining your pack.';
 						} else {
 							var roll = random(1, 12);
+
+							var user = interaction.guild?.members.cache.get(interaction.user.id);
+							var arkaetreRoleIDs = ['1262183272511832137', '1262183277591134239', '1262183283039408242', '1262183287900733558', '1262183292833108051', '1262183298436960287', '1262183301997662320', '1262183305432928287', '1262183310105514054', '1262183321505632307', '1262183325309603912', '1262183336139558962'];
+							if (global.arkaetreMode === '**Picked**') {
+								for (var j = 1; j < 13; j++) {
+									if (await user?.roles.cache.has(arkaetreRoleIDs[j-1])) {
+										roll = j;
+									}
+								}
+							}
+
 							if (roll === 1) {
-								itemOrActionText = 'You called your wyrm arkaetre! Every time you use an item or action that you have not used yet in this battle, you will gain 1 additional point of health.';
+								itemOrActionText = 'You called your wyrm Arkaetre! Every time you use an item or action that you have not used yet in this battle, you will gain 1 additional point of health.';
 								global.activePlayerArkaetre = 'Wyrm';
 								global.activePlayerArkaetreIcon = '🐍 ';
 							} else if (roll === 2) {
-								itemOrActionText = 'You called your flying lion arkaetre! Every time you roll the highest possible Enemy Damage for an item or action, you will deal 1 additional point of damage.';
+								itemOrActionText = 'You called your flying lion Arkaetre! Every time you roll the highest possible Enemy Damage for an item or action, you will deal 1 additional point of damage.';
 								global.activePlayerArkaetre = 'Flying Lion';
 								global.activePlayerArkaetreIcon = '🦁 ';
 							} else if (roll === 3) {
-								itemOrActionText = 'You called your hummingbird arkaetre! Every time you roll the lowest possible positive Enemy Damage for an item or action, you will gain 1 point of health.';
+								itemOrActionText = 'You called your hummingbird Arkaetre! Every time you roll the lowest possible positive Enemy Damage for an item or action, you will gain 1 point of health.';
 								global.activePlayerArkaetre = 'Hummingbird';
 								global.activePlayerArkaetreIcon = '🕊️ ';
 							} else if (roll === 4) {
-								itemOrActionText = 'You called your owl arkaetre! Every time you have no Normal stats at the end of your turn right after your opponent moves, you will have a 66% chance of gaining an extra turn.';
+								itemOrActionText = 'You called your owl Arkaetre! Every time you have no Normal stats at the end of your first turn in your turn sequence, you will have a 66% chance of gaining an extra turn.';
 								global.activePlayerArkaetre = 'Owl';
 								global.activePlayerArkaetreIcon = '🦉 ';
 							} else if (roll === 5) {
-								itemOrActionText = 'You called your griffin arkaetre! Your Attack will always be high, and you and your opponent will both have an additional 5% chance of an instakill every time either of you roll positive Enemy Damage for an item or action.';
+								itemOrActionText = 'You called your griffin Arkaetre! Your Attack will always be high, and you and your opponent will both have an additional 5% chance of an instakill every time either of you roll positive Enemy Damage for an item or action.';
 								global.activePlayerArkaetre = 'Griffin';
 								global.activePlayerArkaetreIcon = '🦅 ';
 								global.activePlayerAT = 'High🔺';
 							} else if (roll === 6) {
-								itemOrActionText = 'You called your dragon arkaetre! Your Defense will always be high, and you and your opponent will both have an additional 10% chance of critical hits and heals.';
+								itemOrActionText = 'You called your dragon Arkaetre! Your Defense will always be high, and you and your opponent will both have an additional 10% chance of critical hits and heals.';
 								global.activePlayerArkaetre = 'Dragon';
 								global.activePlayerArkaetreIcon = '🐲 ';
 								global.activePlayerDF = 'High🔺';
 							} else if (roll === 7) {
-								itemOrActionText = 'You called your cheetah arkaetre! Your Recovery will always be high, and you and your opponent will both take 1 extra point of damage each turn.';
+								itemOrActionText = 'You called your cheetah Arkaetre! Your Recovery will always be high, and you and your opponent will both take 1 extra point of damage each turn.';
 								global.activePlayerArkaetre = 'Cheetah';
 								global.activePlayerArkaetreIcon = '🐆 ';
 								global.activePlayerRC = 'High🔺';
 							} else if (roll === 8) {
-								itemOrActionText = 'You called your komodo dragon arkaetre! Every time your opponent uses an item or action to deal Enemy Damage, you will deal 1 point of Enemy Damage.';
+								itemOrActionText = 'You called your komodo dragon Arkaetre! Every time your opponent uses an item or action to deal Enemy Damage, you will deal 1 point of Enemy Damage.';
 								global.activePlayerArkaetre = 'Komodo Dragon';
 								global.activePlayerArkaetreIcon = '🦎 ';
 							} else if (roll === 9) {
-								itemOrActionText = 'You called your sphinx arkaetre! Every time your opponent uses an item or action to gain Personal Health, you will gain 1 point of Personal Health.';
+								itemOrActionText = 'You called your sphinx Arkaetre! Every time your opponent uses an item or action to gain Personal Health, you will gain 1 point of Personal Health.';
 								global.activePlayerArkaetre = 'Sphinx';
 								global.activePlayerArkaetreIcon = '🐈 ';
 							} else if (roll === 10) {
-								itemOrActionText = 'You called your kludde arkaetre! You can use the `/arkaetre` command to add more kludde to your pack, 1 at a time. When you gather 7 kludde, you will instakill your opponent.';
+								itemOrActionText = 'You called your kludde Arkaetre! You can use the `/arkaetre` command to add more kludde to your pack, 1 at a time. When you gather 7 kludde, you will instakill your opponent.';
 								global.activePlayerArkaetre = 'Kludde';
 								global.activePlayerArkaetreIcon = '🐺1️⃣ ';
 								global.activePlayerKluddeCount = 1;
 							} else if (roll === 11) {
-								itemOrActionText = 'You called your phoenix arkaetre! The first time you end any turn with 1-3 points of health, you will go back to full health.';
+								itemOrActionText = 'You called your phoenix Arkaetre! The first time you end any turn with 1-3 points of health, you will go back to full health.';
 								global.activePlayerArkaetre = 'Phoenix';
 								global.activePlayerArkaetreIcon = '🐦 ';
 							} else if (roll === 12) {
-								itemOrActionText = 'You called your hydra arkaetre! Every counted turn will have an additional 66% chance of decreasing the health cap by 1 point. You will also be immune to overtime effects.';
+								itemOrActionText = 'You called your hydra Arkaetre! Every counted turn will have an additional 66% chance of decreasing the health cap by 1 point. You will also be immune to overtime effects.';
 								global.activePlayerArkaetre = 'Hydra';
 								global.activePlayerArkaetreIcon = '🔱 ';
 							}
@@ -1370,10 +1686,10 @@ client.on('interactionCreate', async interaction => {
 				collector.on('end', collected => { if (!buttonClicked) { timeoutItemOrAction(interaction) } });
 			} else if (global.itemOrActionProcessing) {
 				await interaction.reply({ content: 'An item or action prompt is already displayed. Please use the selected item or action, or cancel it and select another item or action.', ephemeral: true });
-			} else if (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('902364301522792448')) {
-				await interaction.reply({ content: 'You cannot override your current arkaetre. Please select another item or action.', ephemeral: true });
+			} else if (global.arkaetreMode === '**None**') {
+				await interaction.reply({ content: 'You cannot use an Arkaetre in the current Arkaetre mode (' + global.arkaetreMode + '). Please select another item or action.', ephemeral: true });
 			} else {
-				await interaction.reply({ content: 'You do not have the **Arkaetre** item registered. Please buy it in `c!shop` and use it in `c!inventory` to register it first, use another registered item, or use a free action such as `/freeattack`.', ephemeral: true });
+				await interaction.reply({ content: 'You cannot override your current Arkaetre. Please select another item or action.', ephemeral: true });
 			}
 		} else {
 			await interaction.reply({ content: 'Only the active player, <@' + global.activePlayerID + '>, can run item and action commands right now.', ephemeral: true });
@@ -1472,6 +1788,7 @@ function resetGameVars() {
 	global.activePlayerDF = 'Normal';
 	global.activePlayerRC = 'Normal';
 	global.activePlayerNumExtraTurns = 0;
+	global.activePlayerDefensiveStance = 'Inactive';
 	global.activePlayerShieldStatus = 'Down';
 	global.activePlayerArkaetre = '';
 	global.activePlayerArkaetreIcon = '';
@@ -1485,6 +1802,7 @@ function resetGameVars() {
 	global.waitingPlayerDF = 'Normal';
 	global.waitingPlayerRC = 'Normal';
 	global.waitingPlayerNumExtraTurns = 0;
+	global.waitingPlayerDefensiveStance = 'Inactive';
 	global.waitingPlayerShieldStatus = 'Down';
 	global.waitingPlayerArkaetre = '';
 	global.waitingPlayerArkaetreIcon = '';
@@ -1502,7 +1820,9 @@ function resetGameVars() {
 	global.flyingLionActivated = false;
 	global.hummingbirdActivated = false;
 	global.freeAttackInstakillHappened = false;
-	global.turnJustSwitched = false;
+	global.scrollActive = false;
+	global.scrollActivated = false;
+	global.turnJustSwitched = true;
 	global.maxHealth = 20;
 }
 
@@ -1518,6 +1838,7 @@ function extraTurnReset() {
 	global.flyingLionActivated = false;
 	global.hummingbirdActivated = false;
 	global.freeAttackInstakillHappened = false;
+	global.scrollActivated = false;
 	global.turnJustSwitched = false;
 }
 
@@ -1530,6 +1851,7 @@ function swapTurns() {
 	var waitingPlayerDFTemp = global.waitingPlayerDF;
 	var waitingPlayerRCTemp = global.waitingPlayerRC;
 	var waitingPlayerNumExtraTurnsTemp = global.waitingPlayerNumExtraTurns;
+	var waitingPlayerDefensiveStanceTemp = global.waitingPlayerDefensiveStance;
 	var waitingPlayerShieldStatusTemp = global.waitingPlayerShieldStatus;
 	var waitingPlayerArkaetreTemp = global.waitingPlayerArkaetre;
 	var waitingPlayerArkaetreIconTemp = global.waitingPlayerArkaetreIcon;
@@ -1543,6 +1865,7 @@ function swapTurns() {
 	global.waitingPlayerDF = global.activePlayerDF;
 	global.waitingPlayerRC = global.activePlayerRC;
 	global.waitingPlayerNumExtraTurns = global.activePlayerNumExtraTurns;
+	global.waitingPlayerDefensiveStance = global.activePlayerDefensiveStance;
 	global.waitingPlayerShieldStatus = global.activePlayerShieldStatus;
 	global.waitingPlayerArkaetre = global.activePlayerArkaetre;
 	global.waitingPlayerArkaetreIcon = global.activePlayerArkaetreIcon;
@@ -1556,6 +1879,7 @@ function swapTurns() {
 	global.activePlayerDF = waitingPlayerDFTemp;
 	global.activePlayerRC = waitingPlayerRCTemp;
 	global.activePlayerNumExtraTurns = waitingPlayerNumExtraTurnsTemp;
+	global.activePlayerDefensiveStance = waitingPlayerDefensiveStanceTemp;
 	global.activePlayerShieldStatus = waitingPlayerShieldStatusTemp;
 	global.activePlayerArkaetre = waitingPlayerArkaetreTemp;
 	global.activePlayerArkaetreIcon = waitingPlayerArkaetreIconTemp;
@@ -1578,7 +1902,60 @@ function swapTurns() {
 
 
 
+async function modeAllows(item, interaction) {
+	if (global.battleMode === '**Default**') {
+		return true;
+	} else if (global.battleMode === '**Free Only**') {
+		return false;
+	} else if (global.battleMode === '**Front Six**') {
+		if (item === 'sword' || item === 'bow' || item === 'realmportal' || item === 'magistone' || item === 'dagger' || item === 'frozenfish') {
+			return true;
+		} else {
+			return false;
+		}
+	} else if (global.battleMode === '**Back Six**') {
+		if (item === 'sword' || item === 'bow' || item === 'realmportal' || item === 'magistone' || item === 'dagger' || item === 'frozenfish') {
+			return false;
+		} else {
+			return true;
+		}
+	} else if (global.battleMode === '**Backpack**') {
+		var user = await interaction.guild.members.cache.get(interaction.user.id);
+		const backpackRoleIDs = ['1261472894370713642', '1261472899966042172', '1261472905234223124', '1261472910053474396', '1261472914633527498', '1261472919691726932', '1261472924251066490', '1261472929095487489', '1261472933981978714', '1261472938893512754', '1261472943809232936', '1261477378035810385'];
+		const weaponNames = ['sword', 'bow', 'realmportal', 'magistone', 'dagger', 'frozenfish', 'laserrifle', 'staff', 'shield', 'shifterdisc', 'pocketwatch', 'scroll'];
+		var backpackHasItem = false;
+		for (var j = 0; j< 12; j++) {
+			if (item === weaponNames[j] && await user.roles.cache.has(backpackRoleIDs[j])) {
+				backpackHasItem = true;
+			}
+		}
+		return backpackHasItem;
+	}
+}
+
+
+
 function statChange(stat, target, increase) {
+	if (!increase && (target === 'active' && (global.activePlayerDefensiveStance === 'Active' || global.activePlayerDefensiveStance === 'Activated-Success')) || (target === 'waiting' && (global.waitingPlayerDefensiveStance === 'Active' || global.waitingPlayerDefensiveStance === 'Activated-Success'))) {
+		var roll = random(1, 3)
+		if ((target === 'active' && global.activePlayerDefensiveStance === 'Activated-Success') || target === 'waiting' && global.waitingPlayerDefensiveStance === 'Activated-Success') {
+			roll = 1;
+		}
+		if (roll === 1) {
+			if (target === 'active') {
+				global.activePlayerDefensiveStance = 'Activated-Success';
+			} else {
+				global.waitingPlayerDefensiveStance = 'Activated-Success';
+			}
+			return;
+		} else {
+			if (target === 'active') {
+				global.activePlayerDefensiveStance = 'Activated-Fail';
+			} else {
+				global.waitingPlayerDefensiveStance = 'Activated-Fail';
+			}
+		}
+	}
 	if (target === 'active') {
 		if (stat === 'AT') {
 			if (global.activePlayerAT === 'Low🔻') {
@@ -1717,6 +2094,26 @@ function health(target, value) {
 
 
 function damage(target, value) {
+	if ((target === 'active' && (global.activePlayerDefensiveStance === 'Active' || global.activePlayerDefensiveStance === 'Activated-Success')) || (target === 'waiting' && (global.waitingPlayerDefensiveStance === 'Active' || global.waitingPlayerDefensiveStance === 'Activated-Success'))) {
+		var roll = random(1, 3)
+		if ((target === 'active' && global.activePlayerDefensiveStance === 'Activated-Success') || target === 'waiting' && global.waitingPlayerDefensiveStance === 'Activated-Success') {
+			roll = 1;
+		}
+		if (roll === 1) {
+			if (target === 'active') {
+				global.activePlayerDefensiveStance = 'Activated-Success';
+			} else {
+				global.waitingPlayerDefensiveStance = 'Activated-Success';
+			}
+			///return '0 points of';
+		} else {
+			if (target === 'active') {
+				global.activePlayerDefensiveStance = 'Activated-Fail';
+			} else {
+				global.waitingPlayerDefensiveStance = 'Activated-Fail';
+			}
+		}
+	}
 	if (global.activePlayerAT === 'High🔺') {
 		value += 1;
 	} else if (global.activePlayerAT === 'Low🔻') {
@@ -1749,6 +2146,8 @@ function damage(target, value) {
 				global.activePlayerShieldStatus = 'Fell';
 				global.activePlayerHP -= value;
 			}
+		} else if (global.activePlayerDefensiveStance === 'Activated-Success') {
+			///Do nothing
 		} else {
 			global.activePlayerHP -= value;
 		}
@@ -1761,6 +2160,8 @@ function damage(target, value) {
 				global.waitingPlayerShieldStatus = 'Fell';
 				global.waitingPlayerHP -= value;
 			}
+		} else if (global.waitingPlayerDefensiveStance === 'Activated-Success') {
+			///Do nothing
 		} else {
 			global.waitingPlayerHP -= value;
 		}
@@ -1827,8 +2228,19 @@ function endTurn(interaction, item, itemOrActionText) {
 	}
 
 	var pocketwatchMessage = '';
+	var scrollMessage = '';
+	var scrollIcon = '';
+	if (global.scrollActive) {
+		scrollIcon = ' 📜';
+		if (global.turnJustSwitched) {
+			global.scrollActivated = true;
+		}
+	}
 	if (global.pocketwatchActivated) {
 		pocketwatchMessage = '\n\n<:itemPocketwatch:903038555633385512> The pocketwatch ticks adamantly and prevents any turns from being gained or lost.';
+	} else if (global.scrollActivated) {
+		scrollMessage = '\n\n<:itemScroll:1260789127713128520> The scroll shimmers gold and grants a free extra turn.';
+		global.waitingPlayerNumExtraTurns > 0 ? global.waitingPlayerNumExtraTurns-- : global.activePlayerNumExtraTurns++;
 	}
 	var pocketwatchTurnFreezeIcon = '';
 	if (global.pocketwatchCounter > 0) {
@@ -1837,6 +2249,32 @@ function endTurn(interaction, item, itemOrActionText) {
 		if (global.pocketwatchCounter === 0) {
 			pocketwatchTurnFreezeIcon = ' 💧';
 		}
+	}
+
+	var defensiveStanceMessage = '';
+	var activePlayerDefensiveStanceIcon = '';
+	var waitingPlayerDefensiveStanceIcon = '';
+	if (global.activePlayerDefensiveStance === 'Active') {
+		activePlayerDefensiveStanceIcon = ' ✋';
+	}
+	if (global.waitingPlayerDefensiveStance === 'Active') {
+		waitingPlayerDefensiveStanceIcon = ' ✋';
+	}
+	if (global.activePlayerDefensiveStance === 'Activated-Success') {
+		defensiveStanceMessage = '\n\n✋ You defend yourself! Nothing can touch you.';
+		global.activePlayerDefensiveStance = 'Inactive';
+	}
+	if (global.waitingPlayerDefensiveStance === 'Activated-Success') {
+		defensiveStanceMessage += '\n\n✋ <@' + global.waitingPlayerID + '> defends themselves! Nothing can touch them.';
+		global.waitingPlayerDefensiveStance = 'Inactive';
+	}
+	if (global.activePlayerDefensiveStance === 'Activated-Fail') {
+		defensiveStanceMessage += '\n\n✋ You try to defend yourself, but, suffice to say, it does not work.';
+		global.activePlayerDefensiveStance = 'Inactive';
+	}
+	if (global.waitingPlayerDefensiveStance === 'Activated-Fail') {
+		defensiveStanceMessage += '\n\n✋ <@' + global.waitingPlayerID + '> tries to defend themselves, but, suffice to say, it does not work.';
+		global.waitingPlayerDefensiveStance = 'Inactive';
 	}
 
 	var shieldMessage = '';
@@ -1857,23 +2295,23 @@ function endTurn(interaction, item, itemOrActionText) {
 
 	var arkaetreMessage = '';
 	if (global.wyrmActivated) {
-		arkaetreMessage += '\n\n🐍 Your wyrm arkaetre grins at your flexibility and flies you out of danger\'s way, letting you recover 1 point of health.';
+		arkaetreMessage += '\n\n🐍 Your wyrm Arkaetre grins at your flexibility and flies you out of danger\'s way, letting you recover 1 point of health.';
 		global.activePlayerHP++;
 	}
 	if (global.flyingLionActivated) {
-		arkaetreMessage += '\n\n🦁 Your flying lion arkaetre is boldened by your strong attack and pounces on <@' + global.waitingPlayerID + '> from above, dealing 1 point of damage.';
+		arkaetreMessage += '\n\n🦁 Your flying lion Arkaetre is boldened by your strong attack and pounces on <@' + global.waitingPlayerID + '> from above, dealing 1 point of damage.';
 		global.waitingPlayerHP--;
 	}
 	if (global.hummingbirdActivated) {
-		arkaetreMessage += '\n\n🕊️ Your hummingbird arkaetre delights in your tiny attack and gives you some of its hard-earned nectar, granting you 1 point of health.';
+		arkaetreMessage += '\n\n🕊️ Your hummingbird Arkaetre delights in your tiny attack and gives you some of its hard-earned nectar, granting you 1 point of health.';
 		global.activePlayerHP++;
 	}
 	if (global.activePlayerArkaetre === 'Owl' && global.turnJustSwitched && global.activePlayerAT !== 'Normal' && global.activePlayerDF !== 'Normal' && global.activePlayerRC !== 'Normal') {
 		if (random(1, 3) < 3) {
-			arkaetreMessage += '\n\n🦉 Your owl arkaetre\'s eyes widen at your irregular stats and it fills the air with feathers, granting you an extra turn.';
+			arkaetreMessage += '\n\n🦉 Your owl Arkaetre\'s eyes widen at your irregular stats and it fills the air with feathers, granting you an extra turn.';
 			global.waitingPlayerNumExtraTurns > 0 ? global.waitingPlayerNumExtraTurns-- : global.activePlayerNumExtraTurns++;
 		} else {
-			arkaetreMessage += '\n\n🦉 Your owl arkaetre is unimpressed.';
+			arkaetreMessage += '\n\n🦉 Your owl Arkaetre is unimpressed.';
 		}
 	}
 	if(!global.freeAttackInstakillHappened) {
@@ -1881,36 +2319,36 @@ function endTurn(interaction, item, itemOrActionText) {
 			var roll = random(1, 20);
 			if (global.activePlayerArkaetre === 'Griffin' && global.waitingPlayerArkaetre === 'Griffin' && roll < 3) {
 				if (roll === 1) {
-					arkaetreMessage += '\n\n🦅 Your griffin arkaetre silently lunges for <@' + global.waitingPlayerID + '> when they least expect it, defeating them instantly.';
+					arkaetreMessage += '\n\n🦅 Your griffin Arkaetre silently lunges for <@' + global.waitingPlayerID + '> when they least expect it, defeating them instantly.';
 				} else {
-					arkaetreMessage += '\n\n🦅 <@' + global.waitingPlayerID + '>\'s griffin arkaetre silently lunges for them when they least expect it, defeating them instantly. Trust is a dangerous thing.';
+					arkaetreMessage += '\n\n🦅 <@' + global.waitingPlayerID + '>\'s griffin Arkaetre silently lunges for them when they least expect it, defeating them instantly. Trust is a dangerous thing.';
 				}
 				global.waitingPlayerHP = 0;
 			} else if (global.activePlayerArkaetre === 'Griffin' && roll === 1) {
-				arkaetreMessage += '\n\n🦅 Your griffin arkaetre silently lunges for <@' + global.waitingPlayerID + '> when they least expect it, defeating them instantly.';
+				arkaetreMessage += '\n\n🦅 Your griffin Arkaetre silently lunges for <@' + global.waitingPlayerID + '> when they least expect it, defeating them instantly.';
 				global.waitingPlayerHP = 0;
 			} else if (global.waitingPlayerArkaetre === 'Griffin' && roll === 1) {
-				arkaetreMessage += '\n\n🦅 <@' + global.waitingPlayerID + '>\'s griffin arkaetre silently lunges for them when they least expect it, defeating them instantly. Trust is a dangerous thing.';
+				arkaetreMessage += '\n\n🦅 <@' + global.waitingPlayerID + '>\'s griffin Arkaetre silently lunges for them when they least expect it, defeating them instantly. Trust is a dangerous thing.';
 				global.waitingPlayerHP = 0;
 			}
 		}
 	}
 	if (global.activePlayerArkaetre === 'Cheetah') {
-		arkaetreMessage += '\n\n🐆 Your cheetah arkaetre is impatient and scratches you and your opponent for 1 point of damage each.';
+		arkaetreMessage += '\n\n🐆 Your cheetah Arkaetre is impatient and scratches you and your opponent for 1 point of damage each.';
 		global.activePlayerHP--;
 		global.waitingPlayerHP--;
 	}
 	if (global.waitingPlayerArkaetre === 'Cheetah') {
-		arkaetreMessage += '\n\n🐆 <@' + global.waitingPlayerID + '>\'s cheetah arkaetre is impatient and scratches both of you for 1 point of damage each.';
+		arkaetreMessage += '\n\n🐆 <@' + global.waitingPlayerID + '>\'s cheetah Arkaetre is impatient and scratches both of you for 1 point of damage each.';
 		global.activePlayerHP--;
 		global.waitingPlayerHP--;
 	}
 	if (global.waitingPlayerArkaetre === 'Komodo Dragon' && global.actionType === 'Attack') {
-		arkaetreMessage += '\n\n🦎 <@' + global.waitingPlayerID + '>\'s komodo dragon arkaetre hisses threateningly and bites you for 1 point of damage when you attack.';
+		arkaetreMessage += '\n\n🦎 <@' + global.waitingPlayerID + '>\'s komodo dragon Arkaetre hisses threateningly and bites you for 1 point of damage when you attack.';
 		global.activePlayerHP--;
 	}
 	if (global.waitingPlayerArkaetre === 'Sphinx' && global.actionType === 'Heal') {
-		arkaetreMessage += '\n\n🐈 <@' + global.waitingPlayerID + '>\'s sphinx arkaetre shoots you an alluring smile and distracts you with a riddle, allowing your opponent to gain 1 point of health.';
+		arkaetreMessage += '\n\n🐈 <@' + global.waitingPlayerID + '>\'s sphinx Arkaetre shoots you an alluring smile and distracts you with a riddle, allowing your opponent to gain 1 point of health.';
 		global.waitingPlayerHP++;
 	}
 	if (global.activePlayerKluddeCount === 7) {
@@ -1918,13 +2356,13 @@ function endTurn(interaction, item, itemOrActionText) {
 		global.waitingPlayerHP = 0;
 	}
 	if (global.activePlayerArkaetre === 'Phoenix' && global.activePlayerHP < 4 && global.activePlayerHP > 0 && !global.activePlayerPhoenixUsed) {
-		arkaetreMessage += '\n\n🐦 Your phoenix arkaetre douses you in magic fire and flies away. You are reborn from the ashes with full health.';
+		arkaetreMessage += '\n\n🐦 Your phoenix Arkaetre douses you in magic fire and flies away. You are reborn from the ashes with full health.';
 		global.activePlayerHP = 15;
 		global.activePlayerArkaetreIcon = '🪶 ';
 		global.activePlayerPhoenixUsed = true;
 	}
 	if (global.waitingPlayerArkaetre === 'Phoenix' && global.waitingPlayerHP < 4 && global.waitingPlayerHP > 0 && !global.waitingPlayerPhoenixUsed) {
-		arkaetreMessage += '\n\n🐦 <@' + global.waitingPlayerID + '>\'s phoenix arkaetre douses them in magic fire and flies away. They are reborn from the ashes with full health.';
+		arkaetreMessage += '\n\n🐦 <@' + global.waitingPlayerID + '>\'s phoenix Arkaetre douses them in magic fire and flies away. They are reborn from the ashes with full health.';
 		global.waitingPlayerHP = 15;
 		global.waitingPlayerArkaetreIcon = '🪶 ';
 		global.waitingPlayerPhoenixUsed = true;
@@ -1937,9 +2375,9 @@ function endTurn(interaction, item, itemOrActionText) {
 		if (roll < 3) {
 			global.maxHealth--;
 			if (global.activePlayerArkaetre === 'Hydra') {
-				arkaetreMessage += '\n\n🔱 Your hydra arkaetre hisses and surrounds the arena with its formidable heads, decreasing the health cap by 1 point.';
+				arkaetreMessage += '\n\n🔱 Your hydra Arkaetre hisses and surrounds the arena with its formidable heads, decreasing the health cap by 1 point.';
 			} else {
-				arkaetreMessage += '\n\n🔱 <@' + global.waitingPlayerID + '>\'s hydra arkaetre hisses and surrounds the arena with its formidable heads, decreasing the health cap by 1 point.';
+				arkaetreMessage += '\n\n🔱 <@' + global.waitingPlayerID + '>\'s hydra Arkaetre hisses and surrounds the arena with its formidable heads, decreasing the health cap by 1 point.';
 			}
 		}
 	}
@@ -1996,18 +2434,18 @@ function endTurn(interaction, item, itemOrActionText) {
 	var activePlayerShieldIcon = global.activePlayerShieldStatus === 'Up' ? ' <:itemShield:903038554127601694>' : '';
 	var waitingPlayerShieldIcon = global.waitingPlayerShieldStatus === 'Up' ? ' <:itemShield:903038554127601694>' : '';
 
-	var activePlayerExtraTurnsTag = '';
+	var activePlayerExtraTurnsIcon = '';
 	if (global.activePlayerNumExtraTurns > 0) {
-		activePlayerExtraTurnsTag = ' ♻️';
+		activePlayerExtraTurnsIcon = ' ♻️';
 		for (var i = 1; i < global.activePlayerNumExtraTurns; i++) {
-			activePlayerExtraTurnsTag += '♻️';
+			activePlayerExtraTurnsIcon += '♻️';
 		}
 	}
-	var waitingPlayerExtraTurnsTag = '';
+	var waitingPlayerExtraTurnsIcon = '';
 	if (global.waitingPlayerNumExtraTurns > 0) {
-		waitingPlayerExtraTurnsTag = ' ♻️';
+		waitingPlayerExtraTurnsIcon = ' ♻️';
 		for (var i = 1; i < global.waitingPlayerNumExtraTurns; i++) {
-			waitingPlayerExtraTurnsTag += '♻️';
+			waitingPlayerExtraTurnsIcon += '♻️';
 		}
 	}
 
@@ -2018,16 +2456,16 @@ function endTurn(interaction, item, itemOrActionText) {
 	var waitingPlayerDFLockIcon = global.waitingPlayerArkaetre === 'Dragon' ? ' 🔒' : '';
 	var waitingPlayerRCLockIcon = global.waitingPlayerArkaetre === 'Cheetah' ? ' 🔒' : '';
 
-	var embed = new EmbedBuilder().setTitle('You ' + item + '!').setDescription(itemOrActionText + criticalMessage + pocketwatchMessage + shieldMessage + arkaetreMessage + overtimeMessage).setFooter({ text: overtimeTag + 'Turn ' + global.turnNumber + pocketwatchTurnFreezeIcon });
+	var embed = new EmbedBuilder().setTitle('You ' + item + '!').setDescription(itemOrActionText + criticalMessage + pocketwatchMessage + scrollMessage + shieldMessage + arkaetreMessage + defensiveStanceMessage + overtimeMessage).setFooter({ text: overtimeTag + 'Turn ' + global.turnNumber + scrollIcon + pocketwatchTurnFreezeIcon });
 	if (global.turn) {
 		embed.setColor(0x55ACEE).addFields(
-			{ name: '\u200B', value: '🔸' + global.waitingPlayerArkaetreIcon + '<@' + global.waitingPlayerID + '>' + waitingPlayerShieldIcon + '🔸' + waitingPlayerExtraTurnsTag + '\n' + waitingPlayerHealthIcon + ' HP: ' + global.waitingPlayerHP + '/' + global.maxHealth + '\n⚔️ AT: ' + global.waitingPlayerAT + waitingPlayerATLockIcon + '\n🛡️ DF: ' + global.waitingPlayerDF + waitingPlayerDFLockIcon + '\n💗 RC: ' + global.waitingPlayerRC + waitingPlayerRCLockIcon, inline: true },
-			{ name: '\u200B', value: '🔹' + global.activePlayerArkaetreIcon + '<@' + global.activePlayerID + '>' + activePlayerShieldIcon + '🔹' + activePlayerExtraTurnsTag + '\n' + activePlayerHealthIcon + ' HP: ' + global.activePlayerHP + '/' + global.maxHealth + '\n⚔️ AT: ' + global.activePlayerAT + activePlayerATLockIcon + '\n🛡️ DF: ' + global.activePlayerDF + activePlayerDFLockIcon + '\n💗 RC: ' + global.activePlayerRC + activePlayerRCLockIcon, inline: true }
+			{ name: '\u200B', value: '🔸' + global.waitingPlayerArkaetreIcon + '<@' + global.waitingPlayerID + '>' + waitingPlayerShieldIcon + '🔸' + waitingPlayerExtraTurnsIcon + waitingPlayerDefensiveStanceIcon + '\n' + waitingPlayerHealthIcon + ' HP: ' + global.waitingPlayerHP + '/' + global.maxHealth + '\n⚔️ AT: ' + global.waitingPlayerAT + waitingPlayerATLockIcon + '\n🛡️ DF: ' + global.waitingPlayerDF + waitingPlayerDFLockIcon + '\n💗 RC: ' + global.waitingPlayerRC + waitingPlayerRCLockIcon, inline: true },
+			{ name: '\u200B', value: '🔹' + global.activePlayerArkaetreIcon + '<@' + global.activePlayerID + '>' + activePlayerShieldIcon + '🔹' + activePlayerExtraTurnsIcon + activePlayerDefensiveStanceIcon + '\n' + activePlayerHealthIcon + ' HP: ' + global.activePlayerHP + '/' + global.maxHealth + '\n⚔️ AT: ' + global.activePlayerAT + activePlayerATLockIcon + '\n🛡️ DF: ' + global.activePlayerDF + activePlayerDFLockIcon + '\n💗 RC: ' + global.activePlayerRC + activePlayerRCLockIcon, inline: true }
 		);
 	} else {
 		embed.setColor(0xF4900C).addFields(
-			{ name: '\u200B', value: '🔸' + global.activePlayerArkaetreIcon + '<@' + global.activePlayerID + '>' + activePlayerShieldIcon + '🔸' + activePlayerExtraTurnsTag + '\n' + activePlayerHealthIcon + ' HP: ' + global.activePlayerHP + '/' + global.maxHealth + '\n⚔️ AT: ' + global.activePlayerAT + activePlayerATLockIcon + '\n🛡️ DF: ' + global.activePlayerDF + activePlayerDFLockIcon + '\n💗 RC: ' + global.activePlayerRC + activePlayerRCLockIcon, inline: true },
-			{ name: '\u200B', value: '🔹' + global.waitingPlayerArkaetreIcon + '<@' + global.waitingPlayerID + '>' + waitingPlayerShieldIcon + '🔹' + waitingPlayerExtraTurnsTag + '\n' + waitingPlayerHealthIcon + ' HP: ' + global.waitingPlayerHP + '/' + global.maxHealth + '\n⚔️ AT: ' + global.waitingPlayerAT + waitingPlayerATLockIcon + '\n🛡️ DF: ' + global.waitingPlayerDF + waitingPlayerDFLockIcon + '\n💗 RC: ' + global.waitingPlayerRC + waitingPlayerRCLockIcon, inline: true }
+			{ name: '\u200B', value: '🔸' + global.activePlayerArkaetreIcon + '<@' + global.activePlayerID + '>' + activePlayerShieldIcon + '🔸' + activePlayerExtraTurnsIcon + activePlayerDefensiveStanceIcon + '\n' + activePlayerHealthIcon + ' HP: ' + global.activePlayerHP + '/' + global.maxHealth + '\n⚔️ AT: ' + global.activePlayerAT + activePlayerATLockIcon + '\n🛡️ DF: ' + global.activePlayerDF + activePlayerDFLockIcon + '\n💗 RC: ' + global.activePlayerRC + activePlayerRCLockIcon, inline: true },
+			{ name: '\u200B', value: '🔹' + global.waitingPlayerArkaetreIcon + '<@' + global.waitingPlayerID + '>' + waitingPlayerShieldIcon + '🔹' + waitingPlayerExtraTurnsIcon + waitingPlayerDefensiveStanceIcon + '\n' + waitingPlayerHealthIcon + ' HP: ' + global.waitingPlayerHP + '/' + global.maxHealth + '\n⚔️ AT: ' + global.waitingPlayerAT + waitingPlayerATLockIcon + '\n🛡️ DF: ' + global.waitingPlayerDF + waitingPlayerDFLockIcon + '\n💗 RC: ' + global.waitingPlayerRC + waitingPlayerRCLockIcon, inline: true }
 		);
 	}
 

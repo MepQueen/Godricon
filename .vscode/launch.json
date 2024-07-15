@@ -5,6 +5,12 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "java",
+            "name": "Launch Java Program",
+            "request": "launch",
+            "mainClass": "C:/Users/Maja/OneDrive/Desktop/Random Files/FourNumbers.java"
+        },
+        {
             "name": "Launch Godricon",
             "type": "node",
             "request": "launch",
