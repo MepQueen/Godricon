@@ -1,3 +1,7 @@
+/// PENDING UPDATES
+/// Further balance Free Only? Attack specifically?
+/// Kludde balanced for Free Only?
+
 /// FUTURE UPDATES
 /// Dark/Light/Gray continuum pick > different turn numbers advantageous + stat advantage
 /// Ping streak
@@ -56,13 +60,15 @@ client.on('interactionCreate', async interaction => {
 
 
 	if (commandName === 'ping') {
+		console.log('<@' + interaction.user.id + '> used ping.');
 		await interaction.reply({ content: 'Hello, mortal.', ephemeral: true });
 	
 
 
 	} else if (commandName === 'patchnotes') {
+		console.log('<@' + interaction.user.id + '> used patchnotes.');
 		var currentPage = 0;
-		var patchNotesText = ['**7/14/24**\n- The two bugs that got me to shut down the bot last time turned out to be bad luck and probably incorrect manual role assignment, so no action needed there.\n- Councilors will be delighted to hear that Volturnus is no longer allowed in the arena channel, so we can avoid message deletion log spam.\n- Arkaetres are now free (!!) and considered a free action, not an item, and a new item has taken the twelfth place, the scroll. Using a scroll gives both players a free extra turn every time it becomes their turn (or toggles this effect off again) and increases the turn counter by 5. Remember, overtime starts on turn 20. Everyone who previously bought an Arkaetre now has a scroll for free.\n- Check out `/battlemode` for some new ways to play! Try being limited to just free actions (Free Only), the first cheap six items (Front Six), the more expensive ones (Back Six). There\'s also backpack mode (Backpack), where you use four preset items of your choice! Just use `/setbackpack` first.\n- Similarly, `/arkaetremode` sets the Arkaetre mode, either Random, Picked or None. Pick your Arkaetre by using `/setarkaetre`.\n- You can check all of your presets with `/checkbackpackandarkaetre`.\n- Some small text edits for clarity, as usual.\n- A few arkaetres have been rebalanced for Free Only mode.\n- And yeah, I know the patch notes say Interaction Failed when you flip the page. It works, and I have no idea what\'s causing it, so whatever.',
+		var patchNotesText = ['**7/14/24**\n- The two bugs that got me to shut down the bot last time turned out to be bad luck and probably incorrect manual role assignment, so no action needed there.\n- Councilors will be delighted to hear that Volturnus is no longer allowed in the arena channel, so we can avoid message deletion log spam.\n- Arkaetres are now free (!!) and considered a free action, not an item, and a new item has taken the twelfth place, the scroll. Using a scroll gives both players a free extra turn every time it becomes their turn (or toggles this effect off again) and increases the turn counter by 5. Remember, overtime starts on turn 20. Everyone who previously bought an Arkaetre now has a scroll for free.\n- Check out `/battlemode` for some new ways to play! Try being limited to just free actions (Free Only), the first cheap six items (Front Six), the more expensive ones (Back Six). There\'s also backpack mode (Backpack), where you use four preset items of your choice! Just use `/setbackpack` first.\n- Similarly, `/arkaetremode` sets the Arkaetre mode, either Random, Picked or None. Pick your Arkaetre by using `/setarkaetre`.\n- You can check all of your presets with `/checkbackpackandarkaetre`.\n- Some small text edits for clarity, as usual.\n- The free attack action and a few arkaetres have been rebalanced for Free Only mode.\n- And yeah, I know the patch notes say Interaction Failed when you flip the page. It works, and I have no idea what\'s causing it, so whatever.',
 		
 		'**7/4/23**\n- The Enemy Recovery decrease effect has been moved from the laser rifle to the bow.\n- The laser rifle now decreases a random enemy stat instead.\n- The frozen fish has been boosted! It now has a 75% chance of dealing 3-5 damage and a 25% chance of healing your enemy for 2 points (it used to be a 66% chance of 1-4 damage and a 33% chance of 1-2 health).\n- `/freedefend` is now `/freeheal`, which includes a defensive stance that has a 33% chance of blocking the entire next set of negative effects that target you, including damage, stat effects, lost turns and instakills.', 
 			
@@ -121,32 +127,38 @@ client.on('interactionCreate', async interaction => {
 
 	
 	} else if (commandName === 'rules-basic') {
+		console.log('<@' + interaction.user.id + '> used rules-basic.');
 		await interaction.reply({ content: '**__Overview__**\nYou can start a battle by typing `/battle` and pinging the member that you want to battle.\nYou can send a battle challenge open to anyone by typing `/challenge`. It will time out after 14 minutes.\nYou can end a battle you are in at any time by typing `/endbattle`.\nTwo battles cannot occur simultaneously.\nYour health starts at 15 and cannot go above 20.\nWhen a player\'s health hits 0, the other player wins.\nThe winner earns 1 battle point (BP), up to 999.\nIf both players hit 0 health on the same turn or turn 100 is reached, there is a tie.\n\nCheck other rules commands for more information!', ephemeral: true });
 
 
 
 	} else if (commandName === 'rules-usingactionsanditems') {
+		console.log('<@' + interaction.user.id + '> used rules-usingactionsanditems.');
 		await interaction.reply({ content: '**__Using Items and Actions__**\nYou and your opponent will take turns using item commands such as `/sword` or free action commands such as `/freeattack`.\nYou can only use items that you have registered.\nTo register an item, buy it in `c!shop` and use it in `c!inventory`.\nYou only have to register each item once to use it in all battles.\nYou can use the `/freeattack`, `/freeheal`, `/freeboost` or `/arkaetre` actions to battle without a registered item.\n\n**__Modes__**\nSet the battle mode with `/battlemode`, which restricts which items can be used.\nIn Backpack mode, preset your items before a battle using `/setbackpack`.\nSet the arkaetre mode with `/arkaetremode`, determining if arkaetres can be used.\nIn Picked mode, preset your arkaetre before a battle using `/setarkaetre`.\nCheck your presets by using `/checkbackpackandarkaetre`.\n\n**__Item and Action Effects__**\nThe effects of an item are listed in its description in `c!shop` and `c!inventory`.\nYou will also be shown the effects of an item or action after using its command but before deciding whether to use it.\nA range of effects not separated by commas have an equal probability of occuring.\nEffects are applied in the order listed.\nItems and actions that, upon rolling, deal Enemy Damage or grant Personal Health, have a 10% chance of a critical hit or heal for an extra point of damage or health.\nArkaetre abilities and instakills are not affected by shields, pocketwatches or other Arkaetre abilities.\n\nCheck other rules commands for more information!', ephemeral: true });
 	
 	
 	
 	} else if (commandName === 'rules-advanced') {
+		console.log('<@' + interaction.user.id + '> used rules-advanced.');
 		await interaction.reply({ content: '**__Stats__**\nYou and your opponent have three different stats that affect item and action effects by up to 1 point in either direction.\nThey are Attack (AT) for attack strength, Defense (DF) for attack resistance, and Recovery (RC) for healing.\nEach of them can be Low🔻, Normal or High🔺.\nArkaetre abilities are not affected by stats.\nActions whose original rolls deal no damage or grant no health are not affected by stats or shields.\n\n**__Shields and Defensive Stances__**\nA shield can be formed by using `/shield`.\nA shield will block all damage from attacks for as long as it stays up.\nWhen a shield is hit by an attack, every damage point dealt increases the chance that the shield will fall by ~17%.\nA defensive stance can be taken by using `/freeheal`.\nA defensive stance has a 33% chance of blocking all damage and stat debuffs from a single attack.\n\n**__Overtime__**\nAfter 20 turns, overtime will start, and all healing rolls will be disabled.\nItems and actions that both heal and serve other functions can still be used for only those other functions.\nThe shield formation chance will also decrease to 50%.\n\nCheck other rules commands for more information!', ephemeral: true });
 	
 	
 
 	} else if (commandName === 'rules-arkaetreslist') {
+		console.log('<@' + interaction.user.id + '> used rules-arkaetreslist.');
 		await interaction.reply({ content: '**__Arkaetre Abilities__**\n\n**🐍 Wyrm**\nEvery time you use an item or action that you have not used yet in the current battle, you will gain 1 additional point of health.\n\n**🦁 Flying Lion**\nEvery time you roll the highest possible Enemy Damage for an item or action, you will deal 1 additional point of damage.\n\n**🕊️ Hummingbird**\nEvery time you roll the lowest possible positive Enemy Damage for an item or action, you will gain 1 point of health.\n\n**🦉 Owl**\nEvery time you have no Normal stats at the end of your first turn in your turn sequence, you will have a 66% chance of gaining an extra turn.\n\n**🦅 Griffin**\nYour Attack will always be high, and you and your opponent will both have an additional 5% chance of an instakill every time either of you roll positive Enemy Damage for an item or action.\n\n**🐲 Dragon**\nYour Defense will always be high, and you and your opponent will both have an additional 10% chance of critical hits and heals.\n\n**🐆 Cheetah**\nYour Recovery will always be high, and you and your opponent will both take 1 extra point of damage each turn.\n\n**🦎 Komodo Dragon**\nEvery time your opponent uses an item or action to deal Enemy Damage, you will deal 1 point of Enemy Damage (50% chance in Free Only mode).\n\n**🐈 Sphinx**\nEvery time your opponent uses an item or action to gain Personal Health, you will gain 1 point of Personal Health (50% chance in Free Only mode).\n\n**🐺 Kludde**\nYou can use the `/arkaetre` command to add more kludde to your pack, 1 at a time. When you gather 7 kludde, you will instakill your opponent.\n\n**🐦 Phoenix**\nThe first time you end any turn with 1-3 points of health (1 in Free Only mode), you will go back to full health.\n\n**🔱 Hydra**\nEvery counted turn will have an additional 66% chance of decreasing the health cap by 1. You will also be immune to overtime effects.\n\nCheck other rules commands for more information!', ephemeral: true });
 	
 
 	
 	} else if (commandName === 'rules-actionsanditemslist') {
+		console.log('<@' + interaction.user.id + '> used rules-actionsanditemslist.');
 		await interaction.reply({ content: '**__Free Action Effects__**\n\n🤜 **Attack**\n1-3 Enemy Damage, 5% chance of instakill\n\n:heart_hands: **Heal**\n1-2 Personal Health, gain defensive stance\n\n💪 **Boost**\n↑ Personal Attack or Defense or Recovery or ↓ Enemy Attack or Defense or Recovery, 33% chance of 2x effect\n\n<:itemArkaetre:1260808324027383861> **Arkaetre**\nGain an Arkaetre ability (check `/rules-arkaetreslist`)\n\n**__Item Effects__**\n\n<:itemSword:793212847584313364> **Sword**\n1-3 Enemy Damage, ↑ Personal Attack\n\n<:itemBow:793230409734291506> **Bow**\n2-4 Enemy Damage, ↓ Enemy Recovery, 50% chance of 1 Personal Damage\n\n<:itemRealmPortal:769819664096034846> **Realm Portal**\n0-2 Enemy Damage or 1 Personal Health, 50% chance of extra turn\n\n<:itemMagistone:793215911599407124> **Magistone**\n1 Enemy Damage or 0-4 Personal Health, ↑ Personal Defense or Recovery\n\n<:itemDagger:838670346856431677> **Dagger**\n2 Enemy Damage, ↑ Personal Attack or Defense or Recovery\n\n<:itemFrozenFish:838670349137870858> **Frozen Fish**\n3-5 Enemy Damage or 2 Enemy Health, ↓ Enemy Attack or Defense\n\n<:itemLaserRifle:903038791562981397> **Laser Rifle**\n3x 0-2 Enemy Damage, ↓ Enemy Attack or Defense or Recovery, 50% chance of lost turn\n\n<:itemStaff:903038551682338836> **Staff**\n0 or 5-6 Enemy Damage, ↓ 2 of Personal Attack or Defense or Recovery on hit\n\n<:itemShield:903038554127601694> **Shield**\n80% chance of shield\n\n<:itemShifterDisc:903038892121407568> **Shifter Disc**\n3 Personal Damage or lose turn, ↑ Personal Attack and Defense and Recovery\n\n<:itemPocketwatch:903038555633385512> **Pocketwatch**\n2 Personal Health, ↓ Enemy Attack or Defense or Recovery, no extra or lost turns for either player for 3 turns, freeze the turn counter for 3 turns\n\n<:itemScroll:1260789127713128520> **Scroll**\nToggle free extra turn for both players, increase the turn counter by 5', ephemeral: true });
 	
 	
 
 
 	} else if (commandName === 'leaderboard') {
+		console.log('<@' + interaction.user.id + '> used leaderboard.');
 		await interaction.guild.members.fetch();
 		const battlePointsRole = interaction.guild.roles.cache.get('922033934827675648');
 		if (battlePointsRole) {
@@ -233,6 +245,7 @@ client.on('interactionCreate', async interaction => {
 
 	
 	} else if (commandName === 'setbackpack') {
+		console.log('<@' + interaction.user.id + '> used setbackpack.');
 		const weaponValuesCapitalized = ['Sword', 'Bow', 'Realm Portal', 'Magistone', 'Dagger', 'Frozen Fish', 'Laser Rifle', 'Staff', 'Shield', 'Shifter Disc', 'Pocketwatch', 'Scroll'];
 		const weaponEmojiIDs = ['793212847584313364', '793230409734291506', '769819664096034846', '793215911599407124', '838670346856431677', '838670349137870858', '903038791562981397', '903038551682338836', '903038554127601694', '903038892121407568', '903038555633385512', '1260789127713128520'];
 		const registeredItemRoleIDs = ['892611697876033638', '892528958460002346', '892574599596871720', '892572308219244606', '892530203581120562', '892530356606091316', '892530366894723103', '892530364369764412', '902364365263605810', '892530361370837022', '892530369641971783', '902364301522792448'];
@@ -321,6 +334,7 @@ client.on('interactionCreate', async interaction => {
 
 
 	} else if (commandName === 'setarkaetre') {
+		console.log('<@' + interaction.user.id + '> used setarkaetre.');
 		const arkaetreValuesCapitalized = ['Wyrm', 'Flying Lion', 'Hummingbird', 'Owl', 'Griffin', 'Dragon', 'Cheetah', 'Komodo Dragon', 'Sphinx', 'Kludde', 'Phoenix', 'Hydra'];
 		const arkaetreEmojis = ['🐍', '🦁', '🕊️', '🦉', '🦅', '🐲', '🐆', '🦎', '🐈', '🐺', '🐦', '🔱'];
 		var arkaetreStringSelects = [];
@@ -372,6 +386,7 @@ client.on('interactionCreate', async interaction => {
 
 
 	} else if (commandName === 'checkpresets') {
+		console.log('<@' + interaction.user.id + '> used checkpresets.');
 		var backpackText = '';
 		var arkaetreText = '';
 
@@ -397,7 +412,7 @@ client.on('interactionCreate', async interaction => {
 
 
 	} else if (commandName === 'checkmodes') {
-		await interaction.reply({ content: 'The battle mode is currently: ' + global.battleMode + '.\n\nThe Arkaetre mode is currently: ' + global.arkaetreMode + '.', ephemeral: true });
+		await interaction.reply({ content: 'The battle mode is currently: ' + global.battleMode + '.\n\nThe Arkaetre mode is currently: ' + global.arkaetreMode + '.' });
 	
 	
 	
