@@ -141,7 +141,7 @@ client.on('interactionCreate', async interaction => {
 
 	
 	} else if (commandName === 'rules-actionsanditemslist') {
-		await interaction.reply({ content: '**__Free Action Effects__**\n\n🤜 **Attack**\n1-2 Enemy Damage, 5% chance of instakill\n\n:heart_hands: **Heal**\n1-2 Personal Health, gain defensive stance\n\n💪 **Boost**\n↑ Personal Attack or Defense or Recovery or ↓ Enemy Attack or Defense or Recovery, 33% chance of 2x effect\n\n<:itemArkaetre:1260808324027383861> **Arkaetre**\nGain an Arkaetre ability (check `/rules-arkaetreslist`)\n\n**__Item Effects__**\n\n<:itemSword:793212847584313364> **Sword**\n1-3 Enemy Damage, ↑ Personal Attack\n\n<:itemBow:793230409734291506> **Bow**\n2-4 Enemy Damage, ↓ Enemy Recovery, 50% chance of 1 Personal Damage\n\n<:itemRealmPortal:769819664096034846> **Realm Portal**\n0-2 Enemy Damage or 1 Personal Health, 50% chance of extra turn\n\n<:itemMagistone:793215911599407124> **Magistone**\n1 Enemy Damage or 0-4 Personal Health, ↑ Personal Defense or Recovery\n\n<:itemDagger:838670346856431677> **Dagger**\n2 Enemy Damage, ↑ Personal Attack or Defense or Recovery\n\n<:itemFrozenFish:838670349137870858> **Frozen Fish**\n3-5 Enemy Damage or 2 Enemy Health, ↓ Enemy Attack or Defense\n\n<:itemLaserRifle:903038791562981397> **Laser Rifle**\n3x 0-2 Enemy Damage, ↓ Enemy Attack or Defense or Recovery, 50% chance of lost turn\n\n<:itemStaff:903038551682338836> **Staff**\n0 or 5-6 Enemy Damage, ↓ 2 of Personal Attack or Defense or Recovery on hit\n\n<:itemShield:903038554127601694> **Shield**\n80% chance of shield\n\n<:itemShifterDisc:903038892121407568> **Shifter Disc**\n3 Personal Damage or lose turn, ↑ Personal Attack and Defense and Recovery\n\n<:itemPocketwatch:903038555633385512> **Pocketwatch**\n2 Personal Health, ↓ Enemy Attack or Defense or Recovery, no extra or lost turns for either player for 3 turns, freeze the turn counter for 3 turns\n\n<:itemScroll:1260789127713128520> **Scroll**\nToggle free extra turn for both players, increase the turn counter by 5', ephemeral: true });
+		await interaction.reply({ content: '**__Free Action Effects__**\n\n🤜 **Attack**\n1-3 Enemy Damage, 5% chance of instakill\n\n:heart_hands: **Heal**\n1-2 Personal Health, gain defensive stance\n\n💪 **Boost**\n↑ Personal Attack or Defense or Recovery or ↓ Enemy Attack or Defense or Recovery, 33% chance of 2x effect\n\n<:itemArkaetre:1260808324027383861> **Arkaetre**\nGain an Arkaetre ability (check `/rules-arkaetreslist`)\n\n**__Item Effects__**\n\n<:itemSword:793212847584313364> **Sword**\n1-3 Enemy Damage, ↑ Personal Attack\n\n<:itemBow:793230409734291506> **Bow**\n2-4 Enemy Damage, ↓ Enemy Recovery, 50% chance of 1 Personal Damage\n\n<:itemRealmPortal:769819664096034846> **Realm Portal**\n0-2 Enemy Damage or 1 Personal Health, 50% chance of extra turn\n\n<:itemMagistone:793215911599407124> **Magistone**\n1 Enemy Damage or 0-4 Personal Health, ↑ Personal Defense or Recovery\n\n<:itemDagger:838670346856431677> **Dagger**\n2 Enemy Damage, ↑ Personal Attack or Defense or Recovery\n\n<:itemFrozenFish:838670349137870858> **Frozen Fish**\n3-5 Enemy Damage or 2 Enemy Health, ↓ Enemy Attack or Defense\n\n<:itemLaserRifle:903038791562981397> **Laser Rifle**\n3x 0-2 Enemy Damage, ↓ Enemy Attack or Defense or Recovery, 50% chance of lost turn\n\n<:itemStaff:903038551682338836> **Staff**\n0 or 5-6 Enemy Damage, ↓ 2 of Personal Attack or Defense or Recovery on hit\n\n<:itemShield:903038554127601694> **Shield**\n80% chance of shield\n\n<:itemShifterDisc:903038892121407568> **Shifter Disc**\n3 Personal Damage or lose turn, ↑ Personal Attack and Defense and Recovery\n\n<:itemPocketwatch:903038555633385512> **Pocketwatch**\n2 Personal Health, ↓ Enemy Attack or Defense or Recovery, no extra or lost turns for either player for 3 turns, freeze the turn counter for 3 turns\n\n<:itemScroll:1260789127713128520> **Scroll**\nToggle free extra turn for both players, increase the turn counter by 5', ephemeral: true });
 	
 	
 
@@ -525,24 +525,27 @@ client.on('interactionCreate', async interaction => {
 						itemOrActionText = 'In a fit of rage and glory, you hammer <@' + global.waitingPlayerID + '> with hundreds of kicks and punches, defeating them instantly.';
 						global.waitingPlayerHP = 0;
 						global.freeAttackInstakillHappened = true;
-					} else if (roll2 < 4) {
+					} else if (roll2 < 3) {
 						var amount = damage('waiting', 1);
 						if (roll2 === 1) {
 							itemOrActionText = 'You throw the bandages that you carry with you at all times at <@' + global.waitingPlayerID + '>\'s arm for ' + amount + ' damage. I am surprised they did that much.';
-						} else if (roll2 === 2) {
-							itemOrActionText = 'You run at <@' + global.waitingPlayerID + '>, screaming a fierce battle cry, and beat them in rock-paper-scissors for ' + amount + ' damage.';
 						} else {
-							itemOrActionText = 'After careful consideration of your options, you poke <@' + global.waitingPlayerID + '> in the eye for ' + amount + ' damage.';
+							itemOrActionText = 'You run at <@' + global.waitingPlayerID + '>, screaming a fierce battle cry, and beat them in rock-paper-scissors for ' + amount + ' damage.';
 						}
 						hummingbirdCheck();
-					} else {
+					} else if (roll2 < 5) {
 						var amount = damage('waiting', 2);
-						if (roll2 === 4) {
-							itemOrActionText = 'You punch <@' + global.waitingPlayerID + '> right in the face for ' + amount + ' damage. That is going to hurt.';
-						} else if (roll2 === 5) {
-							itemOrActionText = 'You do a cool flip, followed by a cartwheel, and high kick <@' + global.waitingPlayerID + '> for ' + amount + ' damage.';
+						if (roll2 === 3) {
+							itemOrActionText = 'After careful consideration of your options, you poke <@' + global.waitingPlayerID + '> in the eye for ' + amount + ' damage.';
 						} else {
 							itemOrActionText = 'After being told a particularly bad joke, you tackle <@' + global.waitingPlayerID + '> to the ground for ' + amount + ' damage.';
+						}
+					} else {
+						var amount = damage('waiting', 3);
+						if (roll2 === 5) {
+							itemOrActionText = 'You punch <@' + global.waitingPlayerID + '> right in the face for ' + amount + ' damage. That is going to hurt.';
+						} else {
+							itemOrActionText = 'You do a cool flip, followed by a cartwheel, and high kick <@' + global.waitingPlayerID + '> for ' + amount + ' damage.';
 						}
 						flyingLionCheck();
 					}
