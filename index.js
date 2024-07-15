@@ -18,8 +18,6 @@
 
 
 
-
-
 // @ts-check
 const { Client, Events, GatewayIntentBits, ActivityType, ButtonBuilder, ButtonStyle, ActionRowBuilder, EmbedBuilder, SlashCommandBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, DiscordAPIError, GuildMemberRoleManager, ComponentType } = require('discord.js');
 const { token } = require('C:/Videos/config.json');
@@ -41,6 +39,8 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBit
 
 client.once('ready', () => { 
 	console.log('Locked and Loaded!');
+	/// @ts-ignore
+	client.channels.cache.get('922378133573885982')?.send({ content: 'I just got restarted. All mode settings are now default.' });
 	client.user?.setActivity('. . .', { type: ActivityType.Watching });
 });
 
@@ -59,7 +59,7 @@ client.on('interactionCreate', async interaction => {
 
 	} else if (commandName === 'patchnotes') {
 		var currentPage = 0;
-		var patchNotesText = ['**7/INSERT/24**\n- The two bugs that got me to shut down the bot last time turned out to be bad luck and probably incorrect manual role assignment, so no action needed there.\n- Councilors will be delighted to hear that Volturnus is no longer allowed in the arena channel, so we can avoid message deletion log spam.\n- Arkaetres are now free (!!) and considered a free action, not an item, and a new item has taken the twelfth place, the scroll. Using a scroll gives both players a free extra turn every time it becomes their turn (or toggles this effect off again) and increases the turn counter by 5. Remember, overtime starts on turn 20. Everyone who previously bought an Arkaetre now has a scroll for free.\n- Check out `/battlemode` for some new ways to play! Try being limited to just free actions (Free Only), the first cheap six items (Front Six), the more expensive ones (Back Six). There\'s also backpack mode (Backpack), where you use four preset items of your choice! Just use `/setbackpack` first.\n- Similarly, `/arkaetremode` sets the Arkaetre mode, either Random, Picked or None. Pick your Arkaetre by using `/setarkaetre`.\n- You can check all of your presets with `/checkbackpackandarkaetre`.\n- Some small text edits for clarity, as usual.\n- And yeah, I know the patch notes say Interaction Failed when you flip the page. It works, and I have no idea what\'s causing it, so whatever.',
+		var patchNotesText = ['**7/14/24**\n- The two bugs that got me to shut down the bot last time turned out to be bad luck and probably incorrect manual role assignment, so no action needed there.\n- Councilors will be delighted to hear that Volturnus is no longer allowed in the arena channel, so we can avoid message deletion log spam.\n- Arkaetres are now free (!!) and considered a free action, not an item, and a new item has taken the twelfth place, the scroll. Using a scroll gives both players a free extra turn every time it becomes their turn (or toggles this effect off again) and increases the turn counter by 5. Remember, overtime starts on turn 20. Everyone who previously bought an Arkaetre now has a scroll for free.\n- Check out `/battlemode` for some new ways to play! Try being limited to just free actions (Free Only), the first cheap six items (Front Six), the more expensive ones (Back Six). There\'s also backpack mode (Backpack), where you use four preset items of your choice! Just use `/setbackpack` first.\n- Similarly, `/arkaetremode` sets the Arkaetre mode, either Random, Picked or None. Pick your Arkaetre by using `/setarkaetre`.\n- You can check all of your presets with `/checkbackpackandarkaetre`.\n- Some small text edits for clarity, as usual.\n- And yeah, I know the patch notes say Interaction Failed when you flip the page. It works, and I have no idea what\'s causing it, so whatever.',
 		
 		'**7/4/23**\n- The Enemy Recovery decrease effect has been moved from the laser rifle to the bow.\n- The laser rifle now decreases a random enemy stat instead.\n- The frozen fish has been boosted! It now has a 75% chance of dealing 3-5 damage and a 25% chance of healing your enemy for 2 points (it used to be a 66% chance of 1-4 damage and a 33% chance of 1-2 health).\n- `/freedefend` is now `/freeheal`, which includes a defensive stance that has a 33% chance of blocking the entire next set of negative effects that target you, including damage, stat effects, lost turns and instakills.', 
 			
@@ -133,7 +133,7 @@ client.on('interactionCreate', async interaction => {
 	
 
 	} else if (commandName === 'rules-arkaetreslist') {
-		await interaction.reply({ content: '**__Arkaetre Abilities__**\n\n**🐍 Wyrm**\nEvery time you use an item or action that you have not used yet in the current battle, you will gain 1 additional point of health.\n\n**🦁 Flying Lion**\nEvery time you roll the highest possible Enemy Damage for an item or action, you will deal 1 additional point of damage.\n\n**🕊️ Hummingbird**\nEvery time you roll the lowest possible positive Enemy Damage for an item or action, you will gain 1 point of health.\n\n**🦉 Owl**\nEvery time you have no Normal stats at the end of your first turn in your turn sequence, you will have a 66% chance of gaining an extra turn.\n\n**🦅 Griffin**\nYour Attack will always be high, and you and your opponent will both have an additional 5% chance of an instakill every time either of you roll positive Enemy Damage for an item or action.\n\n**🐲 Dragon**\nYour Defense will always be high, and you and your opponent will both have an additional 10% chance of critical hits and heals.\n\n**🐆 Cheetah**\nYour Recovery will always be high, and you and your opponent will both take 1 extra point of damage each turn.\n\n**🦎 Komodo Dragon**\nEvery time your opponent uses an item or action to deal Enemy Damage, you will deal 1 point of Enemy Damage.\n\n**🐈 Sphinx**\nEvery time your opponent uses an item or action to gain Personal Health, you will gain 1 point of Personal Health.\n\n**🐺 Kludde**\nYou can use the `/arkaetre` command to add more kludde to your pack, 1 at a time. When you gather 7 kludde, you will instakill your opponent.\n\n**🐦 Phoenix**\nThe first time you end any turn with 1-3 points of health, you will go back to full health.\n\n**🔱 Hydra**\nEvery counted turn will have an additional 66% chance of decreasing the health cap by 1. You will also be immune to overtime effects.\n\nCheck other rules commands for more information!', ephemeral: true });
+		await interaction.reply({ content: '**__Arkaetre Abilities__**\n\n**🐍 Wyrm**\nEvery time you use an item or action that you have not used yet in the current battle, you will gain 1 additional point of health.\n\n**🦁 Flying Lion**\nEvery time you roll the highest possible Enemy Damage for an item or action, you will deal 1 additional point of damage.\n\n**🕊️ Hummingbird**\nEvery time you roll the lowest possible positive Enemy Damage for an item or action, you will gain 1 point of health.\n\n**🦉 Owl**\nEvery time you have no Normal stats at the end of your first turn in your turn sequence, you will have a 66% chance of gaining an extra turn.\n\n**🦅 Griffin**\nYour Attack will always be high, and you and your opponent will both have an additional 5% chance of an instakill every time either of you roll positive Enemy Damage for an item or action.\n\n**🐲 Dragon**\nYour Defense will always be high, and you and your opponent will both have an additional 10% chance of critical hits and heals.\n\n**🐆 Cheetah**\nYour Recovery will always be high, and you and your opponent will both take 1 extra point of damage each turn.\n\n**🦎 Komodo Dragon**\nEvery time your opponent uses an item or action to deal Enemy Damage, you will deal 1 point of Enemy Damage (50% chance in Free Only mode).\n\n**🐈 Sphinx**\nEvery time your opponent uses an item or action to gain Personal Health, you will gain 1 point of Personal Health (50% chance in Free Only mode).\n\n**🐺 Kludde**\nYou can use the `/arkaetre` command to add more kludde to your pack, 1 at a time. When you gather 7 kludde, you will instakill your opponent.\n\n**🐦 Phoenix**\nThe first time you end any turn with 1-3 points of health (1 in Free Only mode), you will go back to full health.\n\n**🔱 Hydra**\nEvery counted turn will have an additional 66% chance of decreasing the health cap by 1. You will also be immune to overtime effects.\n\nCheck other rules commands for more information!', ephemeral: true });
 	
 
 	
@@ -1652,11 +1652,11 @@ client.on('interactionCreate', async interaction => {
 								global.activePlayerArkaetreIcon = '🐆 ';
 								global.activePlayerRC = 'High🔺';
 							} else if (roll === 8) {
-								itemOrActionText = 'You called your komodo dragon Arkaetre! Every time your opponent uses an item or action to deal Enemy Damage, you will deal 1 point of Enemy Damage.';
+								itemOrActionText = 'You called your komodo dragon Arkaetre! Every time your opponent uses an item or action to deal Enemy Damage, you will deal 1 point of Enemy Damage (50% chance in Free Only mode).';
 								global.activePlayerArkaetre = 'Komodo Dragon';
 								global.activePlayerArkaetreIcon = '🦎 ';
 							} else if (roll === 9) {
-								itemOrActionText = 'You called your sphinx Arkaetre! Every time your opponent uses an item or action to gain Personal Health, you will gain 1 point of Personal Health.';
+								itemOrActionText = 'You called your sphinx Arkaetre! Every time your opponent uses an item or action to gain Personal Health, you will gain 1 point of Personal Health (50% chance in Free Only mode).';
 								global.activePlayerArkaetre = 'Sphinx';
 								global.activePlayerArkaetreIcon = '🐈 ';
 							} else if (roll === 10) {
@@ -1665,7 +1665,7 @@ client.on('interactionCreate', async interaction => {
 								global.activePlayerArkaetreIcon = '🐺1️⃣ ';
 								global.activePlayerKluddeCount = 1;
 							} else if (roll === 11) {
-								itemOrActionText = 'You called your phoenix Arkaetre! The first time you end any turn with 1-3 points of health, you will go back to full health.';
+								itemOrActionText = 'You called your phoenix Arkaetre! The first time you end any turn with 1-3 points of health (1 in Free Only mode), you will go back to full health.';
 								global.activePlayerArkaetre = 'Phoenix';
 								global.activePlayerArkaetreIcon = '🐦 ';
 							} else if (roll === 12) {
@@ -2343,11 +2343,11 @@ function endTurn(interaction, item, itemOrActionText) {
 		global.activePlayerHP--;
 		global.waitingPlayerHP--;
 	}
-	if (global.waitingPlayerArkaetre === 'Komodo Dragon' && global.actionType === 'Attack') {
+	if (global.waitingPlayerArkaetre === 'Komodo Dragon' && global.actionType === 'Attack' && (global.battleMode != '**Free Only**' || random(1, 2) === 1)) {
 		arkaetreMessage += '\n\n🦎 <@' + global.waitingPlayerID + '>\'s komodo dragon Arkaetre hisses threateningly and bites you for 1 point of damage when you attack.';
 		global.activePlayerHP--;
 	}
-	if (global.waitingPlayerArkaetre === 'Sphinx' && global.actionType === 'Heal') {
+	if (global.waitingPlayerArkaetre === 'Sphinx' && global.actionType === 'Heal' && (global.battleMode != '**Free Only**' || random(1, 2) === 1)) {
 		arkaetreMessage += '\n\n🐈 <@' + global.waitingPlayerID + '>\'s sphinx Arkaetre shoots you an alluring smile and distracts you with a riddle, allowing your opponent to gain 1 point of health.';
 		global.waitingPlayerHP++;
 	}
@@ -2355,13 +2355,13 @@ function endTurn(interaction, item, itemOrActionText) {
 		arkaetreMessage += '\n\n🐺 Your kludde howl as one and overwhelm your opponent with fiery fury, defeating them instantly.';
 		global.waitingPlayerHP = 0;
 	}
-	if (global.activePlayerArkaetre === 'Phoenix' && global.activePlayerHP < 4 && global.activePlayerHP > 0 && !global.activePlayerPhoenixUsed) {
+	if (global.activePlayerArkaetre === 'Phoenix' && !global.activePlayerPhoenixUsed && ((global.battleMode === '**Free Only**' && global.activePlayerHP === 1) || (global.battleMode != '**Free Only' && global.activePlayerHP < 4 && global.activePlayerHP > 0))) {
 		arkaetreMessage += '\n\n🐦 Your phoenix Arkaetre douses you in magic fire and flies away. You are reborn from the ashes with full health.';
 		global.activePlayerHP = 15;
 		global.activePlayerArkaetreIcon = '🪶 ';
 		global.activePlayerPhoenixUsed = true;
 	}
-	if (global.waitingPlayerArkaetre === 'Phoenix' && global.waitingPlayerHP < 4 && global.waitingPlayerHP > 0 && !global.waitingPlayerPhoenixUsed) {
+	if (global.waitingPlayerArkaetre === 'Phoenix' && !global.waitingPlayerPhoenixUsed && ((global.battleMode === '**Free Only**' && global.waitingPlayerHP === 1) || (global.battleMode != '**Free Only' && global.waitingPlayerHP < 4 && global.waitingPlayerHP > 0))) {
 		arkaetreMessage += '\n\n🐦 <@' + global.waitingPlayerID + '>\'s phoenix Arkaetre douses them in magic fire and flies away. They are reborn from the ashes with full health.';
 		global.waitingPlayerHP = 15;
 		global.waitingPlayerArkaetreIcon = '🪶 ';
