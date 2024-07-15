@@ -19,6 +19,9 @@
 
 
 // @ts-check
+
+global.sendRestartMessage = false;
+
 const { Client, Events, GatewayIntentBits, ActivityType, ButtonBuilder, ButtonStyle, ActionRowBuilder, EmbedBuilder, SlashCommandBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, DiscordAPIError, GuildMemberRoleManager, ComponentType } = require('discord.js');
 const { token } = require('C:/Videos/config.json');
 
@@ -40,7 +43,7 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBit
 client.once('ready', () => { 
 	console.log('Locked and Loaded!');
 	/// @ts-ignore
-	client.channels.cache.get('922378133573885982')?.send({ content: 'I just got restarted. All mode settings are now default.' });
+	if (global.sendRestartMessage) client.channels.cache.get('922378133573885982')?.send({ content: 'I just got restarted. All mode settings are now default.' });
 	client.user?.setActivity('. . .', { type: ActivityType.Watching });
 });
 
@@ -59,7 +62,7 @@ client.on('interactionCreate', async interaction => {
 
 	} else if (commandName === 'patchnotes') {
 		var currentPage = 0;
-		var patchNotesText = ['**7/14/24**\n- The two bugs that got me to shut down the bot last time turned out to be bad luck and probably incorrect manual role assignment, so no action needed there.\n- Councilors will be delighted to hear that Volturnus is no longer allowed in the arena channel, so we can avoid message deletion log spam.\n- Arkaetres are now free (!!) and considered a free action, not an item, and a new item has taken the twelfth place, the scroll. Using a scroll gives both players a free extra turn every time it becomes their turn (or toggles this effect off again) and increases the turn counter by 5. Remember, overtime starts on turn 20. Everyone who previously bought an Arkaetre now has a scroll for free.\n- Check out `/battlemode` for some new ways to play! Try being limited to just free actions (Free Only), the first cheap six items (Front Six), the more expensive ones (Back Six). There\'s also backpack mode (Backpack), where you use four preset items of your choice! Just use `/setbackpack` first.\n- Similarly, `/arkaetremode` sets the Arkaetre mode, either Random, Picked or None. Pick your Arkaetre by using `/setarkaetre`.\n- You can check all of your presets with `/checkbackpackandarkaetre`.\n- Some small text edits for clarity, as usual.\n- And yeah, I know the patch notes say Interaction Failed when you flip the page. It works, and I have no idea what\'s causing it, so whatever.',
+		var patchNotesText = ['**7/14/24**\n- The two bugs that got me to shut down the bot last time turned out to be bad luck and probably incorrect manual role assignment, so no action needed there.\n- Councilors will be delighted to hear that Volturnus is no longer allowed in the arena channel, so we can avoid message deletion log spam.\n- Arkaetres are now free (!!) and considered a free action, not an item, and a new item has taken the twelfth place, the scroll. Using a scroll gives both players a free extra turn every time it becomes their turn (or toggles this effect off again) and increases the turn counter by 5. Remember, overtime starts on turn 20. Everyone who previously bought an Arkaetre now has a scroll for free.\n- Check out `/battlemode` for some new ways to play! Try being limited to just free actions (Free Only), the first cheap six items (Front Six), the more expensive ones (Back Six). There\'s also backpack mode (Backpack), where you use four preset items of your choice! Just use `/setbackpack` first.\n- Similarly, `/arkaetremode` sets the Arkaetre mode, either Random, Picked or None. Pick your Arkaetre by using `/setarkaetre`.\n- You can check all of your presets with `/checkbackpackandarkaetre`.\n- Some small text edits for clarity, as usual.\n- A few arkaetres have been rebalanced for Free Only mode.\n- And yeah, I know the patch notes say Interaction Failed when you flip the page. It works, and I have no idea what\'s causing it, so whatever.',
 		
 		'**7/4/23**\n- The Enemy Recovery decrease effect has been moved from the laser rifle to the bow.\n- The laser rifle now decreases a random enemy stat instead.\n- The frozen fish has been boosted! It now has a 75% chance of dealing 3-5 damage and a 25% chance of healing your enemy for 2 points (it used to be a 66% chance of 1-4 damage and a 33% chance of 1-2 health).\n- `/freedefend` is now `/freeheal`, which includes a defensive stance that has a 33% chance of blocking the entire next set of negative effects that target you, including damage, stat effects, lost turns and instakills.', 
 			
