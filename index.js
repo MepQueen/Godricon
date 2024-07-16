@@ -1,3 +1,5 @@
+/// PUSH MESSAGE NOTES
+
 /// PENDING UPDATES
 /// Further balance Free Only? Attack specifically?
 /// Kludde balanced for Free Only?
@@ -526,7 +528,7 @@ client.on('interactionCreate', async interaction => {
 			restartTimeout(interaction);
 			const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('yes').setLabel('✔️ Yes').setStyle(ButtonStyle.Success),new ButtonBuilder().setCustomId('no').setLabel('❌ No').setStyle(ButtonStyle.Danger));
 			// @ts-ignore
-			await interaction.reply({ content: '🤜 **Attack**:  1-2 Enemy Damage, 5% chance of instakill\n\nUse this free action?', components: [row] });
+			await interaction.reply({ content: '🤜 **Attack**:  1-3 Enemy Damage, 5% chance of instakill\n\nUse this free action?', components: [row] });
 			const filter = i => (i.customId === 'yes' || i.customId === 'no') && i.user.id === global.activePlayerID;
 			const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 });
 			var buttonClicked = false;
@@ -565,7 +567,7 @@ client.on('interactionCreate', async interaction => {
 						flyingLionCheck();
 					}
 					wyrmCheck('A');
-					endTurn(interaction, 'attack', itemOrActionText);
+					endTurn(interaction, 'attacks', itemOrActionText);
 				} else if (i.customId === 'no') {
 					interaction.channel?.send('Please select another item or action.');
 					global.itemOrActionProcessing = false;
@@ -628,7 +630,7 @@ client.on('interactionCreate', async interaction => {
 					itemOrActionText += ' You widen your stance, ready to defend yourself.';
 					global.activePlayerDefensiveStance = 'Active';
 					wyrmCheck('B');
-					endTurn(interaction, 'heal', itemOrActionText);
+					endTurn(interaction, 'heals', itemOrActionText);
 				} else if (i.customId === 'no') {
 					interaction.channel?.send('Please select another item or action.');
 					global.itemOrActionProcessing = false;
@@ -720,7 +722,7 @@ client.on('interactionCreate', async interaction => {
 						}
 					}
 					wyrmCheck('C');
-					endTurn(interaction, 'boost', itemOrActionText);
+					endTurn(interaction, 'boosts', itemOrActionText);
 				} else if (i.customId === 'no') {
 					interaction.channel?.send('Please select another item or action.');
 					global.itemOrActionProcessing = false;
@@ -774,7 +776,7 @@ client.on('interactionCreate', async interaction => {
 						}
 						statChange('AT', 'active', true);
 						wyrmCheck('D');
-						endTurn(interaction, 'use your Sword', itemOrActionText);
+						endTurn(interaction, 'uses their Sword', itemOrActionText);
 					} else if (i.customId === 'no') {
 						interaction.channel?.send('Please select another item or action.');
 						global.itemOrActionProcessing = false;
@@ -842,7 +844,7 @@ client.on('interactionCreate', async interaction => {
 							}
 						}
 						wyrmCheck('E');
-						endTurn(interaction, 'use your Bow', itemOrActionText);
+						endTurn(interaction, 'uses their Bow', itemOrActionText);
 					} else if (i.customId === 'no') {
 						interaction.channel?.send('Please select another item or action.');
 						global.itemOrActionProcessing = false;
@@ -922,7 +924,7 @@ client.on('interactionCreate', async interaction => {
 							}
 						}
 						wyrmCheck('F');
-						endTurn(interaction, 'use your Realm Portal', itemOrActionText);
+						endTurn(interaction, 'uses their Realm Portal', itemOrActionText);
 					} else if (i.customId === 'no') {
 						interaction.channel?.send('Please select another item or action.');
 						global.itemOrActionProcessing = false;
@@ -996,7 +998,7 @@ client.on('interactionCreate', async interaction => {
 							statChange('RC', 'active', true);
 						}
 						wyrmCheck('G');
-						endTurn(interaction, 'use your Magistone', itemOrActionText);
+						endTurn(interaction, 'uses their Magistone', itemOrActionText);
 					} else if (i.customId === 'no') {
 						interaction.channel?.send('Please select another item or action.');
 						global.itemOrActionProcessing = false;
@@ -1059,7 +1061,7 @@ client.on('interactionCreate', async interaction => {
 						wyrmCheck('H');
 						flyingLionCheck();
 						hummingbirdCheck();
-						endTurn(interaction, 'use your Dagger', itemOrActionText);
+						endTurn(interaction, 'uses their Dagger', itemOrActionText);
 					} else if (i.customId === 'no') {
 						interaction.channel?.send('Please select another item or action.');
 						global.itemOrActionProcessing = false;
@@ -1135,7 +1137,7 @@ client.on('interactionCreate', async interaction => {
 							statChange('DF', 'waiting', false);
 						}
 						wyrmCheck('I');
-						endTurn(interaction, 'use your Frozen Fish', itemOrActionText);
+						endTurn(interaction, 'uses their Frozen Fish', itemOrActionText);
 					} else if (i.customId === 'no') {
 						interaction.channel?.send('Please select another item or action.');
 						global.itemOrActionProcessing = false;
@@ -1218,7 +1220,7 @@ client.on('interactionCreate', async interaction => {
 							}
 						}
 						wyrmCheck('J');
-						endTurn(interaction, 'use your Laser Rifle', itemOrActionText);
+						endTurn(interaction, 'uses their Laser Rifle', itemOrActionText);
 					} else if (i.customId === 'no') {
 						interaction.channel?.send('Please select another item or action.');
 						global.itemOrActionProcessing = false;
@@ -1301,7 +1303,7 @@ client.on('interactionCreate', async interaction => {
 							}
 						}
 						wyrmCheck('K');
-						endTurn(interaction, 'use your Staff', itemOrActionText);
+						endTurn(interaction, 'uses their Staff', itemOrActionText);
 					} else if (i.customId === 'no') {
 						interaction.channel?.send('Please select another item or action.');
 						global.itemOrActionProcessing = false;
@@ -1362,7 +1364,7 @@ client.on('interactionCreate', async interaction => {
 							}
 						}
 						wyrmCheck('L');
-						endTurn(interaction, 'use your Shield', itemOrActionText);
+						endTurn(interaction, 'uses their Shield', itemOrActionText);
 					} else if (i.customId === 'no') {
 						interaction.channel?.send('Please select another item or action.');
 						global.itemOrActionProcessing = false;
@@ -1428,7 +1430,7 @@ client.on('interactionCreate', async interaction => {
 						statChange('DF', 'active', true);
 						statChange('RC', 'active', true);
 						wyrmCheck('M');
-						endTurn(interaction, 'use your Shifter Disc', itemOrActionText);
+						endTurn(interaction, 'uses their Shifter Disc', itemOrActionText);
 					} else if (i.customId === 'no') {
 						interaction.channel?.send('Please select another item or action.');
 						global.itemOrActionProcessing = false;
@@ -1497,7 +1499,7 @@ client.on('interactionCreate', async interaction => {
 							statChange('RC', 'waiting', false);
 						}
 						wyrmCheck('N');
-						endTurn(interaction, 'use your Pocketwatch', itemOrActionText);
+						endTurn(interaction, 'uses their Pocketwatch', itemOrActionText);
 					} else if (i.customId === 'no') {
 						interaction.channel?.send('Please select another item or action.');
 						global.itemOrActionProcessing = false;
@@ -1568,7 +1570,7 @@ client.on('interactionCreate', async interaction => {
 						}
 						global.turnNumber += 5;
 						wyrmCheck('O');
-						endTurn(interaction, 'use your Scroll', itemOrActionText);
+						endTurn(interaction, 'uses their Scroll', itemOrActionText);
 					} else if (i.customId === 'no') {
 						interaction.channel?.send('Please select another item or action.');
 						global.itemOrActionProcessing = false;
@@ -1695,7 +1697,7 @@ client.on('interactionCreate', async interaction => {
 								global.activePlayerArkaetreIcon = '🔱 ';
 							}
 						}
-						endTurn(interaction, 'use your Arkaetre', itemOrActionText);
+						endTurn(interaction, 'uses their Arkaetre', itemOrActionText);
 					} else if (i.customId === 'no') {
 						interaction.channel?.send('Please select another item or action.');
 						global.itemOrActionProcessing = false;
@@ -1723,7 +1725,7 @@ client.on('interactionCreate', async interaction => {
 			await interaction.reply({ content: 'There is no battle in progress.', ephemeral: true });
 		} else if (global.activePlayerID === '354752678376636417' || global.waitingPlayerID === '354752678376636417') {
 			global.waitingPlayerHP = 0;
-			endTurn(interaction, 'use your admin superiority', 'They dead.');
+			endTurn(interaction, 'uses their admin superiority', 'They dead.');
 		} else {
 			await interaction.reply({ content: 'Only an admin can use this command.', ephemeral: true });
 		}
@@ -2477,7 +2479,7 @@ function endTurn(interaction, item, itemOrActionText) {
 	var waitingPlayerDFLockIcon = global.waitingPlayerArkaetre === 'Dragon' ? ' 🔒' : '';
 	var waitingPlayerRCLockIcon = global.waitingPlayerArkaetre === 'Cheetah' ? ' 🔒' : '';
 
-	var embed = new EmbedBuilder().setTitle('You ' + item + '!').setDescription(itemOrActionText + criticalMessage + pocketwatchMessage + scrollMessage + shieldMessage + arkaetreMessage + defensiveStanceMessage + overtimeMessage).setFooter({ text: overtimeTag + 'Turn ' + global.turnNumber + scrollIcon + pocketwatchTurnFreezeIcon });
+	var embed = new EmbedBuilder().setTitle(interaction.member.displayName + ' ' + item + '!').setDescription(itemOrActionText + criticalMessage + pocketwatchMessage + scrollMessage + shieldMessage + arkaetreMessage + defensiveStanceMessage + overtimeMessage).setFooter({ text: overtimeTag + 'Turn ' + global.turnNumber + scrollIcon + pocketwatchTurnFreezeIcon });
 	if (global.turn) {
 		embed.setColor(0x55ACEE).addFields(
 			{ name: '\u200B', value: '🔸' + global.waitingPlayerArkaetreIcon + '<@' + global.waitingPlayerID + '>' + waitingPlayerShieldIcon + '🔸' + waitingPlayerExtraTurnsIcon + waitingPlayerDefensiveStanceIcon + '\n' + waitingPlayerHealthIcon + ' HP: ' + global.waitingPlayerHP + '/' + global.maxHealth + '\n⚔️ AT: ' + global.waitingPlayerAT + waitingPlayerATLockIcon + '\n🛡️ DF: ' + global.waitingPlayerDF + waitingPlayerDFLockIcon + '\n💗 RC: ' + global.waitingPlayerRC + waitingPlayerRCLockIcon, inline: true },
