@@ -526,7 +526,7 @@ client.on('interactionCreate', async interaction => {
 			restartTimeout(interaction);
 			const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('yes').setLabel('✔️ Yes').setStyle(ButtonStyle.Success),new ButtonBuilder().setCustomId('no').setLabel('❌ No').setStyle(ButtonStyle.Danger));
 			// @ts-ignore
-			await interaction.reply({ content: '🤜 **Attack**:  1-2 Enemy Damage, 5% chance of instakill\n\nUse this free action?', components: [row] });
+			await interaction.reply({ content: '🤜 **Attack**:  2-3 Enemy Damage, 5% chance of instakill\n\nUse this free action?', components: [row] });
 			const filter = i => (i.customId === 'yes' || i.customId === 'no') && i.user.id === global.activePlayerID;
 			const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 });
 			var buttonClicked = false;
@@ -540,25 +540,22 @@ client.on('interactionCreate', async interaction => {
 						itemOrActionText = 'In a fit of rage and glory, you hammer <@' + global.waitingPlayerID + '> with hundreds of kicks and punches, defeating them instantly.';
 						global.waitingPlayerHP = 0;
 						global.freeAttackInstakillHappened = true;
-					} else if (roll2 < 3) {
-						var amount = damage('waiting', 1);
+					} else if (roll2 < 4) {
+						var amount = damage('waiting', 2);
 						if (roll2 === 1) {
 							itemOrActionText = 'You throw the bandages that you carry with you at all times at <@' + global.waitingPlayerID + '>\'s arm for ' + amount + ' damage. I am surprised they did that much.';
-						} else {
+						} else if (roll2 === 2) {
 							itemOrActionText = 'You run at <@' + global.waitingPlayerID + '>, screaming a fierce battle cry, and beat them in rock-paper-scissors for ' + amount + ' damage.';
+						} else {
+							itemOrActionText = 'After careful consideration of your options, you poke <@' + global.waitingPlayerID + '> in the eye for ' + amount + ' damage.';
 						}
 						hummingbirdCheck();
-					} else if (roll2 < 5) {
-						var amount = damage('waiting', 2);
-						if (roll2 === 3) {
-							itemOrActionText = 'After careful consideration of your options, you poke <@' + global.waitingPlayerID + '> in the eye for ' + amount + ' damage.';
-						} else {
-							itemOrActionText = 'After being told a particularly bad joke, you tackle <@' + global.waitingPlayerID + '> to the ground for ' + amount + ' damage.';
-						}
 					} else {
 						var amount = damage('waiting', 3);
-						if (roll2 === 5) {
+						if (roll2 === 4) {
 							itemOrActionText = 'You punch <@' + global.waitingPlayerID + '> right in the face for ' + amount + ' damage. That is going to hurt.';
+						} else if (roll2 === 5) {
+							itemOrActionText = 'After being told a particularly bad joke, you tackle <@' + global.waitingPlayerID + '> to the ground for ' + amount + ' damage.';
 						} else {
 							itemOrActionText = 'You do a cool flip, followed by a cartwheel, and high kick <@' + global.waitingPlayerID + '> for ' + amount + ' damage.';
 						}
