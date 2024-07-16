@@ -1,7 +1,3 @@
-/// PENDING UPDATES
-/// Further balance Free Only? Attack specifically?
-/// Kludde balanced for Free Only?
-
 /// FUTURE UPDATES
 /// Dark/Light/Gray continuum pick > different turn numbers advantageous + stat advantage
 /// Ping streak
@@ -68,7 +64,9 @@ client.on('interactionCreate', async interaction => {
 	} else if (commandName === 'patchnotes') {
 		console.log('<@' + interaction.user.id + '> used patchnotes.');
 		var currentPage = 0;
-		var patchNotesText = ['**7/14/24**\n- The two bugs that got me to shut down the bot last time turned out to be bad luck and probably incorrect manual role assignment, so no action needed there.\n- Councilors will be delighted to hear that Volturnus is no longer allowed in the arena channel, so we can avoid message deletion log spam.\n- Arkaetres are now free (!!) and considered a free action, not an item, and a new item has taken the twelfth place, the scroll. Using a scroll gives both players a free extra turn every time it becomes their turn (or toggles this effect off again) and increases the turn counter by 5. Remember, overtime starts on turn 20. Everyone who previously bought an Arkaetre now has a scroll for free.\n- Check out `/battlemode` for some new ways to play! Try being limited to just free actions (Free Only), the first cheap six items (Front Six), the more expensive ones (Back Six). There\'s also backpack mode (Backpack), where you use four preset items of your choice! Just use `/setbackpack` first.\n- Similarly, `/arkaetremode` sets the Arkaetre mode, either Random, Picked or None. Pick your Arkaetre by using `/setarkaetre`.\n- You can check all of your presets with `/checkbackpackandarkaetre`.\n- Some small text edits for clarity, as usual.\n- The free attack action and a few arkaetres have been rebalanced for Free Only mode.\n- And yeah, I know the patch notes say Interaction Failed when you flip the page. It works, and I have no idea what\'s causing it, so whatever.',
+		var patchNotesText = ['**7/16/24**\n- The free attack action and a few arkaetres have been rebalanced for Free Only mode.\n- Modes can now be changed until the first action or item is used in a battle.',
+			
+		'**7/14/24**\n- The two bugs that got me to shut down the bot last time turned out to be bad luck and probably incorrect manual role assignment, so no action needed there.\n- Councilors will be delighted to hear that Volturnus is no longer allowed in the arena channel, so we can avoid message deletion log spam.\n- Arkaetres are now free (!!) and considered a free action, not an item, and a new item has taken the twelfth place, the scroll. Using a scroll gives both players a free extra turn every time it becomes their turn (or toggles this effect off again) and increases the turn counter by 5. Remember, overtime starts on turn 20. Everyone who previously bought an Arkaetre now has a scroll for free.\n- Check out `/battlemode` for some new ways to play! Try being limited to just free actions (Free Only), the first cheap six items (Front Six), the more expensive ones (Back Six). There\'s also backpack mode (Backpack), where you use four preset items of your choice! Just use `/setbackpack` first.\n- Similarly, `/arkaetremode` sets the Arkaetre mode, either Random, Picked or None. Pick your Arkaetre by using `/setarkaetre`.\n- You can check all of your presets with `/checkbackpackandarkaetre`.\n- Some small text edits for clarity, as usual.\n- And yeah, I know the patch notes say Interaction Failed when you flip the page. It works, and I have no idea what\'s causing it, so whatever.',
 		
 		'**7/4/23**\n- The Enemy Recovery decrease effect has been moved from the laser rifle to the bow.\n- The laser rifle now decreases a random enemy stat instead.\n- The frozen fish has been boosted! It now has a 75% chance of dealing 3-5 damage and a 25% chance of healing your enemy for 2 points (it used to be a 66% chance of 1-4 damage and a 33% chance of 1-2 health).\n- `/freedefend` is now `/freeheal`, which includes a defensive stance that has a 33% chance of blocking the entire next set of negative effects that target you, including damage, stat effects, lost turns and instakills.', 
 			
@@ -152,7 +150,7 @@ client.on('interactionCreate', async interaction => {
 	
 	} else if (commandName === 'rules-actionsanditemslist') {
 		console.log('<@' + interaction.user.id + '> used rules-actionsanditemslist.');
-		await interaction.reply({ content: '**__Free Action Effects__**\n\n🤜 **Attack**\n1-3 Enemy Damage, 5% chance of instakill\n\n:heart_hands: **Heal**\n1-2 Personal Health, gain defensive stance\n\n💪 **Boost**\n↑ Personal Attack or Defense or Recovery or ↓ Enemy Attack or Defense or Recovery, 33% chance of 2x effect\n\n<:itemArkaetre:1260808324027383861> **Arkaetre**\nGain an Arkaetre ability (check `/rules-arkaetreslist`)\n\n**__Item Effects__**\n\n<:itemSword:793212847584313364> **Sword**\n1-3 Enemy Damage, ↑ Personal Attack\n\n<:itemBow:793230409734291506> **Bow**\n2-4 Enemy Damage, ↓ Enemy Recovery, 50% chance of 1 Personal Damage\n\n<:itemRealmPortal:769819664096034846> **Realm Portal**\n0-2 Enemy Damage or 1 Personal Health, 50% chance of extra turn\n\n<:itemMagistone:793215911599407124> **Magistone**\n1 Enemy Damage or 0-4 Personal Health, ↑ Personal Defense or Recovery\n\n<:itemDagger:838670346856431677> **Dagger**\n2 Enemy Damage, ↑ Personal Attack or Defense or Recovery\n\n<:itemFrozenFish:838670349137870858> **Frozen Fish**\n3-5 Enemy Damage or 2 Enemy Health, ↓ Enemy Attack or Defense\n\n<:itemLaserRifle:903038791562981397> **Laser Rifle**\n3x 0-2 Enemy Damage, ↓ Enemy Attack or Defense or Recovery, 50% chance of lost turn\n\n<:itemStaff:903038551682338836> **Staff**\n0 or 5-6 Enemy Damage, ↓ 2 of Personal Attack or Defense or Recovery on hit\n\n<:itemShield:903038554127601694> **Shield**\n80% chance of shield\n\n<:itemShifterDisc:903038892121407568> **Shifter Disc**\n3 Personal Damage or lose turn, ↑ Personal Attack and Defense and Recovery\n\n<:itemPocketwatch:903038555633385512> **Pocketwatch**\n2 Personal Health, ↓ Enemy Attack or Defense or Recovery, no extra or lost turns for either player for 3 turns, freeze the turn counter for 3 turns\n\n<:itemScroll:1260789127713128520> **Scroll**\nToggle free extra turn for both players, increase the turn counter by 5', ephemeral: true });
+		await interaction.reply({ content: '**__Free Action Effects__**\n\n🤜 **Attack**\n2-3 Enemy Damage, 5% chance of instakill\n\n:heart_hands: **Heal**\n1-2 Personal Health, gain defensive stance\n\n💪 **Boost**\n↑ Personal Attack or Defense or Recovery or ↓ Enemy Attack or Defense or Recovery, 33% chance of 2x effect\n\n<:itemArkaetre:1260808324027383861> **Arkaetre**\nGain an Arkaetre ability (check `/rules-arkaetreslist`)\n\n**__Item Effects__**\n\n<:itemSword:793212847584313364> **Sword**\n1-3 Enemy Damage, ↑ Personal Attack\n\n<:itemBow:793230409734291506> **Bow**\n2-4 Enemy Damage, ↓ Enemy Recovery, 50% chance of 1 Personal Damage\n\n<:itemRealmPortal:769819664096034846> **Realm Portal**\n0-2 Enemy Damage or 1 Personal Health, 50% chance of extra turn\n\n<:itemMagistone:793215911599407124> **Magistone**\n1 Enemy Damage or 0-4 Personal Health, ↑ Personal Defense or Recovery\n\n<:itemDagger:838670346856431677> **Dagger**\n2 Enemy Damage, ↑ Personal Attack or Defense or Recovery\n\n<:itemFrozenFish:838670349137870858> **Frozen Fish**\n3-5 Enemy Damage or 2 Enemy Health, ↓ Enemy Attack or Defense\n\n<:itemLaserRifle:903038791562981397> **Laser Rifle**\n3x 0-2 Enemy Damage, ↓ Enemy Attack or Defense or Recovery, 50% chance of lost turn\n\n<:itemStaff:903038551682338836> **Staff**\n0 or 5-6 Enemy Damage, ↓ 2 of Personal Attack or Defense or Recovery on hit\n\n<:itemShield:903038554127601694> **Shield**\n80% chance of shield\n\n<:itemShifterDisc:903038892121407568> **Shifter Disc**\n3 Personal Damage or lose turn, ↑ Personal Attack and Defense and Recovery\n\n<:itemPocketwatch:903038555633385512> **Pocketwatch**\n2 Personal Health, ↓ Enemy Attack or Defense or Recovery, no extra or lost turns for either player for 3 turns, freeze the turn counter for 3 turns\n\n<:itemScroll:1260789127713128520> **Scroll**\nToggle free extra turn for both players, increase the turn counter by 5', ephemeral: true });
 	
 	
 
@@ -219,7 +217,7 @@ client.on('interactionCreate', async interaction => {
 
 
 	} else if (commandName === 'battlemode') {
-		if (global.activePlayerID === '') {
+		if (global.activePlayerID === '' || global.turnNumber === 1) {
 			var extraText = '';
 			if (global.battleMode === '**Default**') {
 				global.battleMode = '**Free Only**';
@@ -232,7 +230,7 @@ client.on('interactionCreate', async interaction => {
 				extraText = 'Only the last six items (the more expensive ones, including the scroll) are allowed.';
 			} else if (global.battleMode === '**Back Six**') {
 				global.battleMode = '**Backpack**';
-				extraText = 'Only four preset items are allowed. Set your items by using `/backpack`.';
+				extraText = 'Only four preset items are allowed. Set your items by using `/setbackpack`.';
 			} else if (global.battleMode === '**Backpack**') {
 				global.battleMode = '**Default**';
 				extraText = 'All items and actions are allowed.';
@@ -314,7 +312,7 @@ client.on('interactionCreate', async interaction => {
 
 
 	} else if (commandName === 'arkaetremode') {
-		if (global.activePlayerID === '') {
+		if (global.activePlayerID === '' || global.turnNumber === 1) {
 			var extraText = '';
 			if (global.arkaetreMode === '**Random**') {
 				global.arkaetreMode = '**Picked**';
@@ -455,7 +453,7 @@ client.on('interactionCreate', async interaction => {
 			restartTimeout(interaction);
 			global.activePlayerID = interaction.options.getUser('opponent')?.id;
 			global.waitingPlayerID = interaction.user.id;
-			await interaction.reply('<@' + global.waitingPlayerID + '> started a battle against <@' + global.activePlayerID + '>! Let us have a good, clean fight. Either of you can use `/endbattle` to end the battle or any `/rules` command to review the rules of battle at any time.\n\nBy the way, the battle mode is currently ' + global.battleMode + ', and the Arkaetre mode is ' + global.arkaetreMode + '.\n\nOn your turn, please use an item command such as `/sword` to select a registered item to use. If you do not have any items registered, buy some in `c!shop` and use them in `c!inventory` first, or use a free action such as `/freeattack`.\n\n<@' + global.activePlayerID + '>, you are first!');
+			await interaction.reply('<@' + global.waitingPlayerID + '> started a battle against <@' + global.activePlayerID + '>! Let us have a good, clean fight. Either of you can use `/endbattle` to end the battle or any `/rules` command to review the rules of battle at any time.\n\nBy the way, the battle mode is currently ' + global.battleMode + ', and the Arkaetre mode is ' + global.arkaetreMode + '. This is your last chance to change modes, before the first turn is taken.\n\nOn your turn, please use an item command such as `/sword` to select a registered item to use, or a free action such as `/freeattack` or `/arkaetre`. If you want to use an item but do not have any items registered, buy some in `c!shop` and use them in `c!inventory` first.\n\n<@' + global.activePlayerID + '>, you are first!');
 			global.challengeOverride = true;
 			global.interactionSave = null;
 			if (global.collectorSave != null) {
@@ -489,7 +487,7 @@ client.on('interactionCreate', async interaction => {
 			global.collectorSave.stop();
 			global.buttonClickedSave = true;
 			global.activePlayerID = interaction.member.user.id;
-			interaction.channel.send('<@' + global.activePlayerID + '> accepted <@' + global.waitingPlayerID + '>\'s battle challenge! Let us have a good, clean fight. Either of you can use `/endbattle` to end the battle or any `/rules` command to review the rules of battle at any time.\n\nBy the way, the battle mode is currently ' + global.battleMode + ', and the Arkaetre mode is ' + global.arkaetreMode + '.\n\nOn your turn, please use an item command such as `/sword` to select a registered item to use. If you do not have any items registered, buy some in `c!shop` and use them in `c!inventory` first, or use a free action such as `/freeattack`.\n\n<@' + global.activePlayerID + '>, you are first!');
+			interaction.channel.send('<@' + global.activePlayerID + '> accepted <@' + global.waitingPlayerID + '>\'s battle challenge! Let us have a good, clean fight. Either of you can use `/endbattle` to end the battle or any `/rules` command to review the rules of battle at any time.\n\nBy the way, the battle mode is currently ' + global.battleMode + ', and the Arkaetre mode is ' + global.arkaetreMode + '. This is your last chance to change modes, before the first turn is taken.\n\nOn your turn, please use an item command such as `/sword` to select a registered item to use, or a free action such as `/freeattack` or `/arkaetre`. If you want to use an item but do not have any items registered, buy some in `c!shop` and use them in `c!inventory` first.\n\n<@' + global.activePlayerID + '>, you are first!');
 		} else if (interaction.customId === 'cancel' && (interaction.user.id === global.waitingPlayerID || (interaction.member.roles instanceof GuildMemberRoleManager && interaction.member.roles.cache.has('809284936669593600')))) {
 			global.interactionSave.deleteReply();
 			global.collectorSave.stop();
